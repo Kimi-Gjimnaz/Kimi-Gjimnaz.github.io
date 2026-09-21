@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulimi 3D: Gjendjet e Lëndës (Optimizuar)</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #0f172a;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #ffffff;
+        }
+
+        /* Paneli i kontrollit në pjesën e SIPËRME */
+        #ui-container {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(30, 41, 59, 0.85);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            z-index: 100;
+            width: 90%;
+            max-width: 650px;
+        }
+
+        h2 {
+            margin: 0 0 10px 0;
+            font-size: 18px;
+            color: #f8fafc;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #f1f5f9;
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .active-btn {
+            background: #2563eb !important;
+            border-color: #60a5fa !important;
+            color: white !important;
+        }
+
+        #description {
+            font-size: 13px;
+            line-height: 1.4;
+            color: #94a3b8;
+        }
+    </style>
+    <!-- Libraritë Three.js dhe OrbitControls nga CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+
+<div id="ui-container">
+    <h2>Vendosja e Grimcave (Strukturë e Rregullt)</h2>
+    <div class="controls">
+        <button id="btn-solid" class="active-btn" onclick="setPhase('solid')">E Ngurtë</button>
+        <button id="btn-liquid" onclick="setPhase('liquid')">E Lëngët</button>
+        <button id="btn-gas" onclick="setPhase('gas')">E Gaztë</button>
+    </div>
+    <div id="description">
+        <b>Gjendja e Ngurtë:</b> Grimcat janë të radhitura në një rrjetë kristalore kubike të rregullt me lidhje fikse. Ato vetëm dridhen lehtësisht.
+    </div>
+</div>
+
+<script>
+    let scene, camera, renderer, controls;
+    let particles = [];
+    let latticeLines;
+    let phase = 'solid';
+
+    const containerSize = 10;
+    const particleRadius = 0.45;
+    const particleCount = 4; // Rrjetë 4x4x4 = 64 grimca
+    const gridStep = 1.6;
+
+    init();
+    animate();
+
+    function init() {
+        // Skena
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x0f172a);
+
+        // Kamera
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+        camera.position.set(0, 4, 22);
+
+        // Renderer i lehtë (pa hije për të mbrojtur GPU-në e laptopit)
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+        document.body.appendChild(renderer.domElement);
+
+        // Kontrolli me miun
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+
+        // Ndriçim i thjeshtë
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        dirLight.position.set(10, 15, 10);
+        scene.add(dirLight);
+
+        // Ena kufizuese (Wireframe e thjeshtë)
+        const boxGeo = new THREE.BoxGeometry(containerSize, containerSize, containerSize);
+        const boxEdges = new THREE.EdgesGeometry(boxGeo);
+        const containerBox = new THREE.LineSegments(boxEdges, new THREE.LineBasicMaterial({ color: 0x334155 }));
+        scene.add(containerBox);
+
+        // Materiali dhe gjeometria e sferave
+        const particleMat = new THREE.MeshPhongMaterial({ color: 0x38bdf8, shininess: 80 });
+        const sphereGeo = new THREE.SphereGeometry(particleRadius, 12, 12);
+
+        const offset = ((particleCount - 1) * gridStep) / 2;
+
+        // Krijimi i 64 grimcave në rrjetë kubike të rregullt
+        for (let x = 0; x < particleCount; x++) {
+            for (let y = 0; y < particleCount; y++) {
+                for (let z = 0; z < particleCount; z++) {
+                    const mesh = new THREE.Mesh(sphereGeo, particleMat);
+
+                    const targetPos = new THREE.Vector3(
+                        x * gridStep - offset,
+                        y * gridStep - offset,
+                        z * gridStep - offset
+                    );
+
+                    mesh.position.copy(targetPos);
+                    scene.add(mesh);
+
+                    particles.push({
+                        mesh: mesh,
+                        gridPos: targetPos.clone(),
+                        vel: new THREE.Vector3(0, 0, 0),
+                        gridIdx: {x, y, z}
+                    });
+                }
+            }
+        }
+
+        // Krijimi i Linjave të Rrjetës Kristalore
+        createLatticeLines();
+
+        window.addEventListener('resize', onWindowResize);
+    }
+
+    function createLatticeLines() {
+        const linePositions = [];
+
+        particles.forEach((p1) => {
+            particles.forEach((p2) => {
+                const dist = p1.gridPos.distanceTo(p2.gridPos);
+                if (Math.abs(dist - gridStep) < 0.01 && p1.gridPos.x <= p2.gridPos.x && p1.gridPos.y <= p2.gridPos.y && p1.gridPos.z <= p2.gridPos.z) {
+                    linePositions.push(p1.mesh.position.x, p1.mesh.position.y, p1.mesh.position.z);
+                    linePositions.push(p2.mesh.position.x, p2.mesh.position.y, p2.mesh.position.z);
+                }
+            });
+        });
+
+        const lineGeo = new THREE.BufferGeometry();
+        lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+        const lineMat = new THREE.LineBasicMaterial({ color: 0x60a5fa, transparent: true, opacity: 0.4 });
+
+        latticeLines = new THREE.LineSegments(lineGeo, lineMat);
+        scene.add(latticeLines);
+    }
+
+    function updateLatticeLines() {
+        if (!latticeLines || phase !== 'solid') return;
+
+        const positions = latticeLines.geometry.attributes.position.array;
+        let idx = 0;
+
+        particles.forEach((p1) => {
+            particles.forEach((p2) => {
+                const dist = p1.gridPos.distanceTo(p2.gridPos);
+                if (Math.abs(dist - gridStep) < 0.01 && p1.gridPos.x <= p2.gridPos.x && p1.gridPos.y <= p2.gridPos.y && p1.gridPos.z <= p2.gridPos.z) {
+                    positions[idx++] = p1.mesh.position.x;
+                    positions[idx++] = p1.mesh.position.y;
+                    positions[idx++] = p1.mesh.position.z;
+
+                    positions[idx++] = p2.mesh.position.x;
+                    positions[idx++] = p2.mesh.position.y;
+                    positions[idx++] = p2.mesh.position.z;
+                }
+            });
+        });
+
+        latticeLines.geometry.attributes.position.needsUpdate = true;
+    }
+
+    function setPhase(newPhase) {
+        phase = newPhase;
+
+        document.querySelectorAll('.controls button').forEach(btn => btn.classList.remove('active-btn'));
+        document.getElementById(`btn-${phase}`).classList.add('active-btn');
+
+        const desc = document.getElementById('description');
+
+        if (phase === 'solid') {
+            desc.innerHTML = "<b>Gjendja e Ngurtë:</b> Grimcat janë të radhitura në një rrjetë kristalore kubike të rregullt me lidhje fikse. Ato vetëm dridhen lehtësisht.";
+            latticeLines.visible = true;
+        } else if (phase === 'liquid') {
+            desc.innerHTML = "<b>Gjendja e Lëngët:</b> Lidhjet shkëputen. Grimcat janë afër njëra-tjetrës në fund të enës dhe rrëshqasin lirshëm.";
+            latticeLines.visible = false;
+        } else if (phase === 'gas') {
+            desc.innerHTML = "<b>Gjendja e Gaztë:</b> Grimcat lëvizin me shpejtësi në mënyrë kaotike në të gjithë hapësirën e enës.";
+            latticeLines.visible = false;
+
+            particles.forEach(p => {
+                p.vel.set(
+                    (Math.random() - 0.5) * 0.4,
+                    (Math.random() - 0.5) * 0.4,
+                    (Math.random() - 0.5) * 0.4
+                );
+            });
+        }
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        controls.update();
+
+        const limit = containerSize / 2 - particleRadius;
+
+        particles.forEach(p => {
+            if (phase === 'solid') {
+                // Dridhje e harmonizuar rreth koordinatës fikse
+                p.mesh.position.x = p.gridPos.x + Math.sin(Date.now() * 0.01 + p.gridPos.y) * 0.06;
+                p.mesh.position.y = p.gridPos.y + Math.cos(Date.now() * 0.01 + p.gridPos.x) * 0.06;
+                p.mesh.position.z = p.gridPos.z + Math.sin(Date.now() * 0.01 + p.gridPos.z) * 0.06;
+
+            } else if (phase === 'liquid') {
+                // Rrëshqitje dhe graviteti në fund
+                p.vel.y -= 0.008;
+                p.vel.x += (Math.random() - 0.5) * 0.03;
+                p.vel.z += (Math.random() - 0.5) * 0.03;
+
+                p.vel.multiplyScalar(0.92);
+                p.mesh.position.add(p.vel);
+
+                // Kufijtë e enës për lëngun
+                if (p.mesh.position.x > limit) { p.mesh.position.x = limit; p.vel.x *= -0.5; }
+                if (p.mesh.position.x < -limit) { p.mesh.position.x = -limit; p.vel.x *= -0.5; }
+                if (p.mesh.position.y > limit) { p.mesh.position.y = limit; p.vel.y *= -0.5; }
+                if (p.mesh.position.y < -limit) { p.mesh.position.y = -limit; p.vel.y *= -0.2; }
+                if (p.mesh.position.z > limit) { p.mesh.position.z = limit; p.vel.z *= -0.5; }
+                if (p.mesh.position.z < -limit) { p.mesh.position.z = -limit; p.vel.z *= -0.5; }
+
+            } else if (phase === 'gas') {
+                // Lëvizje kaotike e gazit
+                p.vel.x += (Math.random() - 0.5) * 0.05;
+                p.vel.y += (Math.random() - 0.5) * 0.05;
+                p.vel.z += (Math.random() - 0.5) * 0.05;
+
+                p.vel.clampLength(0, 0.35);
+                p.mesh.position.add(p.vel);
+
+                // Përplasja me muret
+                if (Math.abs(p.mesh.position.x) > limit) { p.mesh.position.x = Math.sign(p.mesh.position.x) * limit; p.vel.x *= -1; }
+                if (Math.abs(p.mesh.position.y) > limit) { p.mesh.position.y = Math.sign(p.mesh.position.y) * limit; p.vel.y *= -1; }
+                if (Math.abs(p.mesh.position.z) > limit) { p.mesh.position.z = Math.sign(p.mesh.position.z) * limit; p.vel.z *= -1; }
+            }
+        });
+
+        if (phase === 'solid') {
+            updateLatticeLines();
+        }
+
+        renderer.render(scene, camera);
+    }
+
+    function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+</script>
+</body>
+</html>

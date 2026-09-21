@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratori Virtual i Kimisë - PRO</title>
+    <style>
+        :root {
+            --bg-main: #0b0f19;
+            --panel-bg: #111827;
+            --border-color: #374151;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --btn-red: #ef4444;
+            --btn-purple: #8b5cf6;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body { 
+            background-color: var(--bg-main); 
+            color: var(--text-main); 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 100vh; 
+            padding: 20px; 
+        }
+        
+        header { text-align: center; margin-bottom: 25px; }
+        header h1 { font-size: 2.2rem; color: #fff; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }
+        header h1 span { color: var(--accent); }
+        header p { color: var(--text-muted); font-size: 1.1rem; margin-top: 5px; }
+
+        .tabs { display: flex; gap: 15px; margin-bottom: 20px; }
+        .tab-btn { 
+            background: var(--panel-bg); color: var(--text-muted); 
+            border: 1px solid var(--border-color); padding: 12px 30px; 
+            border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1.05rem; 
+            transition: all 0.3s; 
+        }
+        .tab-btn:hover { color: #fff; border-color: var(--text-muted); }
+        .tab-btn.active { 
+            background: var(--accent); color: #fff; border-color: var(--accent); 
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4); 
+        }
+
+        .workspace {
+            display: flex; gap: 20px; width: 100%; max-width: 1250px; 
+            background: var(--panel-bg); border-radius: 12px; padding: 20px; 
+            border: 1px solid var(--border-color);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        }
+
+        .canvas-container { flex: 1; display: flex; justify-content: center; align-items: center; background: #000; border-radius: 8px; border: 1px solid var(--border-color); overflow: hidden; position: relative;}
+        canvas { background: #030712; display: block; }
+
+        .control-panel { flex: 0 0 350px; display: flex; flex-direction: column; gap: 20px; overflow-y: auto; padding-right: 10px;}
+        
+        .panel-section { background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; }
+        .panel-section h3 { font-size: 1.1rem; color: #fff; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; }
+
+        .slider-group { margin-bottom: 15px; }
+        .slider-group:last-child { margin-bottom: 0; }
+        .slider-group label { display: flex; justify-content: space-between; font-size: 0.9rem; color: var(--text-muted); margin-bottom: 8px; font-weight: 500; }
+        .val-badge { background: #1f2937; padding: 2px 8px; border-radius: 4px; color: var(--accent); font-weight: bold; }
+        
+        input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; height: 6px; border-radius: 3px; background: #374151; appearance: none; outline: none; }
+        input[type=range]::-webkit-slider-thumb { appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--accent); cursor: pointer; transition: transform 0.1s; }
+        input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+        .btn-group { display: flex; flex-direction: column; gap: 10px; }
+        .btn { 
+            width: 100%; padding: 12px; border: none; border-radius: 6px; 
+            font-weight: 600; cursor: pointer; color: #fff; transition: background 0.2s; 
+            font-size: 0.95rem; text-align: center;
+        }
+        .btn-primary { background: var(--accent); }
+        .btn-primary:hover { background: var(--accent-hover); }
+        .btn-purple { background: var(--btn-purple); }
+        .btn-purple:hover { background: #7c3aed; }
+        .btn-red { background: var(--btn-red); }
+        .btn-red:hover { background: #dc2626; }
+        .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-main); }
+        .btn-outline:hover { background: rgba(255,255,255,0.05); }
+
+        .checkbox-label { display: flex; align-items: center; gap: 10px; font-size: 0.95rem; cursor: pointer; margin-bottom: 10px; color: var(--text-muted); }
+        .checkbox-label input { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
+
+        .hidden { display: none !important; }
+
+        /* State Indicator for Sim 2 */
+        #state-display { text-align: center; font-size: 1.5rem; font-weight: bold; margin-bottom: 10px; letter-spacing: 1px; }
+        .state-solid { color: #60a5fa; }
+        .state-liquid { color: #34d399; }
+        .state-gas { color: #f87171; }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Gjimnazi Milot</h1>
+        <p>Laborator simulues digjital për kiminë</p>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab(1)">1. Lëvizja Brauniane & Shpërhapja</button>
+        <button class="tab-btn" onclick="switchTab(2)">2. Gjendjet e Lëndës (Ndryshimi Fazor)</button>
+    </div>
+
+    <!-- SIMULIMI 1 -->
+    <div id="sim1" class="workspace">
+        <div class="canvas-container">
+            <canvas id="canvas1" width="800" height="550"></canvas>
+        </div>
+        
+        <div class="control-panel">
+            <div class="panel-section">
+                <h3>Termodinamika</h3>
+                <div class="slider-group">
+                    <label>Temperatura e Mjedisit <span id="val-temp1" class="val-badge">25 °C</span></label>
+                    <input type="range" id="sim1-temp" min="0" max="100" value="25" oninput="updateSim1UI()">
+                </div>
+                <p style="font-size: 0.8rem; color:#6b7280; line-height: 1.4;">*Rritja e temperaturës rrit ndjeshëm energjinë kinetike, duke e shtyrë polenin shumë më larg.</p>
+            </div>
+
+            <div class="panel-section">
+                <h3>Parametrat e Eksperimentit</h3>
+                <div class="slider-group">
+                    <label>Sasia e Ujit (Tretësit) <span id="val-water" class="val-badge">120</span></label>
+                    <input type="range" id="sim1-water-count" min="20" max="300" value="120" oninput="updateSim1Params()">
+                </div>
+                <div class="slider-group">
+                    <label>Madhësia e Polenit <span id="val-pollen" class="val-badge">18px</span></label>
+                    <input type="range" id="sim1-pollen-size" min="10" max="40" value="18" oninput="updateSim1Params()">
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <h3>Opsionet e Shfaqjes</h3>
+                <label class="checkbox-label">
+                    <input type="checkbox" id="chk-trace" checked> Vizato Trajektoren (Brauniane)
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" id="chk-water" checked> Shfaq Molekulat e Ujit
+                </label>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-purple" onclick="addKMnO4()">+ Shto Permanganat Kaliumi (Ngjyrë)</button>
+                <button class="btn btn-outline" onclick="clearTrace()">Pastro Trajektoren</button>
+                <button class="btn btn-red" onclick="resetSim1()">🔄 Rinise Eksperimentin</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SIMULIMI 2 -->
+    <div id="sim2" class="workspace hidden">
+        <div class="canvas-container">
+            <canvas id="canvas2" width="800" height="550"></canvas>
+        </div>
+        
+        <div class="control-panel">
+            <div class="panel-section">
+                <h3>Gjendja Aktuale</h3>
+                <div id="state-display" class="state-liquid">E LËNGËT</div>
+                <p id="state-desc" style="color: #9ca3af; font-size: 0.9rem; text-align: center; margin-bottom: 10px;">Grimcat lëvizin lirshëm duke ruajtur vëllimin.</p>
+            </div>
+
+            <div class="panel-section">
+                <h3>Kontrolli i Temperaturës</h3>
+                <div class="slider-group">
+                    <label>Temperatura <span id="val-temp2" class="val-badge">20 °C</span></label>
+                    <input type="range" id="sim2-temp" min="-100" max="200" value="20" oninput="updateSim2UI()">
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <h3>Veprime të Shpejta</h3>
+                <div class="btn-group">
+                    <button class="btn" style="background: #1e3a8a; border: 1px solid #3b82f6;" onclick="setSim2Temp(-50)">❄️ Ngri (Akull -50°C)</button>
+                    <button class="btn" style="background: #064e3b; border: 1px solid #10b981;" onclick="setSim2Temp(25)">💧 Shkri (Ujë 25°C)</button>
+                    <button class="btn" style="background: #7f1d1d; border: 1px solid #ef4444;" onclick="setSim2Temp(150)">🔥 Vlo (Avull 150°C)</button>
+                </div>
+            </div>
+            
+            <div style="margin-top:auto; padding: 10px; background: rgba(0,0,0,0.5); border-radius: 8px; font-size: 0.85rem; color: #9ca3af;">
+                <strong style="color:#fff;">Udhëzim:</strong> Rrisni ngadalë temperaturën për të parë prishjen e rrjetës kristalore (shkrirjen) dhe më pas avullimin.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- LOGJIKA E TABS ---
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+                btn.classList.toggle('active', i + 1 === tab);
+            });
+            document.getElementById('sim1').classList.toggle('hidden', tab !== 1);
+            document.getElementById('sim2').classList.toggle('hidden', tab !== 2);
+        }
+
+        // ==========================================
+        // SIMULIMI 1: LËVIZJA BRAUNIANE DHE SHPËRHAPJA
+        // ==========================================
+        const c1 = document.getElementById('canvas1');
+        const ctx1 = c1.getContext('2d');
+        
+        let wParticles = [];
+        let dyeParticles = [];
+        let pollen;
+        let trace = [];
+
+        class Particle1 {
+            constructor(x, y, r, color, mass) {
+                this.x = x; this.y = y;
+                this.r = r; this.color = color;
+                this.mass = mass;
+                this.vx = (Math.random() - 0.5) * 4;
+                this.vy = (Math.random() - 0.5) * 4;
+            }
+            update(kineticMultiplier) {
+                // Apply kinetic energy (temperature)
+                this.x += this.vx * kineticMultiplier;
+                this.y += this.vy * kineticMultiplier;
+
+                // Walls with slight dampening to prevent infinite acceleration loops
+                if (this.x - this.r < 0) { this.x = this.r; this.vx *= -1; }
+                if (this.x + this.r > c1.width) { this.x = c1.width - this.r; this.vx *= -1; }
+                if (this.y - this.r < 0) { this.y = this.r; this.vy *= -1; }
+                if (this.y + this.r > c1.height) { this.y = c1.height - this.r; this.vy *= -1; }
+            }
+            draw(ctx, isPollen) {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                if(isPollen) {
+                    ctx.shadowBlur = 15;
+                    ctx.shadowColor = '#f59e0b';
+                    ctx.strokeStyle = '#fff';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                } else {
+                    ctx.shadowBlur = 0;
+                }
+                ctx.fill();
+            }
+        }
+
+        function initSim1() {
+            wParticles = [];
+            dyeParticles = [];
+            trace = [];
+            
+            let waterCount = parseInt(document.getElementById('sim1-water-count').value);
+            for(let i=0; i<waterCount; i++) {
+                wParticles.push(new Particle1(Math.random() * c1.width, Math.random() * c1.height, 5, '#3b82f6', 1));
+            }
+            
+            let pSize = parseInt(document.getElementById('sim1-pollen-size').value);
+            pollen = new Particle1(c1.width/2, c1.height/2, pSize, '#f59e0b', pSize * 1.5);
+        }
+
+        function updateSim1UI() {
+            document.getElementById('val-temp1').innerText = document.getElementById('sim1-temp').value + ' °C';
+        }
+
+        function updateSim1Params() {
+            document.getElementById('val-water').innerText = document.getElementById('sim1-water-count').value;
+            let pSize = document.getElementById('sim1-pollen-size').value;
+            document.getElementById('val-pollen').innerText = pSize + 'px';
+            
+            // Adjust pollen size and mass dynamically
+            if(pollen) {
+                pollen.r = parseInt(pSize);
+                pollen.mass = parseInt(pSize) * 1.5;
+            }
+            
+            // Adjust water count dynamically
+            let targetWater = parseInt(document.getElementById('sim1-water-count').value);
+            if(targetWater > wParticles.length) {
+                let diff = targetWater - wParticles.length;
+                for(let i=0; i<diff; i++) wParticles.push(new Particle1(Math.random()*c1.width, Math.random()*c1.height, 5, '#3b82f6', 1));
+            } else if (targetWater < wParticles.length) {
+                wParticles.splice(targetWater);
+            }
+        }
+
+        function addKMnO4() {
+            for(let i=0; i<40; i++) {
+                dyeParticles.push(new Particle1(
+                    c1.width/2 + (Math.random()-0.5)*30, 
+                    c1.height/2 + (Math.random()-0.5)*30, 
+                    4, '#a855f7', 1.2
+                ));
+            }
+        }
+
+        function clearTrace() { trace = []; }
+        function resetSim1() { initSim1(); }
+
+        function elasticCollision(p1, p2) {
+            let dx = p2.x - p1.x;
+            let dy = p2.y - p1.y;
+            let dist = Math.hypot(dx, dy);
+            let minDist = p1.r + p2.r;
+            
+            if (dist < minDist) {
+                // Prevent overlapping
+                let overlap = minDist - dist;
+                let nx = dx / (dist || 1);
+                let ny = dy / (dist || 1);
+                
+                // Displace particles apart
+                let totalMass = p1.mass + p2.mass;
+                let m1Ratio = p2.mass / totalMass;
+                let m2Ratio = p1.mass / totalMass;
+
+                p1.x -= nx * overlap * m1Ratio;
+                p1.y -= ny * overlap * m1Ratio;
+                p2.x += nx * overlap * m2Ratio;
+                p2.y += ny * overlap * m2Ratio;
+
+                // Conservation of momentum 1D approach along normal
+                let kx = p1.vx - p2.vx;
+                let ky = p1.vy - p2.vy;
+                let p = 2 * (nx * kx + ny * ky) / totalMass;
+
+                p1.vx -= p * p2.mass * nx;
+                p1.vy -= p * p2.mass * ny;
+                p2.vx += p * p1.mass * nx;
+                p2.vy += p * p1.mass * ny;
+            }
+        }
+
+        function loopSim1() {
+            if(!document.getElementById('sim1').classList.contains('hidden')) {
+                ctx1.clearRect(0, 0, c1.width, c1.height);
+                
+                let temp = parseInt(document.getElementById('sim1-temp').value);
+                // Non-linear speed scaling: High temp makes particles exponentially faster
+                let kineticMultiplier = 0.2 + Math.pow(temp / 100, 1.5) * 2.5; 
+                
+                let showWater = document.getElementById('chk-water').checked;
+                let showTrace = document.getElementById('chk-trace').checked;
+                
+                let allP = [...wParticles, ...dyeParticles, pollen];
+
+                // Physics Update
+                allP.forEach(p => p.update(kineticMultiplier));
+                
+                // Complex Collisions (O(N^2) optimized by skipping self)
+                for(let i=0; i<allP.length; i++) {
+                    for(let j=i+1; j<allP.length; j++) {
+                        elasticCollision(allP[i], allP[j]);
+                    }
+                }
+
+                // Trace Brownian
+                if(showTrace) {
+                    trace.push({x: pollen.x, y: pollen.y});
+                    if(trace.length > 300) trace.shift();
+                    
+                    ctx1.beginPath();
+                    ctx1.strokeStyle = 'rgba(245, 158, 11, 0.6)';
+                    ctx1.lineWidth = 2.5;
+                    for(let i=0; i<trace.length-1; i++) {
+                        ctx1.moveTo(trace[i].x, trace[i].y);
+                        ctx1.lineTo(trace[i+1].x, trace[i+1].y);
+                    }
+                    ctx1.stroke();
+                }
+
+                // Render
+                if(showWater) wParticles.forEach(p => p.draw(ctx1, false));
+                dyeParticles.forEach(p => p.draw(ctx1, false));
+                pollen.draw(ctx1, true);
+            }
+            requestAnimationFrame(loopSim1);
+        }
+
+        // ==========================================
+        // SIMULIMI 2: GJENDJET E LËNDËS
+        // ==========================================
+        const c2 = document.getElementById('canvas2');
+        const ctx2 = c2.getContext('2d');
+        
+        let mParticles = [];
+        const mCount = 200; // More particles for better visual
+
+        class MatterParticle {
+            constructor(x, y) {
+                this.x = x; this.y = y;
+                this.vx = (Math.random() - 0.5);
+                this.vy = (Math.random() - 0.5);
+                this.r = 6;
+                this.baseX = x; // Target for solid state
+                this.baseY = y;
+            }
+        }
+
+        function initSim2() {
+            mParticles = [];
+            let cols = 20;
+            let rows = 10;
+            let spacing = 13;
+            let startX = c2.width/2 - (cols*spacing)/2;
+            let startY = c2.height - 30 - (rows*spacing);
+
+            for(let r=0; r<rows; r++) {
+                for(let c=0; c<cols; c++) {
+                    mParticles.push(new MatterParticle(startX + c*spacing, startY + r*spacing));
+                }
+            }
+        }
+
+        function updateSim2UI() {
+            let temp = parseInt(document.getElementById('sim2-temp').value);
+            document.getElementById('val-temp2').innerText = temp + ' °C';
+            
+            let display = document.getElementById('state-display');
+            let desc = document.getElementById('state-desc');
+            
+            if(temp < 0) {
+                display.innerText = "E NGURTË (AKULL)";
+                display.className = "state-solid";
+                desc.innerText = "Grimcat janë të lidhura në rrjetë dhe vetëm dridhen në vend.";
+            } else if (temp < 100) {
+                display.innerText = "E LËNGËT (UJË)";
+                display.className = "state-liquid";
+                desc.innerText = "Lidhjet janë prishur, grimcat rrëshqasin mbi njëra-tjetrën.";
+            } else {
+                display.innerText = "E GAZTË (AVULL)";
+                display.className = "state-gas";
+                desc.innerText = "Grimcat lëvizin me shpejtësi të madhe duke mbushur të gjithë hapësirën.";
+            }
+        }
+
+        function setSim2Temp(t) {
+            document.getElementById('sim2-temp').value = t;
+            updateSim2UI();
+        }
+
+        function loopSim2() {
+            if(!document.getElementById('sim2').classList.contains('hidden')) {
+                // Fade effect for trails in gas mode
+                ctx2.fillStyle = 'rgba(3, 7, 18, 0.5)';
+                ctx2.fillRect(0, 0, c2.width, c2.height);
+
+                let temp = parseInt(document.getElementById('sim2-temp').value);
+                
+                // Color mapping based on temperature (Blue -> Green -> Red)
+                let r=0, g=0, b=0;
+                if(temp < 0) { r=96; g=165; b=250; } // Solid: Blue
+                else if(temp < 100) { r=52; g=211; b=153; } // Liquid: Green
+                else { r=248; g=113; b=113; } // Gas: Red
+
+                // Draw Container Box
+                ctx2.strokeStyle = '#374151';
+                ctx2.lineWidth = 4;
+                ctx2.strokeRect(50, 50, c2.width-100, c2.height-100);
+
+                mParticles.forEach((p, i) => {
+                    if (temp < 0) {
+                        // SOLID: Spring force back to base position
+                        let dx = p.baseX - p.x;
+                        let dy = p.baseY - p.y;
+                        p.vx += dx * 0.1;
+                        p.vy += dy * 0.1;
+                        // Thermal vibration
+                        let vibe = (temp + 100) / 100; // 0 at -100C, 1 at 0C
+                        p.vx += (Math.random()-0.5) * vibe;
+                        p.vy += (Math.random()-0.5) * vibe;
+                        p.vx *= 0.8; p.vy *= 0.8; // High friction
+                    } else if (temp < 100) {
+                        // LIQUID: Gravity down, sliding
+                        p.vy += 0.2; // Gravity
+                        let heatEnergy = temp / 100;
+                        p.vx += (Math.random()-0.5) * (1 + heatEnergy);
+                        p.vy += (Math.random()-0.5) * (1 + heatEnergy);
+                        p.vx *= 0.92; p.vy *= 0.92; // Medium friction (viscosity)
+                    } else {
+                        // GAS: High speed random motion, no gravity
+                        let gasEnergy = (temp - 100) / 50; 
+                        p.vx += (Math.random()-0.5) * (3 + gasEnergy);
+                        p.vy += (Math.random()-0.5) * (3 + gasEnergy);
+                        p.vx *= 0.99; p.vy *= 0.99; // Low friction
+                        
+                        // Speed cap to prevent breaking bounds
+                        let speed = Math.hypot(p.vx, p.vy);
+                        if(speed > 15) {
+                            p.vx = (p.vx/speed)*15;
+                            p.vy = (p.vy/speed)*15;
+                        }
+                    }
+
+                    p.x += p.vx;
+                    p.y += p.vy;
+
+                    // Container Collision
+                    let left = 55 + p.r, right = c2.width - 55 - p.r;
+                    let top = 55 + p.r, bottom = c2.height - 55 - p.r;
+                    
+                    if (p.x < left) { p.x = left; p.vx *= -0.8; }
+                    if (p.x > right) { p.x = right; p.vx *= -0.8; }
+                    if (p.y < top) { p.y = top; p.vy *= -0.8; }
+                    if (p.y > bottom) { p.y = bottom; p.vy *= -0.5; }
+
+                    // Particle vs Particle simple repulsion (Liquid/Solid integrity)
+                    if (temp < 100) {
+                        for(let j=i+1; j<mParticles.length; j++) {
+                            let p2 = mParticles[j];
+                            let dx = p2.x - p.x;
+                            let dy = p2.y - p.y;
+                            let dist = Math.hypot(dx, dy);
+                            let targetDist = p.r * 2;
+                            if(dist < targetDist) {
+                                let diff = (targetDist - dist) * 0.5;
+                                let nx = dx / (dist || 1);
+                                let ny = dy / (dist || 1);
+                                p.x -= nx * diff; p.y -= ny * diff;
+                                p2.x += nx * diff; p2.y += ny * diff;
+                            }
+                        }
+                    }
+
+                    // Render Particle
+                    ctx2.beginPath();
+                    ctx2.arc(p.x, p.y, p.r, 0, Math.PI*2);
+                    ctx2.fillStyle = `rgb(${r},${g},${b})`;
+                    ctx2.fill();
+                });
+            }
+            requestAnimationFrame(loopSim2);
+        }
+
+        // Initialize
+        initSim1();
+        initSim2();
+        updateSim1UI();
+        updateSim2UI();
+        loopSim1();
+        loopSim2();
+
+    </script>
+</body>
+</html>

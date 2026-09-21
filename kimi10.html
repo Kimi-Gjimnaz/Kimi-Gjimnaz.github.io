@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kimia 10 - Portali mësimor i Gjimnazit Milot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        /* Tipografia dhe Ngjyrat Bazë */
+        :root {
+            --primary-blue: #0f172a;
+            --primary-dark: #020617;
+            --accent-blue: #1e3a8a;
+            --highlight-cyan: #0ea5e9;
+            --highlight-hover: #0284c7;
+            --text-dark: #1e293b;
+            --text-light: #f8fafc;
+            --border-color: #e2e8f0;
+            --bg-body: #f8fafc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Header */
+        header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+            color: var(--text-light);
+            text-align: center;
+            padding: 2.5rem 1rem 2rem 1rem;
+            border-bottom: 4px solid var(--highlight-cyan);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.4rem;
+            letter-spacing: 1px;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+        }
+
+        header p {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 500;
+        }
+
+        /* Navbar me Listë (<ul> / <li>) */
+        nav {
+            background-color: #ffffff;
+            box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-list {
+            display: flex;
+            list-style: none;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-item a {
+            display: block;
+            padding: 1.1rem 1.3rem;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.92rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item > a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 3px;
+            background-color: var(--highlight-cyan);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-item:hover > a::after {
+            width: 100%;
+        }
+
+        .nav-item:hover > a {
+            color: var(--highlight-hover);
+            background-color: #f8fafc;
+        }
+
+        /* Dropdown Menu me Listë */
+        .dropdown {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #ffffff;
+            min-width: 270px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            border-radius: 0 0 8px 8px;
+            list-style: none;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            border-top: none;
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        .nav-item:hover .dropdown { 
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .dropdown a {
+            padding: 0.8rem 1.2rem;
+            border-bottom: 1px solid #f1f5f9;
+            color: #475569;
+            font-weight: 500;
+            font-size: 0.88rem;
+        }
+
+        .dropdown a::after {
+            display: none;
+        }
+
+        .dropdown li:last-child a {
+            border-bottom: none;
+        }
+
+        .dropdown a:hover {
+            background-color: var(--highlight-cyan);
+            color: #ffffff;
+            padding-left: 1.5rem;
+        }
+
+        /* Brezi i Klasës */
+        .active-class-bar {
+            background: linear-gradient(90deg, #e2e8f0 0%, #f1f5f9 50%, #e2e8f0 100%);
+            text-align: center;
+            padding: 0.75rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .active-class-bar span {
+            background-color: var(--highlight-hover);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-left: 8px;
+            display: inline-block;
+        }
+
+        /* Përmbajtja Kryesore */
+        main {
+            flex: 1;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem;
+        }
+
+        .statement-box {
+            background: #ffffff;
+            border-left: 6px solid var(--highlight-cyan);
+            padding: 1.8rem;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2.5rem;
+            text-align: center;
+        }
+
+        .statement-box h2 {
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .statement-box p {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: #334155;
+        }
+
+        .section-title {
+            font-size: 1.6rem;
+            color: var(--primary-blue);
+            margin: 2.5rem 0 1.5rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border-color);
+            scroll-margin-top: 80px;
+        }
+
+        /* Grid e Kartave */
+        .topics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.8rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .chapter-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.8rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            scroll-margin-top: 90px;
+        }
+
+        .chapter-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.1);
+            border-color: var(--highlight-cyan);
+        }
+
+        .chapter-number {
+            display: inline-block;
+            background: rgba(14, 165, 233, 0.1);
+            color: var(--highlight-hover);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        .chapter-card h3 {
+            color: var(--accent-blue);
+            font-size: 1.25rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .topics-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .topics-list li {
+            position: relative;
+            padding-left: 1.4rem;
+            margin-bottom: 0.6rem;
+            color: #475569;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .topics-list li::before {
+            content: '•';
+            position: absolute;
+            left: 0.3rem;
+            color: var(--highlight-cyan);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Stilimi i Linqeve Mësimore / Eksperimenteve */
+        .link-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .link-list li {
+            margin-bottom: 0.6rem;
+        }
+
+        .link-list a {
+            color: var(--highlight-hover);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+
+        .link-list a:hover {
+            color: var(--accent-blue);
+            text-decoration: underline;
+            transform: translateX(3px);
+        }
+
+        footer {
+            background-color: var(--primary-dark);
+            color: #94a3b8;
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 0.9rem;
+            margin-top: auto;
+            border-top: 3px solid var(--highlight-cyan);
+        }
+
+        @media (max-width: 768px) {
+            header h1 { font-size: 1.8rem; }
+            .nav-item a { padding: 0.8rem 0.9rem; font-size: 0.85rem; }
+            .topics-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header id="ballina">
+        <h1> KIMI 10| Portali mësimor i Gjimnazit Milot</h1>
+        <p> Kurrikula bërthamë e klasës së 10-të</p>
+    </header>
+
+    <!-- Navbar me Listë (<ul> / <li>) -->
+    <nav>
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="kimi.html">Kalo në faqen kryesore</a>
+            </li>
+            <li class="nav-item">
+                <a href="#kapitujt">Kapitujt Mësimorë ▾</a>
+                <ul class="dropdown">
+                    <li><a href="#kapitulli-1">Kapitulli 1: Gjendjet e lëndës</a></li>
+                    <li><a href="#kapitulli-2">Kapitulli 2: Ndarja e substancave</a></li>
+                    <li><a href="#kapitulli-3">Kapitulli 3: Atomet dhe elementet</a></li>
+                    <li><a href="#kapitulli-4">Kapitulli 4: Sistemi periodik</a></li>
+                    <li><a href="#kapitulli-5">Kapitulli 5: Lidhja kimike</a></li>
+                    <li><a href="#kapitulli-6">Kapitulli 6: Barazimet kimike</a></li>
+                    <li><a href="#kapitulli-7">Kapitulli 7: Moli dhe masa molare</a></li>
+                    <li><a href="#kapitulli-8">Kapitulli 8: Acidet dhe bazat</a></li>
+                    <li><a href="#kapitulli-9">Kapitulli 9: Disa jometale</a></li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="#eksperimentet">Eksperimente & Simulime ▾</a>
+                <ul class="dropdown">
+                    <li><a href="kimia10eksperimente.html">Eksperimente: Tema 1+2</a></li>
+                    <li><a href="tema3.html">Eksperimente: Tema 3+4</a></li>
+                    
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="#lojëradhe kuize">Lojëra & Kuize</a>
+                <ul class="dropdown">
+                    <li><a href="kuiz.html"> Kuiz: Tema 1+2</a></li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="#kapitujt">Test Diagnostifikues (duke u punuar)</a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Brezi i Klasës -->
+    <div class="active-class-bar">
+        Klasa e Zgjedhur: <span>Klasa 10 (Shkalla V)</span>
+    </div>
+
+    <!-- Përmbajtja Kryesore -->
+    <main>
+
+        <div class="statement-box">
+            <h2>Përmbledhje e Kurrikulës së Kimisë 10</h2>
+            <p>Plani mësimor përmban kapitujt kryesorë të ndarë në tre periudha shkollore, me fokus në zhvillimin e konceptit mbi strukturën e lëndës, reaksionet kimike dhe stekiometrinë.</p>
+        </div>
+
+        <!-- SEKSIONI 1: TEMAT MËSIMORE -->
+        <h2 id="kapitujt" class="section-title">📚 Temat dhe Kapitujt Mësimorë</h2>
+        
+        <div class="topics-grid">
+            <div class="chapter-card" id="kapitulli-1">
+                <span class="chapter-number">Kapitulli 1</span>
+                <h3>Gjendjet e Lëndës</h3>
+                <ul class="topics-list">
+                    <li>Gjithçka përbëhet nga grimcat</li>
+                    <li>Substancat e ngurta, të lëngëta dhe të gazta</li>
+                    <li>Shpërhapja e grimcave dhe Lëvizja Brauniane</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card" id="kapitulli-2">
+                <span class="chapter-number">Kapitulli 2</span>
+                <h3>Ndarja e Substancave</h3>
+                <ul class="topics-list">
+                    <li>Pastërtia e substancave dhe përzierjet</li>
+                    <li>Metodat e ndarjes dhe Kromatografia</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card" id="kapitulli-3">
+                <span class="chapter-number">Kapitulli 3</span>
+                <h3>Atomet dhe Elementët</h3>
+                <ul class="topics-list">
+                    <li>Struktura atomike, izotopet dhe radioaktiviteti</li>
+                    <li>Shpërndarja e elektroneve në nivele energjetike</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card" id="kapitulli-4">
+                <span class="chapter-number">Kapitulli 4</span>
+                <h3>Sistemi Periodik</h3>
+                <ul class="topics-list">
+                    <li>Periodat dhe grupet (Metalet alkaline, halogjenët, gazet fisnike)</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card" id="kapitulli-5">
+                <span class="chapter-number">Kapitulli 5</span>
+                <h3>Lidhja Kimike</h3>
+                <ul class="topics-list">
+                    <li>Lidhja jonike, lidhja kovalente dhe lidhja metalore</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card" id="kapitulli-6">
+                <span class="chapter-number">Kapitulli 6</span>
+                <h3>Barazimet Kimike & Stekiometria</h3>
+                <ul class="topics-list">
+                    <li>Balancimi i reaksioneve dhe ruajtja e masës</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card" id="kapitulli-7">
+                <span class="chapter-number">Kapitulli 7</span>
+                <h3>Moli dhe Masa Molare</h3>
+                <ul class="topics-list">
+                    <li>Moli, Numri i Avogadros dhe njehsimet stekiometrike</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card" id="kapitulli-8">
+                <span class="chapter-number">Kapitulli 8</span>
+                <h3>Acidet, Bazat dhe Kripërat</h3>
+                <ul class="topics-list">
+                    <li>Vetitë e acideve/bazave, shkalla pH dhe asnjanësimi</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card" id="kapitulli-9">
+                <span class="chapter-number">Kapitulli 9</span>
+                <h3>Disa Jometale</h3>
+                <ul class="topics-list">
+                    <li>Hidrogjeni, azoti, amoniaku, squfuri dhe përbërjet e karbonit</li>
+                </ul>
+            </div>
+        </div>
+
+        
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>© Kimia 10 | Portali i nxënësit</p>
+    </footer>
+
+</body>
+</html>

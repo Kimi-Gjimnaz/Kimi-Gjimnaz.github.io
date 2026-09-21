@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulim: Lakorja e Temperaturës së Ujit - Kimia 10</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #0f172a;
+            --primary-dark: #020617;
+            --accent-blue: #1e3a8a;
+            --highlight-cyan: #0ea5e9;
+            --highlight-hover: #0284c7;
+            --text-dark: #1e293b;
+            --text-light: #f8fafc;
+            --border-color: #e2e8f0;
+            --bg-body: #f8fafc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header & Nav */
+        header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+            color: var(--text-light);
+            text-align: center;
+            padding: 2rem 1rem 1.5rem 1rem;
+            border-bottom: 4px solid var(--highlight-cyan);
+        }
+
+        header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            margin-bottom: 0.3rem;
+        }
+
+        header p {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        nav {
+            background-color: #ffffff;
+            box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-list {
+            display: flex;
+            list-style: none;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-item a {
+            display: block;
+            padding: 1rem 1.2rem;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .nav-item a:hover {
+            color: var(--highlight-hover);
+        }
+
+        /* Container i Simulimit */
+        main {
+            flex: 1;
+            max-width: 1200px;
+            width: 100%;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .sim-container {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.8rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Paneli i Kontrollit */
+        .controls-panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            justify-content: space-between;
+            background: #f1f5f9;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background-color: var(--highlight-hover);
+        }
+
+        .btn-danger {
+            background-color: #ef4444;
+        }
+
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+
+        .select-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        select {
+            padding: 0.5rem 0.8rem;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            font-weight: 500;
+        }
+
+        /* Grid i Simulimit */
+        .simulation-grid {
+            display: grid;
+            grid-template-columns: 3fr 2fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 900px) {
+            .simulation-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card-box {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .card-box h3 {
+            font-size: 1.1rem;
+            color: var(--primary-blue);
+            margin-bottom: 0.8rem;
+            width: 100%;
+            text-align: left;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.4rem;
+        }
+
+        canvas {
+            background: #fafafa;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            max-width: 100%;
+        }
+
+        /* Paneli Informues */
+        .info-card {
+            margin-top: 1.5rem;
+            background: #e0f2fe;
+            border-left: 5px solid var(--highlight-cyan);
+            padding: 1.2rem;
+            border-radius: 6px;
+        }
+
+        .info-card h4 {
+            color: var(--accent-blue);
+            font-size: 1.1rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .info-card p {
+            color: #334155;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            background: var(--primary-blue);
+            color: white;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-left: 8px;
+        }
+
+        footer {
+            background-color: var(--primary-dark);
+            color: #94a3b8;
+            text-align: center;
+            padding: 1.2rem;
+            font-size: 0.85rem;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Simulim Interaktiv: Shndërrimi i gjendjes fizike</h1>
+        <p>Kimia 10 | Lakorja e Ngrohjes dhe Ftohjes së Ujit</p>
+    </header>
+
+    <nav>
+        <ul class="nav-list">
+            <li class="nav-item"><a href="kimi10.html">← Kthehu te portali</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <div class="sim-container">
+
+            <!-- Paneli i Kontrolleve -->
+            <div class="controls-panel">
+                <div class="btn-group">
+                    <button class="btn" id="btnHeat">🔥 Fillo Ngrohjen</button>
+                    <button class="btn" id="btnCool">❄️ Fillo Ftohjen</button>
+                    <button class="btn btn-danger" id="btnReset">🔄 Rifillo</button>
+                </div>
+
+                <div class="select-group">
+                    <label for="substanceType">Lloji i Ujit:</label>
+                    <select id="substanceType">
+                        <option value="pure">Ujë i Pastër (H₂O)</option>
+                        <option value="impure">Përzierje (Ujë me kripë / papastërti)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <strong>Temperatura: <span id="tempDisplay" style="color:var(--highlight-hover); font-size:1.2rem;">-20°C</span></strong>
+                </div>
+            </div>
+
+            <!-- Grid i Vizualizimit -->
+            <div class="simulation-grid">
+                
+                <!-- Majtas: Grafiku i Temperaturës -->
+                <div class="card-box">
+                    <h3>📈 Grafiku i Temperaturës vs Kohës</h3>
+                    <canvas id="graphCanvas" width="600" height="380"></canvas>
+                </div>
+
+                <!-- Djathtas: Mikroskopi i Grimcave -->
+                <div class="card-box">
+                    <h3>🔬 Pamja e Grimcave (Mikroskopi)</h3>
+                    <canvas id="particleCanvas" width="380" height="280"></canvas>
+                    <div style="margin-top: 10px; font-weight: 600; font-size: 0.95rem;">
+                        Gjendja Fizike: <span id="stateBadge" class="status-badge">Akull (Ngurtë)</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Shpjegimi Teoritik Dinamik -->
+            <div class="info-card">
+                <h4 id="infoTitle">1. Ngrohja e Akullit (-20°C deri 0°C)</h4>
+                <p id="infoText">
+                    Gjatë kësaj faze, energjia termike bën që grimcat e akullit të dridhen më shpejt rreth pozitave të tyre fikse. Temperatura rritet gradualisht deri sa arrin pikën e shkrirjes në 0°C.
+                </p>
+            </div>
+
+        </div>
+    </main>
+
+    <footer>
+        <p>© Kimia 10-Gjimnazi Milot | Simulim përshtatur me temën mësimore </p>
+    </footer>
+
+    <script>
+        // Elementet HTML
+        const graphCanvas = document.getElementById('graphCanvas');
+        const gCtx = graphCanvas.getContext('2d');
+        const particleCanvas = document.getElementById('particleCanvas');
+        const pCtx = particleCanvas.getContext('2d');
+
+        const btnHeat = document.getElementById('btnHeat');
+        const btnCool = document.getElementById('btnCool');
+        const btnReset = document.getElementById('btnReset');
+        const substanceType = document.getElementById('substanceType');
+        const tempDisplay = document.getElementById('tempDisplay');
+        const stateBadge = document.getElementById('stateBadge');
+        const infoTitle = document.getElementById('infoTitle');
+        const infoText = document.getElementById('infoText');
+
+        // Variablat e Simulimit
+        let mode = 'heat'; // 'heat' ose 'cool'
+        let running = false;
+        let progress = 0; // 0 deri 100%
+        let animId = null;
+
+        // Grimcat
+        const numParticles = 40;
+        let particles = [];
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < numParticles; i++) {
+                particles.push({
+                    x: Math.random() * (particleCanvas.width - 40) + 20,
+                    y: Math.random() * (particleCanvas.height - 40) + 20,
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: (Math.random() - 0.5) * 2,
+                    baseX: 0,
+                    baseY: 0
+                });
+            }
+            // Vendosja e rrjetës për gjendjen e ngurtë
+            let cols = 8;
+            let spacingX = 35;
+            let spacingY = 30;
+            let startX = 60;
+            let startY = 80;
+            particles.forEach((p, idx) => {
+                p.baseX = startX + (idx % cols) * spacingX;
+                p.baseY = startY + Math.floor(idx / cols) * spacingY;
+            });
+        }
+
+        // Llogaritja e Temperaturës sipas % së progresit
+        function getTemperature(prog, isHeat, isPure) {
+            let temp = 0;
+            if (isHeat) {
+                if (prog < 20) {
+                    // Akull: -20C deri 0C
+                    temp = -20 + (prog / 20) * 20;
+                } else if (prog < 40) {
+                    // Shkrirje: 0C (Pllakë për të pastër, pjerrësi për përzierje)
+                    temp = isPure ? 0 : 0 + ((prog - 20) / 20) * 5;
+                } else if (prog < 70) {
+                    // Ujë i lëngët: 0C deri 100C
+                    let startT = isPure ? 0 : 5;
+                    temp = startT + ((prog - 40) / 30) * (100 - startT);
+                } else if (prog < 90) {
+                    // Vlimi: 100C (Pllakë ose ngritje e lehtë)
+                    temp = isPure ? 100 : 100 + ((prog - 70) / 20) * 8;
+                } else {
+                    // Avull: >100C
+                    let startT = isPure ? 100 : 108;
+                    temp = startT + ((prog - 90) / 10) * 20;
+                }
+            } else {
+                // Ftohja (Invers)
+                if (prog < 20) {
+                    temp = 120 - (prog / 20) * 20;
+                } else if (prog < 40) {
+                    temp = isPure ? 100 : 100 - ((prog - 20) / 20) * 6;
+                } else if (prog < 70) {
+                    let startT = isPure ? 100 : 94;
+                    temp = startT - ((prog - 40) / 30) * startT;
+                } else if (prog < 90) {
+                    temp = isPure ? 0 : 0 - ((prog - 70) / 20) * 5;
+                } else {
+                    let startT = isPure ? 0 : -5;
+                    temp = startT - ((prog - 90) / 10) * 15;
+                }
+            }
+            return Math.round(temp);
+        }
+
+        // Vizatimi i Grafikut (T vs t)
+        function drawGraph() {
+            gCtx.clearRect(0, 0, graphCanvas.width, graphCanvas.height);
+
+            const isPure = substanceType.value === 'pure';
+            const margin = 50;
+            const w = graphCanvas.width - margin * 2;
+            const h = graphCanvas.height - margin * 2;
+
+            // Aksat
+            gCtx.beginPath();
+            gCtx.strokeStyle = '#64748b';
+            gCtx.lineWidth = 2;
+            // Aksi Y
+            gCtx.moveTo(margin, margin / 2);
+            gCtx.lineTo(margin, graphCanvas.height - margin);
+            // Aksi X
+            gCtx.lineTo(graphCanvas.width - margin / 2, graphCanvas.height - margin);
+            gCtx.stroke();
+
+            // Etiketat e Aksit Y (Temperatura)
+            gCtx.fillStyle = '#1e293b';
+            gCtx.font = '12px Inter';
+            gCtx.textAlign = 'right';
+
+            const temps = [120, 100, 50, 0, -20];
+            temps.forEach(t => {
+                let y = (graphCanvas.height - margin) - ((t + 30) / 160) * h;
+                gCtx.fillText(t + '°C', margin - 8, y + 4);
+
+                // Vijat ndihmëse horizontale (0C dhe 100C)
+                if (t === 0 || t === 100) {
+                    gCtx.save();
+                    gCtx.setLineDash([4, 4]);
+                    gCtx.strokeStyle = t === 0 ? '#0ea5e9' : '#ef4444';
+                    gCtx.beginPath();
+                    gCtx.moveTo(margin, y);
+                    gCtx.lineTo(graphCanvas.width - margin / 2, y);
+                    gCtx.stroke();
+                    gCtx.restore();
+                }
+            });
+
+            // Titujt e akseve
+            gCtx.fillText('Temp (°C)', margin, 15);
+            gCtx.textAlign = 'center';
+            gCtx.fillText('Koha (minuta) ➔', graphCanvas.width / 2, graphCanvas.height - 10);
+
+            // Vija e plotë e lakores (Sfondi gri)
+            gCtx.beginPath();
+            gCtx.strokeStyle = '#cbd5e1';
+            gCtx.lineWidth = 3;
+            for (let p = 0; p <= 100; p++) {
+                let temp = getTemperature(p, mode === 'heat', isPure);
+                let x = margin + (p / 100) * w;
+                let y = (graphCanvas.height - margin) - ((temp + 30) / 160) * h;
+                if (p === 0) gCtx.moveTo(x, y);
+                else gCtx.lineTo(x, y);
+            }
+            gCtx.stroke();
+
+            // Vija e Progresit Aktual (E Kuqe/Blulike)
+            if (progress > 0) {
+                gCtx.beginPath();
+                gCtx.strokeStyle = mode === 'heat' ? '#dc2626' : '#2563eb';
+                gCtx.lineWidth = 4;
+                for (let p = 0; p <= progress; p++) {
+                    let temp = getTemperature(p, mode === 'heat', isPure);
+                    let x = margin + (p / 100) * w;
+                    let y = (graphCanvas.height - margin) - ((temp + 30) / 160) * h;
+                    if (p === 0) gCtx.moveTo(x, y);
+                    else gCtx.lineTo(x, y);
+                }
+                gCtx.stroke();
+
+                // Pika e kuqe dixhitale mbi progres
+                let curTemp = getTemperature(progress, mode === 'heat', isPure);
+                let curX = margin + (progress / 100) * w;
+                let curY = (graphCanvas.height - margin) - ((curTemp + 30) / 160) * h;
+
+                gCtx.beginPath();
+                gCtx.arc(curX, curY, 6, 0, Math.PI * 2);
+                gCtx.fillStyle = '#0f172a';
+                gCtx.fill();
+                gCtx.lineWidth = 2;
+                gCtx.strokeStyle = '#ffffff';
+                gCtx.stroke();
+            }
+        }
+
+        // Vizatimi dhe Simulimi i Grimcave
+        function drawParticles(currentTemp) {
+            pCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+
+            // Përcaktimi i Gjendjes Fizike sipas Temperaturës
+            let state = '';
+            let speed = 0;
+
+            if (currentTemp < 0) {
+                state = 'Akull (Ngurtë)';
+                speed = 0.5; // Dridhje e lehtë
+            } else if (currentTemp === 0) {
+                state = 'Përzierje Akull + Ujë (Shkrirje)';
+                speed = 1.2;
+            } else if (currentTemp > 0 && currentTemp < 100) {
+                state = 'Ujë i Lëngët';
+                speed = 2.5; // Lëvizje e lirë e lëngut
+            } else if (currentTemp === 100) {
+                state = 'Përzierje Ujë + Avull (Vlim)';
+                speed = 4.5;
+            } else {
+                state = 'Avull (Gaz)';
+                speed = 7.0; // Lëvizje kaotike e shpejtë
+            }
+
+            stateBadge.textContent = state;
+
+            // Përditësimi i pozicioneve të grimcave
+            particles.forEach(p => {
+                if (currentTemp <= 0) {
+                    // Dridhje rreth pozicionit të rrjetës (Ngurtë)
+                    p.x = p.baseX + (Math.random() - 0.5) * speed * 3;
+                    p.y = p.baseY + (Math.random() - 0.5) * speed * 3;
+                } else if (currentTemp > 0 && currentTemp < 100) {
+                    // Lëvizje brenda enës (Lëng)
+                    p.x += p.vx * (speed / 2);
+                    p.y += p.vy * (speed / 2);
+
+                    // Kufijtë e poshtëm të enës
+                    if (p.x < 15 || p.x > particleCanvas.width - 15) p.vx *= -1;
+                    if (p.y < 120 || p.y > particleCanvas.height - 15) p.vy *= -1;
+                } else {
+                    // Lëvizje në të gjithë hapësirën (Gaz)
+                    p.x += p.vx * (speed / 2);
+                    p.y += p.vy * (speed / 2);
+
+                    if (p.x < 15 || p.x > particleCanvas.width - 15) p.vx *= -1;
+                    if (p.y < 15 || p.y > particleCanvas.height - 15) p.vy *= -1;
+                }
+
+                // Vizatimi i çdo molekule të ujit (Rrethi i kalibruar)
+                pCtx.beginPath();
+                pCtx.arc(p.x, p.y, 8, 0, Math.PI * 2);
+                pCtx.fillStyle = currentTemp >= 100 ? '#ef4444' : (currentTemp > 0 ? '#0ea5e9' : '#1e3a8a');
+                pCtx.fill();
+                pCtx.strokeStyle = '#ffffff';
+                pCtx.lineWidth = 1.5;
+                pCtx.stroke();
+            });
+        }
+
+        // Përditësimi i Tekstit Shpjegues
+        function updateInfoText(temp, isPure) {
+            if (mode === 'heat') {
+                if (temp < 0) {
+                    infoTitle.textContent = "1. Ngrohja e Akullit (Gjendja e Ngurtë)";
+                    infoText.textContent = "Energjia termike rrit dridhjen e grimcave në rrjetën kristalore. Temperatura rritet vazhdimisht deri në 0°C.";
+                } else if (temp === 0 && isPure) {
+                    infoTitle.textContent = "2. Pllaka e Shkrirjes (0°C - Akull + Ujë)";
+                    infoText.textContent = "Temperatura mbetet KONSTANTE në 0°C sepse e gjithë nxehtësia e marrë përdoret për të prishur lidhjet ndërmjet grimcave, jo për të rritur temperaturën!";
+                } else if (temp > 0 && temp < 100) {
+                    infoTitle.textContent = "3. Ngrohja e Ujit të Lëngët";
+                    infoText.textContent = "Lidhjet janë prishur dhe akulli është kthyer në ujë. Nxehtësia tani rrit energjinë kinetike të grimcave, duke e ngritur temperaturën deri në 100°C.";
+                } else if (temp === 100 && isPure) {
+                    infoTitle.textContent = "4. Pllaka e Vlimit (100°C - Ujë + Avull)";
+                    infoText.textContent = "Temperatura mbetet sërish KONSTANTE në 100°C. Nxehtësia përdoret për të shkëputur plotësisht grimcat nga njëra-tjetra për t'u kthyer në gaz.";
+                } else if (temp > 100) {
+                    infoTitle.textContent = "5. Ngrohja e Avullit (Gjendja e Gaztë)";
+                    infoText.textContent = "Grimcat lëvizin me shpejtësi të madhe kaotike. Temperatura e avullit vazhdon të rritet mbi 100°C.";
+                } else if (!isPure && (temp >= 0 && temp <= 5 || temp >= 100 && temp <= 108)) {
+                    infoTitle.textContent = "⚠️ Vërejtje për Përzierjet (Ujin e Papastër)";
+                    infoText.textContent = "Sipas faqes së librit: Substancat e papastra nuk kanë pikë të fiksuar shkrirjeje ose vlimi! Shkrirja dhe vlimi ndodhin në një rang temperaturash (vijë e pjerrët, jo pllakë me vijë të drejtë).";
+                }
+            } else {
+                infoTitle.textContent = "❄️ Lakorja e Ftohjes së Ujit";
+                infoText.textContent = "Gjatë ftohjes, energjia çlirohet në mjedis. Gjatë kondensimit (100°C) dhe ngrirjes (0°C), temperatura mbetet e palëvizshme derisa i gjithë shndërrimi fiziko-kimik të përfundojë.";
+            }
+        }
+
+        // Loop kryesor i Simulimit
+        function updateSimulation() {
+            if (running) {
+                progress += 0.2;
+                if (progress > 100) {
+                    progress = 100;
+                    running = false;
+                }
+            }
+
+            const isPure = substanceType.value === 'pure';
+            let currentTemp = getTemperature(progress, mode === 'heat', isPure);
+
+            tempDisplay.textContent = currentTemp + '°C';
+
+            drawGraph();
+            drawParticles(currentTemp);
+            updateInfoText(currentTemp, isPure);
+
+            animId = requestAnimationFrame(updateSimulation);
+        }
+
+        // Event Listeners
+        btnHeat.addEventListener('click', () => {
+            mode = 'heat';
+            running = true;
+        });
+
+        btnCool.addEventListener('click', () => {
+            mode = 'cool';
+            running = true;
+        });
+
+        btnReset.addEventListener('click', () => {
+            running = false;
+            progress = 0;
+            initParticles();
+        });
+
+        substanceType.addEventListener('change', () => {
+            drawGraph();
+        });
+
+        // Start
+        initParticles();
+        updateSimulation();
+    </script>
+</body>
+</html>

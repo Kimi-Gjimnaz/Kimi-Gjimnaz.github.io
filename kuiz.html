@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuizi i Kimisë - Klasa e 10</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #22c55e;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 650px;
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            text-align: center;
+            color: #818cf8;
+            margin-top: 0;
+            font-size: 1.8rem;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 10px;
+        }
+
+        .question-box {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .option-btn {
+            background-color: #334155;
+            color: var(--text-color);
+            border: 2px solid transparent;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 1rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background-color: #475569;
+            border-color: #64748b;
+        }
+
+        .option-btn.correct {
+            background-color: rgba(34, 197, 94, 0.2);
+            border-color: var(--accent);
+            color: #86efac;
+        }
+
+        .option-btn.incorrect {
+            background-color: rgba(239, 68, 68, 0.2);
+            border-color: var(--danger);
+            color: #fca5a5;
+        }
+
+        .action-container {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .next-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            display: none;
+            transition: background-color 0.2s;
+        }
+
+        .next-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .results-box {
+            text-align: center;
+            display: none;
+        }
+
+        .results-box h2 {
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        .results-box p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .restart-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .restart-btn:hover {
+            background-color: var(--primary-hover);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Kuizi i Kimisë </h1>
+        
+        <div id="quiz-screen">
+            <div class="quiz-header">
+                <span id="question-counter">Pyetja 1 nga 10</span>
+                <span id="score-tracker">Pikë: 0</span>
+            </div>
+            
+            <div class="question-box" id="question-text">
+                Duke ngarkuar pyetjen...
+            </div>
+            
+            <div class="options-list" id="options-container">
+                <!-- Opsionet gjenerohen automatikisht përmes JS -->
+            </div>
+            
+            <div class="action-container">
+                <button class="next-btn" id="next-btn" onclick="nextQuestion()">Vazhdo</button>
+            </div>
+        </div>
+
+        <div class="results-box" id="results-screen">
+            <h2>Kuizi Përfundoi!</h2>
+            <p id="final-score-text">Ke siguruar 0 nga 10 pikë.</p>
+            <button class="restart-btn" onclick="restartQuiz()">Ribëj Kuizin</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "Cili është simboli kimik i elementit Natrium?",
+                options: ["K", "Na", "N", "S"],
+                answer: 1
+            },
+            {
+                question: "Cila është formula e Ujit?",
+                options: ["H2O2", "HO2", "H2O", "OH"],
+                answer: 2
+            },
+            {
+                question: "Sa është valenca e Oksigjenit në shumicën e përbërjeve të tij?",
+                options: ["I", "II", "III", "IV"],
+                answer: 1
+            },
+            {
+                question: "Cila nga substancat e mëposhtme është Kripë Gjelle (Klorur Natriumi)?",
+                options: ["HCl", "NaOH", "NaCl", "NaClO"],
+                answer: 2
+            },
+            {
+                question: "Çfarë tregon numri tregues (subscript) i vogël në një formulë kimike (p.sh., 2 te H2)?",
+                options: ["Numrin e molekulave", "Numrin e atomeve të atij elemente në një molekulë", "Ngarkesën e atomit", "Temperaturën e vlimit"],
+                answer: 1
+            },
+            {
+                question: "Si emërtohet përbërja me formulë CO2?",
+                options: ["Oksid karboni", "Monoksid karboni", "Dioksid karboni", "Karbonat kalciumi"],
+                answer: 2
+            },
+            {
+                question: "Kur një atom humb elektrone gjatë formimit të lidhjes kimike, ai shndërrohet në:",
+                options: ["Anion (jon negativ)", "Kation (jon pozitiv)", "Molekulë neutrale", "Izotop"],
+                answer: 1
+            },
+            {
+                question: "Cila është formula e saktë kimike që formohet nga Alumini (Al, valenca III) dhe Oksigjeni (O, valenca II)?",
+                options: ["AlO", "Al2O3", "Al3O2", "AlO3"],
+                answer: 1
+            },
+            {
+                question: "Cila nga substancat e mëposhtme i përket grupit të acideve?",
+                options: ["NaOH", "H2SO4", "CaO", "NaCl"],
+                answer: 1
+            },
+            {
+                question: "Çfarë përfaqëson koeficienti i vendosur para një formule (p.sh., 3H2O)?",
+                options: ["Numrin e molekulave të ujit", "Numrin e atomeve të hidrogjenit", "Numrin e lidhjeve kimike", "Masën molare të ujit"],
+                answer: 0
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let answered = false;
+
+        const questionCounter = document.getElementById("question-counter");
+        const scoreTracker = document.getElementById("score-tracker");
+        const questionText = document.getElementById("question-text");
+        const optionsContainer = document.getElementById("options-container");
+        const nextBtn = document.getElementById("next-btn");
+        const quizScreen = document.getElementById("quiz-screen");
+        const resultsScreen = document.getElementById("results-screen");
+        const finalScoreText = document.getElementById("final-score-text");
+
+        function loadQuestion() {
+            answered = false;
+            nextBtn.style.display = "none";
+            
+            const currentQ = questions[currentQuestionIndex];
+            questionCounter.textContent = `Pyetja ${currentQuestionIndex + 1} nga ${questions.length}`;
+            scoreTracker.textContent = `Pikë: ${score}`;
+            questionText.textContent = currentQ.question;
+            
+            optionsContainer.innerHTML = "";
+            currentQ.options.forEach((option, index) => {
+                const btn = document.createElement("button");
+                btn.classList.add("option-btn");
+                btn.textContent = option;
+                btn.onclick = () => selectOption(index);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectOption(selectedIndex) {
+            if (answered) return;
+            answered = true;
+
+            const currentQ = questions[currentQuestionIndex];
+            const buttons = optionsContainer.children;
+
+            if (selectedIndex === currentQ.answer) {
+                buttons[selectedIndex].classList.add("correct");
+                score++;
+                scoreTracker.textContent = `Pikë: ${score}`;
+            } else {
+                buttons[selectedIndex].classList.add("incorrect");
+                buttons[currentQ.answer].classList.add("correct");
+            }
+
+            // Çaktivizo të gjitha butonat pasi të jetë zgjedhur një
+            for (let btn of buttons) {
+                btn.disabled = true;
+            }
+
+            nextBtn.style.display = "block";
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            quizScreen.style.display = "none";
+            resultsScreen.style.display = "block";
+            finalScoreText.textContent = `Ke siguruar ${score} nga ${questions.length} pikë të sakta.`;
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            quizScreen.style.display = "block";
+            resultsScreen.style.display = "none";
+            loadQuestion();
+        }
+
+        // Fillo kuizin në ngarkimin e parë
+        loadQuestion();
+    </script>
+</body>
+</html>

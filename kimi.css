@@ -1,0 +1,586 @@
+/* Tipografia dhe ngjyrat bazë */
+:root {
+    --primary-blue: #0f172a;
+    --primary-dark: #020617;
+    --accent-blue: #1e3a8a;
+    --highlight-cyan: #0ea5e9;
+    --highlight-hover: #0284c7;
+    --text-dark: #1e293b;
+    --text-light: #f8fafc;
+    --border-color: #e2e8f0;
+    --bg-body: #f8fafc;
+    
+    /* Ngjyrat e Kategorive të Elementeve */
+    --c-alkali: #fecaca;
+    --c-alkaline: #fbcfe8;
+    --c-transition: #fed7aa;
+    --c-post-trans: #ddd6fe;
+    --c-metalloid: #fef08a;
+    --c-nonmetal: #bae6fd;
+    --c-halogen: #99f6e4;
+    --c-noble: #e9d5ff;
+    --c-lanthanide: #d9f99d;
+    --c-actinide: #bbf7d0;
+    --c-unknown: #f1f5f9;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+}
+
+body {
+    background-color: var(--bg-body);
+    color: var(--text-dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden; /* Parandalon daljen e faqeve jashtë ekranit në celular */
+}
+
+/* Top Header */
+header {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+    color: var(--text-light);
+    text-align: center;
+    padding: 2.5rem 1rem 2rem 1rem;
+    border-bottom: 4px solid var(--highlight-cyan);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+header::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+}
+
+header h1 {
+    font-family: 'Playfair Display', 'Georgia', serif;
+    font-size: 2.5rem;
+    letter-spacing: 2px;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+header p {
+    color: #cbd5e1;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 500;
+}
+
+/* Menuja Kryesore */
+nav {
+    background-color: #ffffff;
+    box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.08);
+    display: flex;
+    justify-content: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-list {
+    display: flex;
+    list-style: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-item {
+    position: relative;
+}
+
+.nav-item a {
+    display: block;
+    padding: 1.25rem 1.75rem;
+    color: var(--text-dark);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.nav-item > a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 3px;
+    background-color: var(--highlight-cyan);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.nav-item:hover > a::after {
+    width: 100%;
+}
+
+.nav-item:hover > a {
+    color: var(--highlight-hover);
+    background-color: #f8fafc;
+}
+
+/* Menuja rënëse (Dropdown) */
+.dropdown {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #ffffff;
+    min-width: 200px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    border-radius: 0 0 8px 8px;
+    list-style: none;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+    border-top: none;
+}
+
+.nav-item:hover .dropdown { 
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.dropdown a {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #f1f5f9;
+    color: #475569;
+    font-weight: 500;
+}
+
+.dropdown a::after {
+    display: none;
+}
+
+.dropdown li:last-child a {
+    border-bottom: none;
+    border-radius: 0 0 8px 8px;
+}
+
+.dropdown a:hover {
+    background-color: var(--highlight-cyan);
+    color: #ffffff;
+    padding-left: 2rem;
+}
+
+/* Brezi i Klasës */
+.active-class-bar {
+    background: linear-gradient(90deg, #e2e8f0 0%, #f1f5f9 50%, #e2e8f0 100%);
+    text-align: center;
+    padding: 0.75rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.active-class-bar span {
+    background-color: var(--highlight-hover);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-left: 8px;
+    box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+/* Përmbajtja Kryesore */
+main {
+    flex: 1;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem;
+}
+
+.statement-box {
+    background: #ffffff;
+    border-left: 6px solid var(--highlight-cyan);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    margin-bottom: 3rem;
+    text-align: center;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.statement-box p {
+    font-size: 1.15rem;
+    line-height: 1.7;
+    color: #334155;
+    font-weight: 500;
+}
+
+/* Karta e QR Kodit */
+.qr-section-box {
+    margin-bottom: 3rem;
+    display: flex;
+    justify-content: center;
+}
+
+.qr-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    max-width: 900px;
+    width: 100%;
+}
+
+.qr-image-wrapper {
+    flex-shrink: 0;
+    width: 110px;
+    height: 110px;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    padding: 8px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.qr-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.qr-text-content h3 {
+    font-size: 1.25rem;
+    color: var(--primary-blue);
+    margin-bottom: 0.4rem;
+}
+
+.qr-text-content p {
+    font-size: 0.98rem;
+    color: #475569;
+    margin-bottom: 0.8rem;
+    line-height: 1.5;
+}
+
+.qr-badge {
+    display: inline-block;
+    background: rgba(14, 165, 233, 0.12);
+    color: var(--highlight-hover);
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+/* Layout Krah për Krah */
+.content-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2.5rem;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+/* 1. Seksioni i Sistemit Periodik */
+.pt-container {
+    flex: 3;
+    min-width: 800px;
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 15px 35px -10px rgba(0,0,0,0.08);
+    border: 1px solid var(--border-color);
+}
+
+/* Paneli i Informacionit i Përmirësuar */
+.element-info-card {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--accent-blue) 100%);
+    color: white;
+    padding: 1.5rem 2rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+    min-height: 130px;
+    box-shadow: 0 10px 25px -5px rgba(30, 58, 138, 0.4);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.info-symbol {
+    font-size: 4rem;
+    font-weight: 800;
+    color: var(--highlight-cyan);
+    width: 120px;
+    text-align: center;
+    border-right: 2px solid rgba(255, 255, 255, 0.2);
+    text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.info-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    width: 100%;
+}
+
+.info-col {
+    flex: 1;
+    min-width: 200px;
+}
+
+.info-col h3 {
+    margin-bottom: 12px;
+    font-size: 1.4rem;
+    color: #ffffff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 6px;
+    letter-spacing: 0.5px;
+}
+
+.info-col p {
+    font-size: 0.95rem;
+    color: #e2e8f0;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.info-col span {
+    color: #fbbf24;
+    font-weight: 700;
+    background: rgba(0,0,0,0.2);
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+/* Rrjeta e Tabelës Periodike 118 elemente */
+.periodic-table {
+    display: grid;
+    grid-template-columns: repeat(18, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    gap: 4px;
+}
+
+.element {
+    aspect-ratio: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #0f172a;
+    cursor: pointer;
+    border-radius: 6px;
+    border: 1px solid rgba(0,0,0,0.05);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.element:hover {
+    transform: scale(1.8);
+    z-index: 20;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    border: 1px solid rgba(0,0,0,0.2);
+    font-size: 0.9rem;
+    color: #000;
+}
+
+.gap-row { grid-row: 8; grid-column: 1 / -1; height: 15px; }
+
+/* 2. Seksioni i Epruvetave (SVG) */
+.lab-illustration {
+    flex: 1;
+    min-width: 320px;
+    max-width: 400px;
+    text-align: center;
+    position: sticky;
+    top: 120px;
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 15px 35px -10px rgba(0,0,0,0.08);
+    border: 1px solid var(--border-color);
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-12px); }
+    100% { transform: translateY(0px); }
+}
+
+.lab-svg {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 15px 25px rgba(15, 23, 42, 0.1));
+    animation: float 6s ease-in-out infinite;
+}
+
+/* Animacione për flluskat në epruvetë */
+@keyframes bubbleUp {
+    0% { transform: translateY(0); opacity: 0.8; }
+    100% { transform: translateY(-40px); opacity: 0; }
+}
+.bubble-anim-1 { animation: bubbleUp 2s infinite ease-in; }
+.bubble-anim-2 { animation: bubbleUp 2.5s infinite ease-in 0.5s; }
+.bubble-anim-3 { animation: bubbleUp 1.8s infinite ease-in 1s; }
+
+footer {
+    background-color: var(--primary-dark);
+    color: #94a3b8;
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.9rem;
+    margin-top: auto;
+    letter-spacing: 0.5px;
+    border-top: 3px solid var(--highlight-cyan);
+}
+
+/* ==========================================
+   PËRSHTATJA SPECIFIKE PËR CELULAR & TABLET
+   ========================================== */
+
+@media (max-width: 1200px) {
+    .pt-container {
+        min-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch; /* Rrëshqitje e rrjedhshme me gisht */
+        padding: 1.5rem;
+    }
+
+    .periodic-table {
+        min-width: 850px; /* Ruan formën e rregullt të tabelës në celular */
+    }
+
+    .lab-illustration {
+        margin: 0 auto;
+        position: static;
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .content-grid {
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    header {
+        padding: 1.8rem 1rem 1.5rem 1rem;
+    }
+
+    header h1 {
+        font-size: 1.75rem;
+        letter-spacing: 1px;
+    }
+
+    header p {
+        font-size: 0.85rem;
+        letter-spacing: 1.5px;
+    }
+
+    /* Përshtatja e Menysë për Celular */
+    .nav-list {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .nav-item a {
+        padding: 0.8rem 1rem;
+        font-size: 0.88rem;
+    }
+
+    /* Paneli i informacionit të elementit në ekran të vogël */
+    .element-info-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 1.25rem 1rem;
+        gap: 1.25rem;
+    }
+
+    .info-symbol {
+        width: 100%;
+        border-right: none;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        padding-bottom: 0.75rem;
+        font-size: 3.2rem;
+    }
+
+    .info-details {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .info-col {
+        min-width: 100%;
+    }
+
+    .info-col h3 {
+        font-size: 1.2rem;
+    }
+
+    /* Karta QR në Celular */
+    .qr-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 1.25rem;
+        gap: 1.25rem;
+    }
+
+    .statement-box {
+        padding: 1.25rem;
+        margin-bottom: 2rem;
+    }
+
+    .statement-box p {
+        font-size: 0.98rem;
+    }
+
+    main {
+        padding: 1.5rem 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 1.4rem;
+    }
+
+    .nav-item a {
+        padding: 0.6rem 0.7rem;
+        font-size: 0.82rem;
+    }
+
+    .active-class-bar {
+        font-size: 0.85rem;
+    }
+
+    .active-class-bar span {
+        display: inline-block;
+        margin-top: 4px;
+    }
+}
