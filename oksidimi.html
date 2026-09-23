@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratori Virtual i Reaksioneve Redoks & Numrave të Oksidimit</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #090d16;
+            --bg-card: #111827;
+            --bg-card-hover: #1f2937;
+            --border-color: #1f2937;
+            --accent-primary: #38bdf8;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --accent-danger: #ef4444;
+            --text-main: #f9fafb;
+            --text-muted: #9ca3af;
+            --font-mono: 'Fira Code', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Navbar */
+        header {
+            background: #030712;
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.85rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .brand-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--accent-primary), #0284c7);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: #000;
+        }
+
+        .brand-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .status-badge {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent-success);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            padding: 0.3rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-success);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent-success);
+        }
+
+        /* Dashboard Layout */
+        .dashboard {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 1rem;
+            padding: 1rem;
+            max-width: 1600px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Panel Styling */
+        .panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.75rem;
+        }
+
+        .panel-title {
+            font-size: 0.88rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        /* Selector List */
+        .exp-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .exp-card {
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            padding: 0.85rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .exp-card:hover {
+            border-color: var(--accent-primary);
+            background: var(--bg-card-hover);
+        }
+
+        .exp-card.active {
+            border-color: var(--accent-primary);
+            background: rgba(56, 189, 248, 0.08);
+        }
+
+        .exp-card h4 {
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+            color: var(--text-main);
+        }
+
+        .exp-card p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+
+        /* Controls Area */
+        .controls-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: auto;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.65rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            transition: all 0.15s ease;
+        }
+
+        .btn-primary {
+            background: var(--accent-primary);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.1);
+        }
+
+        .btn-secondary {
+            background: #374151;
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        /* Center Canvas & Telemetry Area */
+        .workspace {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .canvas-container {
+            background: #000000;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            height: 380px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .canvas-overlay {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: rgba(17, 24, 39, 0.85);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border-color);
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+        }
+
+        /* Analysis Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1rem;
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1rem;
+        }
+
+        .metric-title {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .equation-box {
+            font-family: var(--font-mono);
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent-primary);
+            background: #030712;
+            padding: 0.75rem;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        /* Table Style */
+        .redox-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+            text-align: left;
+        }
+
+        .redox-table th {
+            color: var(--text-muted);
+            padding: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+        }
+
+        .redox-table td {
+            padding: 0.6rem 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-family: var(--font-mono);
+        }
+
+        .badge-ox { color: var(--accent-danger); font-weight: 700; }
+        .badge-red { color: var(--accent-success); font-weight: 700; }
+
+        footer {
+            background: #030712;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            padding: 0.75rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand">
+            <div class="brand-icon">Rx</div>
+            <div class="brand-title">Simuluesi Virtual i Reaksioneve Redoks</div>
+        </div>
+        <div class="status-badge">
+            <div class="status-dot"></div>
+            Motorri Grafik i Aktivizuar (60 FPS)
+        </div>
+    </header>
+
+    <div class="dashboard">
+        <!-- SIDEBAR: KONTROLLET DHE ZGJEDHJA -->
+        <aside class="panel">
+            <div class="panel-header">
+                <span class="panel-title">Modulet Eksperimentale</span>
+            </div>
+
+            <div class="exp-list" id="expList">
+                <!-- Mbushet dinamikisht -->
+            </div>
+
+            <div class="panel-header" style="margin-top: 1rem;">
+                <span class="panel-title">Parametrat e Laboratorit</span>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.82rem;">
+                <label style="color: var(--text-muted);">Shpejtësia e Simulimit:</label>
+                <input type="range" id="speedRange" min="0.5" max="2" step="0.25" value="1" style="width: 100%;">
+            </div>
+
+            <div class="controls-group">
+                <button class="btn btn-primary" id="btnPlayPause" onclick="toggleSimulation()">▶ Fillo</button>
+                <button class="btn btn-secondary" onclick="resetSimulation()">🔄 Anulo</button>
+            </div>
+        </aside>
+
+        <!-- WORKSPACE: CANVAS DHE ANALIZA KIMIKE -->
+        <main class="workspace">
+            <div class="canvas-container">
+                <div class="canvas-overlay" id="telemetryOverlay">
+                    Gjendja: Gati për eksperimentim
+                </div>
+                <canvas id="simCanvas"></canvas>
+            </div>
+
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-title">Ekuacioni Kimik i Barazuar</div>
+                    <div class="equation-box" id="eqDisplay">2Mg + O₂ → 2MgO</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-title">Agjentët e Reaksionit</div>
+                    <div style="display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.85rem;">
+                        <div>• Oksiduesi (merr e⁻): <strong id="oxAgentDisplay" style="color: var(--accent-danger);">-</strong></div>
+                        <div>• Reduktuesi (jep e⁻): <strong id="redAgentDisplay" style="color: var(--accent-success);">-</strong></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <span class="panel-title">Tabela e Bilanicit Elektronik dhe Gjysmëreaksioneve</span>
+                </div>
+                <table class="redox-table">
+                    <thead>
+                        <tr>
+                            <th>Elementi</th>
+                            <th>N.O. Fillestar</th>
+                            <th>N.O. Përfundimtar</th>
+                            <th>Ndryshimi (e⁻)</th>
+                            <th>Procesi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="redoxTableBody">
+                        <!-- Mbushet dinamikisht -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <p>© Simuluesi Akademik i Kimisë | Dizajnuar sipas standardeve shkencore</p>
+    </footer>
+
+    <script>
+        // DATA SETI I EKSPERIMENTEVE
+        const EXPERIMENTS = [
+            {
+                id: 'mg_o2',
+                name: 'Oksidimi i Magnezit (Mg)',
+                formula: '2Mg + O₂ → 2MgO',
+                description: 'Djegia e shiritit të magnezit në prani të oksigjenit.',
+                oxAgent: 'O₂ (Oksigjeni)',
+                redAgent: 'Mg (Magnezi)',
+                table: [
+                    { elem: 'Mg', init: '0', final: '+2', diff: 'Humbet 2e⁻ / atom', process: 'OKSIDIM', type: 'ox' },
+                    { elem: 'O', init: '0', final: '-2', diff: 'Fiton 2e⁻ / atom', process: 'REDUKTIM', type: 'red' }
+                ],
+                render: function(ctx, frame, progress) {
+                    const width = ctx.canvas.width;
+                    const height = ctx.canvas.height;
+                    
+                    // Pinceta / Shkopi i Magnezit
+                    ctx.fillStyle = '#64748b';
+                    ctx.fillRect(width / 2 - 8, 40, 16, 120);
+
+                    // Shiriti i Mg
+                    ctx.fillStyle = progress > 0.5 ? '#e2e8f0' : '#94a3b8';
+                    ctx.fillRect(width / 2 - 4, 160, 8, 80);
+
+                    if (progress > 0.1 && progress < 0.9) {
+                        // Flaka me shkëlqim intensiv
+                        const intensity = Math.sin(frame * 0.2) * 15;
+                        const gradient = ctx.createRadialGradient(width / 2, 240, 5, width / 2, 240, 60 + intensity);
+                        gradient.addColorStop(0, '#ffffff');
+                        gradient.addColorStop(0.3, '#38bdf8');
+                        gradient.addColorStop(1, 'transparent');
+                        
+                        ctx.fillStyle = gradient;
+                        ctx.beginPath();
+                        ctx.arc(width / 2, 240, 70 + intensity, 0, Math.PI * 2);
+                        ctx.fill();
+
+                        // Tymi i bardhë (MgO)
+                        for(let i = 0; i < 5; i++) {
+                            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                            ctx.beginPath();
+                            ctx.arc(width / 2 + (Math.random() - 0.5) * 40, 220 - (frame * 2 + i * 20) % 150, 8 + Math.random() * 12, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+                    }
+
+                    if (progress >= 0.9) {
+                        // Hi i bardhë MgO
+                        ctx.fillStyle = '#ffffff';
+                        ctx.beginPath();
+                        ctx.arc(width / 2, 240, 12, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+            },
+            {
+                id: 'na_cl2',
+                name: 'Sintesa e NaCl (Na + Cl₂)',
+                formula: '2Na + Cl₂ → 2NaCl',
+                description: 'Reaksioni redoks midis natriumit metalik dhe gazit klor.',
+                oxAgent: 'Cl₂ (Klori)',
+                redAgent: 'Na (Natriumi)',
+                table: [
+                    { elem: 'Na', init: '0', final: '+1', diff: 'Humbet 1e⁻ / atom', process: 'OKSIDIM', type: 'ox' },
+                    { elem: 'Cl', init: '0', final: '-1', diff: 'Fiton 1e⁻ / atom', process: 'REDUKTIM', type: 'red' }
+                ],
+                render: function(ctx, frame, progress) {
+                    const width = ctx.canvas.width;
+                    const height = ctx.canvas.height;
+
+                    // Cilindri i Gazit (Cl2 - ngjyrë e verdhë/jeshile)
+                    ctx.fillStyle = 'rgba(163, 230, 53, 0.15)';
+                    ctx.fillRect(width / 2 - 60, 60, 120, 240);
+                    ctx.strokeStyle = '#475569';
+                    ctx.strokeRect(width / 2 - 60, 60, 120, 240);
+
+                    // Copëza e Natriumit (Na)
+                    let naY = 80 + progress * 160;
+                    if (progress < 0.7) {
+                        ctx.fillStyle = '#94a3b8';
+                        ctx.beginPath();
+                        ctx.arc(width / 2, naY, 14, 0, Math.PI * 2);
+                        ctx.fill();
+                    } else {
+                        // Shkëndija dhe formimi i NaCl
+                        ctx.fillStyle = '#f59e0b';
+                        ctx.beginPath();
+                        ctx.arc(width / 2, 240, 25 + Math.sin(frame) * 5, 0, Math.PI * 2);
+                        ctx.fill();
+
+                        ctx.fillStyle = '#ffffff';
+                        ctx.font = '12px Fira Code';
+                        ctx.fillText('Kristale NaCl', width / 2 - 35, 280);
+                    }
+                }
+            },
+            {
+                id: 'cl2_kbr',
+                name: 'Zëvendësimi: Cl₂ + KBr',
+                formula: 'Cl₂ + 2KBr → 2KCl + Br₂',
+                description: 'Klori oksidon jonet bromure në tretësirë ujore.',
+                oxAgent: 'Cl₂ (Klori)',
+                redAgent: 'KBr (Joni Bromur)',
+                table: [
+                    { elem: 'Br', init: '-1', final: '0', diff: 'Humbet 1e⁻ / atom', process: 'OKSIDIM', type: 'ox' },
+                    { elem: 'Cl', init: '0', final: '-1', diff: 'Fiton 1e⁻ / atom', process: 'REDUKTIM', type: 'red' }
+                ],
+                render: function(ctx, frame, progress) {
+                    const width = ctx.canvas.width;
+                    const height = ctx.canvas.height;
+
+                    // Ena me Tretësirë
+                    const liquidColor = `rgba(${225 * progress}, ${180 - progress * 100}, 50, 0.6)`;
+                    
+                    ctx.fillStyle = liquidColor;
+                    ctx.fillRect(width / 2 - 50, 140, 100, 140);
+
+                    ctx.strokeStyle = '#94a3b8';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(width / 2 - 50, 100, 100, 180);
+
+                    // Flluskat e gazi Cl2
+                    if (progress < 0.8) {
+                        for(let i = 0; i < 4; i++) {
+                            ctx.fillStyle = '#a3e635';
+                            ctx.beginPath();
+                            ctx.arc(width / 2 - 20 + i * 15, 260 - ((frame * 3 + i * 30) % 120), 4, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+                    }
+                }
+            }
+        ];
+
+        // SHTETI I APLIKACIONIT
+        let state = {
+            activeExpIndex: 0,
+            isRunning: false,
+            progress: 0,
+            frame: 0,
+            speed: 1
+        };
+
+        let canvas, ctx, animFrameId;
+
+        window.onload = function() {
+            canvas = document.getElementById('simCanvas');
+            ctx = canvas.getContext('2d');
+            
+            // Përshtatja e rezolucionit të canvas
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+
+            renderExpList();
+            loadExperiment(0);
+            document.getElementById('speedRange').addEventListener('input', (e) => {
+                state.speed = parseFloat(e.target.value);
+            });
+
+            loop();
+        };
+
+        function renderExpList() {
+            const container = document.getElementById('expList');
+            container.innerHTML = '';
+            EXPERIMENTS.forEach((exp, index) => {
+                const card = document.createElement('div');
+                card.className = `exp-card ${index === 0 ? 'active' : ''}`;
+                card.onclick = () => selectExperiment(index);
+                card.innerHTML = `
+                    <h4>${exp.name}</h4>
+                    <p>${exp.formula}</p>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function selectExperiment(index) {
+            document.querySelectorAll('.exp-card').forEach((c, i) => c.classList.toggle('active', i === index));
+            loadExperiment(index);
+        }
+
+        function loadExperiment(index) {
+            state.activeExpIndex = index;
+            state.progress = 0;
+            state.isRunning = false;
+            document.getElementById('btnPlayPause').textContent = '▶ Fillo';
+
+            const exp = EXPERIMENTS[index];
+            document.getElementById('eqDisplay').textContent = exp.formula;
+            document.getElementById('oxAgentDisplay').textContent = exp.oxAgent;
+            document.getElementById('redAgentDisplay').textContent = exp.redAgent;
+            document.getElementById('telemetryOverlay').textContent = `Gjendja: Gati (${exp.name})`;
+
+            // Render Tabela
+            const tbody = document.getElementById('redoxTableBody');
+            tbody.innerHTML = '';
+            exp.table.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${row.elem}</strong></td>
+                    <td>${row.init}</td>
+                    <td>${row.final}</td>
+                    <td>${row.diff}</td>
+                    <td><span class="${row.type === 'ox' ? 'badge-ox' : 'badge-red'}">${row.process}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function toggleSimulation() {
+            state.isRunning = !state.isRunning;
+            document.getElementById('btnPlayPause').textContent = state.isRunning ? '⏸ Pezullo' : '▶ Fillo';
+        }
+
+        function resetSimulation() {
+            state.progress = 0;
+            state.isRunning = false;
+            document.getElementById('btnPlayPause').textContent = '▶ Fillo';
+        }
+
+        function loop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (state.isRunning) {
+                state.frame++;
+                state.progress += 0.003 * state.speed;
+                if (state.progress >= 1) {
+                    state.progress = 1;
+                    state.isRunning = false;
+                    document.getElementById('btnPlayPause').textContent = '🔄 Reagimi Përfundoi';
+                }
+                document.getElementById('telemetryOverlay').textContent = `Progresi: ${Math.round(state.progress * 100)}%`;
+            }
+
+            // Ekzekuto renderin vizual të eksperimentit aktiv
+            EXPERIMENTS[state.activeExpIndex].render(ctx, state.frame, state.progress);
+
+            requestAnimationFrame(loop);
+        }
+    </script>
+</body>
+</html>

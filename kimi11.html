@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kimia 11 - Gjimnazi Milot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #0f172a;
+            --primary-dark: #020617;
+            --accent-blue: #1e3a8a;
+            --highlight-cyan: #0ea5e9;
+            --highlight-hover: #0284c7;
+            --text-dark: #1e293b;
+            --text-light: #f8fafc;
+            --border-color: #e2e8f0;
+            --bg-body: #f8fafc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+            background-color: var(--bg-body);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+            color: var(--text-light);
+            text-align: center;
+            padding: 2rem 1rem 1.5rem 1rem;
+            border-bottom: 4px solid var(--highlight-cyan);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.6rem, 5vw, 2.4rem);
+            letter-spacing: 0.5px;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+        }
+
+        header p {
+            color: #cbd5e1;
+            font-size: clamp(0.75rem, 3vw, 0.95rem);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 500;
+        }
+
+        nav {
+            background-color: #ffffff;
+            box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1rem;
+        }
+
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--primary-blue);
+            cursor: pointer;
+            padding: 0.75rem;
+            line-height: 1;
+        }
+
+        .nav-list {
+            display: flex;
+            list-style: none;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-item a {
+            display: block;
+            padding: 1.1rem 1.2rem;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.92rem;
+            transition: all 0.25s ease;
+            white-space: nowrap;
+        }
+
+        .nav-item > a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 3px;
+            background-color: var(--highlight-cyan);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-item:hover > a::after {
+            width: 100%;
+        }
+
+        .nav-item:hover > a {
+            color: var(--highlight-hover);
+            background-color: #f8fafc;
+        }
+
+        .dropdown {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #ffffff;
+            min-width: 290px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            border-radius: 0 0 8px 8px;
+            list-style: none;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            border-top: none;
+            max-height: 380px;
+            overflow-y: auto;
+            z-index: 101;
+        }
+
+        .nav-item:hover .dropdown { 
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .dropdown a {
+            padding: 0.8rem 1.2rem;
+            border-bottom: 1px solid #f1f5f9;
+            color: #475569;
+            font-weight: 500;
+            font-size: 0.88rem;
+            white-space: normal;
+        }
+
+        .dropdown a::after { display: none; }
+
+        .dropdown a:hover {
+            background-color: var(--highlight-cyan);
+            color: #ffffff;
+            padding-left: 1.4rem;
+        }
+
+        .active-class-bar {
+            background: linear-gradient(90deg, #e2e8f0 0%, #f1f5f9 50%, #e2e8f0 100%);
+            text-align: center;
+            padding: 0.75rem 1rem;
+            font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+            font-weight: 600;
+            color: var(--text-dark);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .active-class-bar span {
+            background-color: var(--highlight-hover);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-left: 6px;
+            display: inline-block;
+        }
+
+        main {
+            flex: 1;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem 1rem;
+        }
+
+        .statement-box {
+            background: #ffffff;
+            border-left: 5px solid var(--highlight-cyan);
+            padding: 1.25rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .statement-box h2 {
+            color: var(--primary-blue);
+            margin-bottom: 0.4rem;
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
+        }
+
+        .statement-box p {
+            font-size: clamp(0.9rem, 2.8vw, 1.02rem);
+            line-height: 1.6;
+            color: #334155;
+        }
+
+        .period-header {
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 2rem 0 1rem 0;
+            border-left: 4px solid var(--highlight-cyan);
+        }
+
+        .topics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .chapter-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.4rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            scroll-margin-top: 90px;
+        }
+
+        .chapter-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px -5px rgba(0, 0, 0, 0.08);
+            border-color: var(--highlight-cyan);
+        }
+
+        .chapter-number {
+            display: inline-block;
+            background: rgba(14, 165, 233, 0.12);
+            color: var(--highlight-hover);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            margin-bottom: 0.7rem;
+            text-transform: uppercase;
+        }
+
+        .chapter-card h3 {
+            color: var(--accent-blue);
+            font-size: 1.15rem;
+            margin-bottom: 0.8rem;
+            line-height: 1.35;
+        }
+
+        .topics-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .topics-list li {
+            position: relative;
+            padding-left: 1.2rem;
+            margin-bottom: 0.55rem;
+            color: #475569;
+            font-size: 0.9rem;
+            line-height: 1.45;
+        }
+
+        .topics-list li::before {
+            content: '•';
+            position: absolute;
+            left: 0.2rem;
+            color: var(--highlight-cyan);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        footer {
+            background-color: var(--primary-dark);
+            color: #94a3b8;
+            text-align: center;
+            padding: 1.4rem 1rem;
+            font-size: 0.85rem;
+            margin-top: auto;
+            border-top: 3px solid var(--highlight-cyan);
+        }
+
+        @media (max-width: 768px) {
+            .mobile-toggle { display: block; }
+
+            .nav-list {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                background-color: #ffffff;
+                padding: 0.5rem 0;
+                border-top: 1px solid var(--border-color);
+            }
+
+            .nav-list.active { display: flex; }
+
+            .nav-item { width: 100%; text-align: left; }
+
+            .nav-item a {
+                padding: 0.9rem 1.2rem;
+                font-size: 0.95rem;
+                border-bottom: 1px solid #f1f5f9;
+            }
+
+            .nav-item > a::after { display: none; }
+
+            .dropdown {
+                position: static;
+                visibility: visible;
+                opacity: 1;
+                transform: none;
+                box-shadow: none;
+                border: none;
+                background-color: #f8fafc;
+                display: none;
+                max-height: none;
+                padding-left: 1rem;
+            }
+
+            .nav-item.open .dropdown { display: block; }
+
+            .dropdown a {
+                padding: 0.75rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .topics-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .statement-box { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header id="ballina">
+        <h1>Kimia 11 - Portali Mësimor</h1>
+        <p>Gjimnazi Milot | Kurrikula Bërthamë & Zgjedhje</p>
+    </header>
+
+    <!-- Navigimi responsive -->
+    <nav>
+        <div class="nav-wrapper">
+            <span style="font-weight:700; color:var(--primary-blue);"></span>
+            <button class="mobile-toggle" id="mobileMenuBtn" aria-label="Hap Menunë">☰</button>
+        </div>
+        
+        <ul class="nav-list" id="navList">
+            <li class="nav-item">
+                <a href="kimi.html">Faqja Kryesore</a>
+            </li>
+            <li class="nav-item has-dropdown">
+                <a href="#kapitujt" class="dropdown-trigger">Kapitujt (1-10) ▾</a>
+                <ul class="dropdown">
+                    <li><a href="#kapitulli-1">1. Reaksionet Redoks</a></li>
+                    <li><a href="#kapitulli-2">2. Rryma Elektrike & Ndryshimet Kimike</a></li>
+                    <li><a href="#kapitulli-3">3. Sjellja e Metaleve</a></li>
+                    <li><a href="#kapitulli-4">4. Përdorimi i Metaleve</a></li>
+                    <li><a href="#kapitulli-5">5. Ajri dhe Uji</a></li>
+                    <li><a href="#kapitulli-6">6. Ndryshimet Energjitike & Ekuilibri</a></li>
+                    <li><a href="#kapitulli-7">7. Shpejtësia e Reaksionit Kimik</a></li>
+                    <li><a href="#kapitulli-8">8. Përbërjet Organike</a></li>
+                    <li><a href="#kapitulli-9">9. Polimeret & Makromolekulat</a></li>
+                    <li><a href="#kapitulli-10">10. Kimia Praktike & Analiza</a></li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="#eksperiment">Eksperimente dhe simulime</a>
+                <ul class="dropdown">
+                    <li><a href="oksidimi.html">Tema 1: Oksidimi dhe Reduktimi</a></li>
+                    <li><a href="reduktimi.html"> Tema 2: Reduktim</a></li>
+                    <li><a href="redoks.html"> Tema 3: Çngjyrosja e KMnO4 dhe reduktimi i CU</a></li>
+                </ul>
+                
+            <li class="nav-item">
+                <a href="#kapitujt">Lojëra dhe kuize</a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Brezi i Klasës -->
+    <div class="active-class-bar">
+        Klasa e Zgjedhur: <span>Klasa 11 (Shkalla V)</span>
+    </div>
+
+    <!-- Përmbajtja Kryesore -->
+    <main>
+
+        <div class="statement-box">
+            <h2>Plani Lëndor i Kimisë 11</h2>
+            <p>Programi përmban 72 orë mësimore të shpërndara në 10 kapituj kryesorë, duke mbuluar elektrokiminë, sjelljen dhe nxjerrjen e metaleve, kinetikën, ekuilibrin kimik, analizën kimike si dhe kiminë organike e polimeret.</p>
+        </div>
+
+        <h2 id="kapitujt" style="color:var(--primary-blue); font-size:1.5rem; margin-bottom:0.5rem;">📚 Përmbajtja Analitike e Kapitujve</h2>
+
+        <!-- PERIUDHA 1 -->
+        <div class="period-header">Periudha 1: Shtator – Dhjetor (28 Orë)</div>
+        <div class="topics-grid">
+            
+            <div class="chapter-card" id="kapitulli-1">
+                <span class="chapter-number">Kapitulli 1</span>
+                <h3>Reaksionet Redoks</h3>
+                <ul class="topics-list">
+                    <li>Oksidimi dhe reduktimi në reaksionet kimike</li>
+                    <li>Numrat e oksidimit dhe përcaktimi i tyre</li>
+                    <li>Agjentët oksidues dhe agjentët reduktues</li>
+                    <li>Barazimi i reaksioneve redoks me koeficientë</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card" id="kapitulli-2">
+                <span class="chapter-number">Kapitulli 2</span>
+                <h3>Rryma Elektrike dhe Ndryshimet Kimike</h3>
+                <ul class="topics-list">
+                    <li>Përcjellësit dhe izoluesit e rrymës elektrike</li>
+                    <li>Parimet e elektrolizës dhe reaksionet në elektroda</li>
+                    <li>Elektroliza e tretësirës ujore të përqendruar të NaCl</li>
+                    <li>Përdorime industriale të elektrolizës</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card" id="kapitulli-3">
+                <span class="chapter-number">Kapitulli 3</span>
+                <h3>Sjellja e Metaleve</h3>
+                <ul class="topics-list">
+                    <li>Vetitë e përgjithshme fiziko-kimike të metaleve</li>
+                    <li>Krahasimi i aktivitetit kimik të metaleve</li>
+                    <li>Radha e aktivitetit dhe prirjet e metaleve</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card" id="kapitulli-4">
+                <span class="chapter-number">Kapitulli 4</span>
+                <h3>Përdorimi i Metaleve</h3>
+                <ul class="topics-list">
+                    <li>Metalet në korën e Tokës dhe xeherorët</li>
+                    <li>Nxjerrja e hekurit dhe e aluminit</li>
+                    <li>Përdorimi i metaleve, aliazhet dhe prodhimi i çelikut</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- PERIUDHA 2 -->
+        <div class="period-header">Periudha 2: Janar – Mars (24 Orë)</div>
+        <div class="topics-grid">
+
+            <div class="chapter-card" id="kapitulli-5">
+                <span class="chapter-number">Kapitulli 5</span>
+                <h3>Ajri dhe Uji</h3>
+                <ul class="topics-list">
+                    <li>Përbërësit kryesorë dhe përdorimi i ajrit</li>
+                    <li>Ndotja e mjedisit dhe faktorët e ndryshkjes së hekurit</li>
+                    <li>Uji dhe sfidat e jetesës në hapësirë</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card" id="kapitulli-6">
+                <span class="chapter-number">Kapitulli 6</span>
+                <h3>Ndryshimet Energjitike & Reaksionet e Prapësueshme</h3>
+                <ul class="topics-list">
+                    <li>Reaksionet ekzotermike, endotermike dhe lëndët djegëse</li>
+                    <li>Çlirimi i energjisë si rrymë elektrike (bateritë)</li>
+                    <li>Reaksionet e prapësueshme dhe ekuilibri kimik</li>
+                    <li>Zhvendosja e ekuilibrit dhe Parimi i Le Shatelies</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card" id="kapitulli-7">
+                <span class="chapter-number">Kapitulli 7</span>
+                <h3>Shpejtësia e Reaksionit Kimik</h3>
+                <ul class="topics-list">
+                    <li>Matja e shpejtësisë dhe njehsime stekiometrike</li>
+                    <li>Teoria e goditjeve dhe energjia e aktivizimit</li>
+                    <li>Faktorët ndikues dhe veprimi i katalizatorëve</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- PERIUDHA 3 -->
+        <div class="period-header">Periudha 3: Prill – Qershor (20 Orë)</div>
+        <div class="topics-grid">
+
+            <div class="chapter-card" id="kapitulli-10">
+                <span class="chapter-number">Kapitulli 10</span>
+                <h3>Kimia Praktike & Analiza</h3>
+                <ul class="topics-list">
+                    <li>Metodat e analizës kimike dhe interpretimi i të dhënave</li>
+                    <li>Përftimi i gazeve dhe karakteristikat e tyre ($O_2, H_2, CO_2, Cl_2$)</li>
+                    <li>Identifikimi i kationeve (testet e flakës) dhe anioneve</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card" id="kapitulli-8">
+                <span class="chapter-number">Kapitulli 8</span>
+                <h3>Përbërjet Organike</h3>
+                <ul class="topics-list">
+                    <li>Roli i karbonit në molekulat organike</li>
+                    <li>Alkanët me varg të drejtë/degëzuar dhe alkenët</li>
+                    <li>Alkoolet dhe acidet karboksilike</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card" id="kapitulli-9">
+                <span class="chapter-number">Kapitulli 9</span>
+                <h3>Përbërjet Makromolekulare (Polimeret)</h3>
+                <ul class="topics-list">
+                    <li>Polimerizimi me shtim dhe me kondensim</li>
+                    <li>Përdorimi i polimereve sintetike në industri</li>
+                    <li>Polimeret natyrore në ushqim</li>
+                </ul>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>© Kimia 11 | Gjimnazi Milot </p>
+    </footer>
+
+    <!-- Skripti JavaScript për Menunë Mobile -->
+    <script>
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navList = document.getElementById('navList');
+        const dropdownTriggers = document.querySelectorAll('.dropdown-trigger');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            navList.classList.toggle('active');
+            mobileMenuBtn.textContent = navList.classList.contains('active') ? '✕' : '☰';
+        });
+
+        dropdownTriggers.forEach(trigger => {
+            trigger.addEventListener('click', (e) => {
+                if (window.innerWidth <= 768) {
+                    e.preventDefault();
+                    const parent = trigger.parentElement;
+                    parent.classList.toggle('open');
+                }
+            });
+        });
+
+        document.querySelectorAll('.dropdown a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    navList.classList.remove('active');
+                    mobileMenuBtn.textContent = '☰';
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratori Virtual: Agjentët Oksidues & Reduktues (Kimia 11)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #070a13;
+            --panel-bg: #0f172a;
+            --panel-border: #1e293b;
+            --accent-cyan: #06b6d4;
+            --accent-purple: #a855f7;
+            --accent-rose: #f43f5e;
+            --accent-emerald: #10b981;
+            --accent-amber: #f59e0b;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --font-mono: 'Fira Code', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: #020617;
+            border-bottom: 1px solid var(--panel-border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .brand-logo {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: #fff;
+            font-size: 1.1rem;
+        }
+
+        .header-title h1 {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .header-title p {
+            font-size: 0.8rem;
+            color: var(--text-sub);
+        }
+
+        .badge-standard {
+            background: rgba(168, 85, 247, 0.12);
+            color: var(--accent-purple);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 1.25rem;
+            padding: 1.25rem;
+            max-width: 1550px;
+            margin: 0 auto;
+            width: 100%;
+            flex: 1;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard { grid-template-columns: 1fr; }
+        }
+
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .panel-header {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-sub);
+            font-weight: 700;
+            border-bottom: 1px solid var(--panel-border);
+            padding-bottom: 0.5rem;
+        }
+
+        .exp-card {
+            background: #020617;
+            border: 1px solid var(--panel-border);
+            border-radius: 8px;
+            padding: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .exp-card:hover {
+            border-color: var(--accent-purple);
+        }
+
+        .exp-card.active {
+            border-color: var(--accent-purple);
+            background: rgba(168, 85, 247, 0.08);
+        }
+
+        .exp-card h4 {
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .exp-card p {
+            font-size: 0.78rem;
+            color: var(--text-sub);
+            font-family: var(--font-mono);
+        }
+
+        .controls-box {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-primary { background: var(--accent-purple); color: #fff; }
+        .btn-primary:hover { filter: brightness(1.15); }
+        .btn-secondary { background: #1e293b; color: var(--text-main); }
+        .btn-secondary:hover { background: #334155; }
+
+        .workspace {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .canvas-container {
+            background: #020617;
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            height: 410px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .telemetry-overlay {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--panel-border);
+            padding: 0.5rem 0.85rem;
+            border-radius: 6px;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--accent-purple);
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .analytics-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 10px;
+            padding: 1rem;
+        }
+
+        .equation-box {
+            font-family: var(--font-mono);
+            font-size: 1.05rem;
+            color: var(--accent-cyan);
+            background: #020617;
+            padding: 0.75rem;
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid var(--panel-border);
+            margin-top: 0.5rem;
+        }
+
+        .redox-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.55rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.85rem;
+            font-family: var(--font-mono);
+        }
+
+        .redox-row:last-child { border-bottom: none; }
+
+        .tag-ox { color: var(--accent-rose); font-weight: 700; }
+        .tag-red { color: var(--accent-emerald); font-weight: 700; }
+
+        footer {
+            background: #020617;
+            border-top: 1px solid var(--panel-border);
+            text-align: center;
+            padding: 0.75rem;
+            font-size: 0.75rem;
+            color: var(--text-sub);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-brand">
+            <div class="brand-logo">Ox</div>
+            <div class="header-title">
+                <h1>Simuluesi virtual për reaksionet redoks</h1>
+                <p>Eksperimentet Praktike të Kapitullit  (Kimia 11)</p>
+            </div>
+        </div>
+        <div class="badge-academic">Simulim Virtual Mësimor</div>
+    </header>
+
+    <div class="dashboard">
+        <!-- SIDEBAR -->
+        <aside class="panel">
+            <div class="panel-header">Modulet Eksperimentale</div>
+
+            <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+                <div class="exp-card active" onclick="switchExperiment(0)">
+                    <h4>1. Reduktimi i CuO me Hidrogjen</h4>
+                    <p>CuO + H₂ → Cu + H₂O</p>
+                </div>
+                <div class="exp-card" onclick="switchExperiment(1)">
+                    <h4>2. Çngjyrosja e KMnO₄</h4>
+                    <p>MnO₄⁻ + 8H⁺ + 5e⁻ → Mn²⁺ + 4H₂O</p>
+                </div>
+            </div>
+
+            <div class="controls-box">
+                <div class="panel-header">Parametrat</div>
+                <div style="font-size: 0.8rem; color: var(--text-sub); display: flex; flex-direction: column; gap: 0.4rem;">
+                    <label>Shpejtësia e Reaksionit:</label>
+                    <input type="range" id="speedSlider" min="0.5" max="2" step="0.25" value="1">
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" id="playBtn" onclick="togglePlay()">▶ Fillo</button>
+                    <button class="btn btn-secondary" onclick="resetSim()">🔄 Ristarto</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- WORKSPACE -->
+        <main class="workspace">
+            <div class="canvas-container">
+                <div class="telemetry-overlay" id="statusBox">Gjendja: Gati për eksperiment</div>
+                <canvas id="simCanvas"></canvas>
+            </div>
+
+            <div class="analytics-grid">
+                <div class="analytics-card">
+                    <div class="panel-header">Ekuacioni Kimik i Barazuar</div>
+                    <div class="equation-box" id="eqBox">CuO + H₂ → Cu + H₂O</div>
+                    <div style="margin-top: 0.75rem; font-size: 0.82rem; color: var(--text-sub); line-height: 1.5;" id="descBox">
+                        • Pluhuri i zi i Oksidit të Bakrit(II) reduktohet në bakër metalik të kuqërremtë.
+                    </div>
+                </div>
+
+                <div class="analytics-card">
+                    <div class="panel-header">Analiza e Numrave të Oksidimit</div>
+                    <div class="redox-row">
+                        <span><span class="tag-ox">OKSIDIM:</span> <span id="oxHalf">H₂⁰ → 2H⁺ + 2e⁻</span></span>
+                        <span style="color: var(--accent-rose);" id="oxNO">N.O. 0 → +1</span>
+                    </div>
+                    <div class="redox-row">
+                        <span><span class="tag-red">REDUKTIM:</span> <span id="redHalf">Cu²⁺ + 2e⁻ → Cu⁰</span></span>
+                        <span style="color: var(--accent-emerald);" id="redNO">N.O. +2 → 0</span>
+                    </div>
+                    <div style="margin-top:0.6rem; font-size: 0.8rem; color: var(--text-sub);" id="agentsBox">
+                        • Agjenti Oksidues: <strong>CuO</strong> | Agjenti Reduktues: <strong>H₂</strong>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <p>© Simuluesi Mësimor i Kimisë 11</p>
+    </footer>
+
+    <script>
+        const EXPERIMENTS = [
+            {
+                name: "Reduktimi i CuO",
+                eq: "CuO(s) + H₂(g) → Cu(s) + H₂O(g)",
+                desc: "Gazi hidrogjen kalon mbi CuO të zi të nxehur. Bakri reduktohet në Cu metalik të kuqërremtë, ndërsa hidrogjeni oksidohet në ujë (avull/pika uji).",
+                oxHalf: "H₂⁰ → 2H⁺ + 2e⁻",
+                oxNO: "0 → +1",
+                redHalf: "Cu²⁺ + 2e⁻ → Cu⁰",
+                redNO: "+2 → 0",
+                oxAgent: "CuO (Oksidi i Bakrit II)",
+                redAgent: "H₂ (Hidrogjeni)"
+            },
+            {
+                name: "Çngjyrosja e KMnO₄",
+                eq: "2KMnO₄ + 3H₂SO₄ + 5H₂O₂ → 2MnSO₄ + K₂SO₄ + 5O₂ + 8H₂O",
+                desc: "Joni permanganat MnO₄⁻ me ngjyrë vjollcë të errët reduktohet në jon Mn²⁺ të pangjyrë në mjedis acid, duke shërbyer si agjent i fuqishëm oksidues.",
+                oxHalf: "H₂O₂ → O₂⁰ + 2H⁺ + 2e⁻",
+                oxNO: "-1 → 0",
+                redHalf: "MnO₄⁻ (+7) + 8H⁺ + 5e⁻ → Mn²⁺ (+2) + 4H₂O",
+                redNO: "+7 → +2",
+                oxAgent: "KMnO₄ (Permanganati i Kaliumit)",
+                redAgent: "H₂O₂ / H₂SO₄"
+            }
+        ];
+
+        let canvas, ctx;
+        let activeIdx = 0;
+        let isPlaying = false;
+        let progress = 0;
+        let frame = 0;
+        let speed = 1;
+
+        window.onload = function() {
+            canvas = document.getElementById('simCanvas');
+            ctx = canvas.getContext('2d');
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            document.getElementById('speedSlider').addEventListener('input', (e) => {
+                speed = parseFloat(e.target.value);
+            });
+
+            switchExperiment(0);
+            animate();
+        };
+
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+        }
+
+        function switchExperiment(idx) {
+            activeIdx = idx;
+            document.querySelectorAll('.exp-card').forEach((card, i) => {
+                card.classList.toggle('active', i === idx);
+            });
+
+            const exp = EXPERIMENTS[idx];
+            document.getElementById('eqBox').textContent = exp.eq;
+            document.getElementById('descBox').textContent = "• " + exp.desc;
+            document.getElementById('oxHalf').textContent = exp.oxHalf;
+            document.getElementById('oxNO').textContent = "N.O. " + exp.oxNO;
+            document.getElementById('redHalf').textContent = exp.redHalf;
+            document.getElementById('redNO').textContent = "N.O. " + exp.redNO;
+            document.getElementById('agentsBox').innerHTML = `• Agjenti Oksidues: <strong>${exp.oxAgent}</strong><br>• Agjenti Reduktues: <strong>${exp.redAgent}</strong>`;
+
+            resetSim();
+        }
+
+        function togglePlay() {
+            isPlaying = !isPlaying;
+            document.getElementById('playBtn').textContent = isPlaying ? "⏸ Pezullo" : "▶ Fillo";
+        }
+
+        function resetSim() {
+            progress = 0;
+            isPlaying = false;
+            document.getElementById('playBtn').textContent = "▶ Fillo";
+            document.getElementById('statusBox').textContent = "Gjendja: Fillimi i Eksperimentit";
+        }
+
+        function animate() {
+            frame++;
+            if (isPlaying) {
+                progress += 0.003 * speed;
+                if (progress >= 1) {
+                    progress = 1;
+                    isPlaying = false;
+                    document.getElementById('playBtn').textContent = "🔄 Ristarto";
+                    document.getElementById('statusBox').textContent = "Gjendja: Reaksioni Përfundoi me Sukses";
+                } else {
+                    document.getElementById('statusBox').textContent = `Progresi i Reaksionit: ${Math.round(progress * 100)}%`;
+                }
+            }
+
+            renderStage();
+            requestAnimationFrame(animate);
+        }
+
+        function renderStage() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (activeIdx === 0) {
+                renderCuOSimulation(ctx, canvas.width, canvas.height, progress, frame);
+            } else {
+                renderKMnO4Simulation(ctx, canvas.width, canvas.height, progress, frame);
+            }
+        }
+
+        // SIMULIMI 1: CuO + H2
+        function renderCuOSimulation(ctx, w, h, prog, f) {
+            const centerX = w / 2;
+            const centerY = h / 2;
+
+            // 1. Gyp Qelqi Horizontal
+            ctx.strokeStyle = "rgba(255,255,255,0.4)";
+            ctx.lineWidth = 4;
+            ctx.strokeRect(centerX - 180, centerY - 25, 360, 50);
+
+            // 2. Beqari (Flaka e nxehjes)
+            const burnerX = centerX - 20;
+            const burnerY = centerY + 90;
+            
+            // Baza e beqarit
+            ctx.fillStyle = "#475569";
+            ctx.fillRect(burnerX - 15, burnerY - 30, 30, 40);
+
+            // Flaka Bunsen
+            if (prog > 0.05 && prog < 0.95) {
+                const flameH = 35 + Math.sin(f * 0.2) * 5;
+                const grad = ctx.createRadialGradient(burnerX, centerY + 25, 2, burnerX, centerY + 25, flameH);
+                grad.addColorStop(0, '#ffffff');
+                grad.addColorStop(0.4, '#38bdf8');
+                grad.addColorStop(1, 'transparent');
+                ctx.fillStyle = grad;
+                ctx.beginPath();
+                ctx.arc(burnerX, centerY + 25, flameH, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // 3. Ena me CuO / Cu brenda gypit
+            const boatX = centerX - 60;
+            const boatY = centerY + 5;
+
+            // Ngjyra e mostrës shndërrohet nga e ZI (CuO) në KUQËRREMTE (Cu)
+            const r = Math.round(15 + prog * 180);
+            const g = Math.round(15 + prog * 50);
+            const b = Math.round(15 + prog * 30);
+            
+            ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+            ctx.beginPath();
+            ctx.ellipse(boatX + 40, boatY, 45, 12, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Etiketa e mostrës
+            ctx.fillStyle = "#fff";
+            ctx.font = "bold 12px Fira Code";
+            ctx.fillText(prog < 0.5 ? "CuO (e zi)" : "Cu (i kuq)", boatX + 15, boatY - 20);
+
+            // 4. Rryma e gazit H2 (flluska/grimca që lëvizin majtas -> djathtas)
+            if (prog < 0.9) {
+                for (let i = 0; i < 6; i++) {
+                    const gx = ((f * 4 + i * 60) % 340) + (centerX - 170);
+                    ctx.fillStyle = "rgba(56, 189, 248, 0.6)";
+                    ctx.beginPath();
+                    ctx.arc(gx, centerY - 10 + Math.sin(f * 0.1 + i) * 5, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            // 5. Pikat e Ujit (H2O) që kondensohen në dalje të gypit
+            if (prog > 0.3) {
+                ctx.fillStyle = "rgba(56, 189, 248, 0.7)";
+                for (let i = 0; i < 5; i++) {
+                    ctx.beginPath();
+                    ctx.arc(centerX + 130 + i * 8, centerY + 15, 3 + Math.sin(f * 0.05 + i), 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.fillStyle = "#38bdf8";
+                ctx.font = "11px Inter";
+                ctx.fillText("H₂O (pika uji)", centerX + 110, centerY + 38);
+            }
+        }
+
+        // SIMULIMI 2: Çngjyrosja e KMnO4
+        function renderKMnO4Simulation(ctx, w, h, prog, f) {
+            const centerX = w / 2;
+            const centerY = h / 2 + 20;
+
+            // 1. Ena Konike (Erlenmeyer Flask)
+            ctx.strokeStyle = "rgba(255,255,255,0.5)";
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(centerX - 25, centerY - 110);
+            ctx.lineTo(centerX + 25, centerY - 110);
+            ctx.lineTo(centerX + 25, centerY - 60);
+            ctx.lineTo(centerX + 80, centerY + 80);
+            ctx.lineTo(centerX - 80, centerY + 80);
+            ctx.lineTo(centerX - 25, centerY - 60);
+            ctx.closePath();
+            ctx.stroke();
+
+            // 2. Tretësira Kimike (Nga Vjollcë e Erret KMnO4 -> Plotësisht Transparent/I pangjyrë Mn2+)
+            const alpha = 0.85 - prog * 0.80; // Zvogëlimi i opacitetit të ngjyrës vjollcë
+            const purpleR = Math.round(168 * (1 - prog) + 220 * prog);
+            const purpleG = Math.round(85 * (1 - prog) + 220 * prog);
+            const purpleB = Math.round(247 * (1 - prog) + 220 * prog);
+
+            ctx.fillStyle = `rgba(${purpleR}, ${purpleG}, ${purpleB}, ${alpha})`;
+            ctx.beginPath();
+            ctx.moveTo(centerX - 20, centerY - 20);
+            ctx.lineTo(centerX + 20, centerY - 20);
+            ctx.lineTo(centerX + 76, centerY + 76);
+            ctx.lineTo(centerX - 76, centerY + 76);
+            ctx.closePath();
+            ctx.fill();
+
+            // 3. Pipeta që pikon Agjentin Reduktues (H2O2) nga sipër
+            ctx.fillStyle = "#64748b";
+            ctx.fillRect(centerX - 4, centerY - 170, 8, 40);
+
+            if (prog < 0.95 && f % 20 < 10) {
+                // Pika e lëngut që bie
+                const dropY = (centerY - 130) + ((f * 3) % 100);
+                if (dropY < centerY - 20) {
+                    ctx.fillStyle = "#38bdf8";
+                    ctx.beginPath();
+                    ctx.arc(centerX, dropY, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            // Etiketat e Jonit
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "bold 13px Fira Code";
+            ctx.textAlign = "center";
+            if (prog < 0.5) {
+                ctx.fillText("MnO₄⁻ (Vjollcë, +7)", centerX, centerY + 30);
+            } else {
+                ctx.fillStyle = "#10b981";
+                ctx.fillText("Mn²⁺ (I pangjyrë, +2)", centerX, centerY + 30);
+            }
+        }
+    </script>
+</body>
+</html>

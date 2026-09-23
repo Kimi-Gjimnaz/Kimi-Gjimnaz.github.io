@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skema  e Kalimit të Elektroneve - Kimia 11</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #070a13;
+            --card-bg: #0f172a;
+            --card-border: #1e293b;
+            --accent-cyan: #06b6d4;
+            --accent-amber: #f59e0b;
+            --accent-emerald: #10b981;
+            --accent-rose: #f43f5e;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --font-mono: 'Fira Code', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: #020617;
+            border-bottom: 1px solid var(--card-border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--accent-cyan), #0284c7);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: #000;
+            font-size: 1.1rem;
+        }
+
+        .header-title h1 {
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        .header-title p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .badge-academic {
+            background: rgba(6, 182, 212, 0.1);
+            color: var(--accent-cyan);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 1.25rem;
+            padding: 1.25rem;
+            max-width: 1500px;
+            margin: 0 auto;
+            width: 100%;
+            flex: 1;
+        }
+
+        @media (max-width: 1024px) {
+            .main-layout { grid-template-columns: 1fr; }
+        }
+
+        .panel {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .panel-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-secondary);
+            font-weight: 700;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 0.5rem;
+        }
+
+        .selector-btn {
+            background: #020617;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 0.85rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .selector-btn:hover {
+            border-color: var(--accent-cyan);
+        }
+
+        .selector-btn.active {
+            border-color: var(--accent-cyan);
+            background: rgba(6, 182, 212, 0.08);
+        }
+
+        .selector-btn h4 {
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            margin-bottom: 0.2rem;
+        }
+
+        .selector-btn p {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            font-family: var(--font-mono);
+        }
+
+        /* Controls */
+        .control-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-top: auto;
+        }
+
+        .btn {
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-primary { background: var(--accent-cyan); color: #000; }
+        .btn-primary:hover { filter: brightness(1.15); }
+        .btn-secondary { background: #1e293b; color: var(--text-primary); }
+        .btn-secondary:hover { background: #334155; }
+
+        /* Stage Canvas Area */
+        .workspace {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .canvas-card {
+            background: #020617;
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            height: 420px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .overlay-status {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--card-border);
+            padding: 0.5rem 0.85rem;
+            border-radius: 6px;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--accent-cyan);
+        }
+
+        /* Detailed Telemetry */
+        .telemetry-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .telemetry-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 1rem;
+        }
+
+        .chem-eq-box {
+            font-family: var(--font-mono);
+            font-size: 1.1rem;
+            color: var(--accent-cyan);
+            background: #020617;
+            padding: 0.75rem;
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid var(--card-border);
+            margin-top: 0.5rem;
+        }
+
+        .half-eq-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.85rem;
+            font-family: var(--font-mono);
+        }
+
+        .half-eq-item:last-child { border-bottom: none; }
+
+        .tag-ox { color: var(--accent-rose); font-weight: 700; }
+        .tag-red { color: var(--accent-emerald); font-weight: 700; }
+
+        footer {
+            background: #020617;
+            border-top: 1px solid var(--card-border);
+            text-align: center;
+            padding: 0.75rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-group">
+            <div class="logo-icon">e⁻</div>
+            <div class="header-title">
+                <h1>Simuluesi i Kalimit të Elektroneve (Redoks)</h1>
+                <p>Modeli Atomik i Bohrit & Formimi i Lidhjeve Jonike (Kimia 11)</p>
+            </div>
+        </div>
+        <div class="badge-academic">Kapitulli 1.2 • Standardi Mësimor</div>
+    </header>
+
+    <div class="main-layout">
+        <!-- SIDEBAR -->
+        <aside class="panel">
+            <div class="panel-title">Zgjidh Reaksionin</div>
+
+            <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+                <div class="selector-btn active" onclick="selectSystem(0)">
+                    <h4>1. Natriumi me Klorin</h4>
+                    <p>2Na + Cl₂ → 2NaCl (1e⁻ transfer)</p>
+                </div>
+                <div class="selector-btn" onclick="selectSystem(1)">
+                    <h4>2. Magnezi me Oksigjenin</h4>
+                    <p>2Mg + O₂ → 2MgO (2e⁻ transfer)</p>
+                </div>
+            </div>
+
+            <div class="panel-title" style="margin-top: 0.5rem;">Kontrolli i Animacionit</div>
+
+            <div style="font-size: 0.8rem; color: var(--text-secondary); display:flex; flex-direction:column; gap:0.4rem;">
+                <label>Shpejtësia e Fluksit të e⁻:</label>
+                <input type="range" id="speedSlider" min="0.5" max="2" step="0.25" value="1">
+            </div>
+
+            <div class="control-grid">
+                <button class="btn btn-primary" id="playBtn" onclick="togglePlay()">▶ Fillo</button>
+                <button class="btn btn-secondary" onclick="resetSim()">🔄 Ristarto</button>
+            </div>
+        </aside>
+
+        <!-- WORKSPACE -->
+        <main class="workspace">
+            <div class="canvas-card">
+                <div class="overlay-status" id="statusText">Gjendja: Atomet Neutrale Fillestare</div>
+                <canvas id="atomCanvas"></canvas>
+            </div>
+
+            <div class="telemetry-grid">
+                <div class="telemetry-card">
+                    <div class="panel-title">Ekuacioni dhe Konfigurimi</div>
+                    <div class="chem-eq-box" id="eqBox">2Na + Cl₂ → 2NaCl</div>
+                    <div style="margin-top: 0.8rem; font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5;" id="configText">
+                        • Na: (2, 8, 1) → Na⁺ (2, 8)<br>
+                        • Cl: (2, 8, 7) → Cl⁻ (2, 8, 8)
+                    </div>
+                </div>
+
+                <div class="telemetry-card">
+                    <div class="panel-title">Analiza e Bilanicit Elektronik</div>
+                    <div class="half-eq-item">
+                        <span><span class="tag-ox">OKSIDIM:</span> <span id="oxText">Na⁰ → Na⁺ + 1e⁻</span></span>
+                        <span style="color: var(--accent-rose);" id="oxChange">N.O. 0 → +1</span>
+                    </div>
+                    <div class="half-eq-item">
+                        <span><span class="tag-red">REDUKTIM:</span> <span id="redText">Cl + 1e⁻ → Cl⁻</span></span>
+                        <span style="color: var(--accent-emerald);" id="redChange">N.O. 0 → -1</span>
+                    </div>
+                    <div style="margin-top:0.6rem; font-size: 0.8rem; color: var(--text-secondary);" id="agentText">
+                        • Agjenti Reduktues: <strong>Na</strong> | Agjenti Oksidues: <strong>Cl₂</strong>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <p>© Simuluesi Akademik i Kimisë 11 | Vizualizimi mikroskopik i reaksioneve Redoks</p>
+    </footer>
+
+    <script>
+        const REACTION_DATA = [
+            {
+                name: "Na + Cl",
+                eq: "2Na + Cl₂ → 2NaCl",
+                atomA: { name: "Na", symbol: "Na", shells: [2, 8, 1], color: "#06b6d4" },
+                atomB: { name: "Cl", symbol: "Cl", shells: [2, 8, 7], color: "#10b981" },
+                electronsToTransfer: 1,
+                configStr: "• Na (2, 8, 1) humbet 1e⁻ valence → Na⁺ (2, 8)<br>• Cl (2, 8, 7) fiton 1e⁻ valence → Cl⁻ (2, 8, 8)",
+                oxStr: "Na⁰ → Na⁺ + 1e⁻",
+                oxChangeStr: "0 → +1",
+                redStr: "Cl⁰ + 1e⁻ → Cl⁻",
+                redChangeStr: "0 → -1",
+                redAgent: "Na",
+                oxAgent: "Cl₂"
+            },
+            {
+                name: "Mg + O",
+                eq: "2Mg + O₂ → 2MgO",
+                atomA: { name: "Mg", symbol: "Mg", shells: [2, 8, 2], color: "#f59e0b" },
+                atomB: { name: "O", symbol: "O", shells: [2, 6], color: "#f43f5e" },
+                electronsToTransfer: 2,
+                configStr: "• Mg (2, 8, 2) humbet 2e⁻ valence → Mg²⁺ (2, 8)<br>• O (2, 6) fiton 2e⁻ valence → O²⁻ (2, 8)",
+                oxStr: "Mg⁰ → Mg²⁺ + 2e⁻",
+                oxChangeStr: "0 → +2",
+                redStr: "O⁰ + 2e⁻ → O²⁻",
+                redChangeStr: "0 → -2",
+                redAgent: "Mg",
+                oxAgent: "O₂"
+            }
+        ];
+
+        let canvas, ctx;
+        let activeIdx = 0;
+        let isPlaying = false;
+        let progress = 0; // 0 (start) to 1 (transferred/ionic)
+        let frame = 0;
+        let speed = 1;
+
+        window.onload = function() {
+            canvas = document.getElementById('atomCanvas');
+            ctx = canvas.getContext('2d');
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            document.getElementById('speedSlider').addEventListener('input', (e) => {
+                speed = parseFloat(e.target.value);
+            });
+
+            selectSystem(0);
+            animate();
+        };
+
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+        }
+
+        function selectSystem(idx) {
+            activeIdx = idx;
+            document.querySelectorAll('.selector-btn').forEach((btn, i) => {
+                btn.classList.toggle('active', i === idx);
+            });
+
+            const data = REACTION_DATA[idx];
+            document.getElementById('eqBox').textContent = data.eq;
+            document.getElementById('configText').innerHTML = data.configStr;
+            document.getElementById('oxText').textContent = data.oxStr;
+            document.getElementById('oxChange').textContent = "N.O. " + data.oxChangeStr;
+            document.getElementById('redText').textContent = data.redStr;
+            document.getElementById('redChange').textContent = "N.O. " + data.redChangeStr;
+            document.getElementById('agentText').innerHTML = `• Agjenti Reduktues: <strong>${data.redAgent}</strong> | Agjenti Oksidues: <strong>${data.oxAgent}</strong>`;
+
+            resetSim();
+        }
+
+        function togglePlay() {
+            isPlaying = !isPlaying;
+            document.getElementById('playBtn').textContent = isPlaying ? "⏸ Pezullo" : "▶ Fillo";
+        }
+
+        function resetSim() {
+            progress = 0;
+            isPlaying = false;
+            document.getElementById('playBtn').textContent = "▶ Fillo";
+            document.getElementById('statusText').textContent = "Gjendja: Atomet Neutrale Fillestare";
+        }
+
+        function animate() {
+            frame++;
+            if (isPlaying) {
+                progress += 0.004 * speed;
+                if (progress >= 1) {
+                    progress = 1;
+                    isPlaying = false;
+                    document.getElementById('playBtn').textContent = "🔄 Ristarto";
+                    document.getElementById('statusText').textContent = "Gjendja: Formimi i Jonit & Lidhjes Jonike";
+                } else if (progress > 0.1 && progress < 0.9) {
+                    document.getElementById('statusText').textContent = "Gjendja: Kalimi i Elektroneve në proces...";
+                }
+            }
+
+            renderStage();
+            requestAnimationFrame(animate);
+        }
+
+        function renderStage() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const data = REACTION_DATA[activeIdx];
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            // Efekti i afroimit të joneve pas transferit (Lidhja Jonike)
+            const baseDistance = Math.min(canvas.width * 0.35, 260);
+            const currentDistance = baseDistance - (progress > 0.8 ? (progress - 0.8) * 200 : 0);
+
+            const posA = { x: centerX - currentDistance / 2, y: centerY };
+            const posB = { x: centerX + currentDistance / 2, y: centerY };
+
+            // Vizato Atomin A (Dhuruesin)
+            drawBohrAtom(ctx, posA.x, posA.y, data.atomA, 'A', progress, data.electronsToTransfer, frame);
+
+            // Vizato Atomin B (Marrësin)
+            drawBohrAtom(ctx, posB.x, posB.y, data.atomB, 'B', progress, data.electronsToTransfer, frame);
+
+            // Animacioni i trajektores së elektroneve që udhëtojnë
+            if (progress > 0.15 && progress < 0.85) {
+                const transferProgress = (progress - 0.15) / 0.7; // 0 to 1
+                
+                for (let i = 0; i < data.electronsToTransfer; i++) {
+                    const offsetAngle = (i - (data.electronsToTransfer - 1) / 2) * 0.3;
+                    
+                    // Bezier Arc Path
+                    const startX = posA.x + 60;
+                    const startY = posA.y - 20 + i * 20;
+                    const endX = posB.x - 60;
+                    const endY = posB.y - 20 + i * 20;
+                    
+                    const controlX = centerX;
+                    const controlY = centerY - 100 - i * 30;
+
+                    // Interpolimi Parabolik
+                    const t = Math.min(1, Math.max(0, transferProgress * 1.2 - i * 0.15));
+                    const currX = Math.pow(1 - t, 2) * startX + 2 * (1 - t) * t * controlX + Math.pow(t, 2) * endX;
+                    const currY = Math.pow(1 - t, 2) * startY + 2 * (1 - t) * t * controlY + Math.pow(t, 2) * endY;
+
+                    // Vizato trajektoren vizuale (Shigjetën e kalimit)
+                    ctx.beginPath();
+                    ctx.moveTo(startX, startY);
+                    ctx.quadraticCurveTo(controlX, controlY, endX, endY);
+                    ctx.strokeStyle = "rgba(6, 182, 212, 0.25)";
+                    ctx.lineWidth = 2;
+                    ctx.setLineDash([6, 6]);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+
+                    // Partikula e elektronit që udhëton me shkëlqim (Glow)
+                    ctx.shadowColor = "#06b6d4";
+                    ctx.shadowBlur = 12;
+                    ctx.fillStyle = "#ffffff";
+                    ctx.beginPath();
+                    ctx.arc(currX, currY, 6, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                }
+            }
+
+            // Aura e terheqjes elektrostatike në fazën përfundimtare
+            if (progress >= 0.85) {
+                ctx.strokeStyle = "rgba(245, 158, 11, 0.4)";
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, 40 + Math.sin(frame * 0.1) * 5, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+        }
+
+        function drawBohrAtom(ctx, cx, cy, atomData, role, prog, transferCount, frame) {
+            const isA = role === 'A';
+            const isIon = prog >= 0.85;
+
+            // Bërthama
+            ctx.beginPath();
+            ctx.arc(cx, cy, 22, 0, Math.PI * 2);
+            ctx.fillStyle = atomData.color;
+            ctx.fill();
+            
+            // Simboli dhe Ngarkesa
+            ctx.fillStyle = "#000000";
+            ctx.font = "bold 13px Inter";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            
+            let label = atomData.symbol;
+            if (isIon) {
+                label += isA ? (transferCount > 1 ? `${transferCount}+` : '+') : (transferCount > 1 ? `${transferCount}-` : '-');
+            }
+            ctx.fillText(label, cx, cy);
+
+            // Vizatimi i shtresave (Orbitave)
+            let baseRadius = 40;
+            let shellGap = 24;
+
+            atomData.shells.forEach((electronCount, shellIdx) => {
+                const isValenceShell = shellIdx === atomData.shells.length - 1;
+                
+                // Nëse atomi A e humbet shtresën e jashtme plotësisht gjatë kalimit
+                if (isA && isValenceShell && prog > 0.8) {
+                    return; 
+                }
+
+                const r = baseRadius + shellIdx * shellGap;
+
+                // Unaza e orbitës
+                ctx.beginPath();
+                ctx.arc(cx, cy, r, 0, Math.PI * 2);
+                ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                // Numri i elektroneve në këtë shtresë
+                let currentECount = electronCount;
+
+                if (isValenceShell) {
+                    if (isA) {
+                        currentECount = prog > 0.8 ? 0 : electronCount;
+                    } else { // Atom B
+                        currentECount = prog > 0.8 ? electronCount + transferCount : electronCount;
+                    }
+                }
+
+                // Vizatimi i Elektroneve në orbitë
+                const rotationSpeed = (shellIdx % 2 === 0 ? 1 : -1) * 0.005 * frame;
+
+                for (let i = 0; i < currentECount; i++) {
+                    const angle = (i / currentECount) * Math.PI * 2 + rotationSpeed;
+                    const ex = cx + r * Math.cos(angle);
+                    const ey = cy + r * Math.sin(angle);
+
+                    ctx.beginPath();
+                    ctx.arc(ex, ey, 4.5, 0, Math.PI * 2);
+                    ctx.fillStyle = (isA && isValenceShell) ? "#06b6d4" : "#ffffff";
+                    ctx.fill();
+                }
+            });
+        }
+    </script>
+</body>
+</html>
