@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gjimnazi Milot-Kimi 11</title>
+    <style>
+        /* Paleta e Ngjyrave Profesionale (Corporate Dark Slate) */
+        :root {
+            --bg-main: #02091b;        
+            --card-bg: #192e4e;        
+            --card-border: #00409b;    
+            
+            /* Grupi A - Blu */
+            --accent-a: #3b82f6;       
+            --accent-a-glow: rgba(59, 130, 246, 0.2);
+            
+            /* Grupi B - E Kuqe */
+            --accent-b: #ef4444;       
+            --accent-b-glow: rgba(239, 68, 68, 0.2);
+            
+            --success: #059669;        
+            --danger: #e11d48;         
+            --warning: #d97706;        
+            
+            --text-main: #f8fafc;      
+            --text-muted: #94a3b8;     
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Executive Header Navigation */
+        .navbar {
+            background-color: rgba(15, 23, 42, 0.95);
+            border-bottom: 1px solid var(--card-border);
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-badge {
+            background: linear-gradient(135deg, var(--accent-a), var(--accent-b));
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            white-space: nowrap;
+        }
+
+        .nav-controls {
+            display: flex;
+            gap: 12px;
+        }
+
+        .mode-btn {
+            background: var(--card-bg);
+            color: var(--text-muted);
+            border: 1px solid var(--card-border);
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .mode-btn:hover {
+            color: #ffffff;
+            border-color: #475569;
+            background: #27354f;
+        }
+
+        .mode-btn.active {
+            background: #1e293b;
+            color: #ffffff;
+            border-color: var(--accent-a);
+            box-shadow: 0 0 10px var(--accent-a-glow);
+        }
+
+        /* Container & Split Layout */
+        .container {
+            flex: 1;
+            padding: 32px;
+            max-width: 1600px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .split-view {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+        }
+
+        .group-panel {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 28px;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .panel-a { border-top: 4px solid var(--accent-a); }
+        .panel-b { border-top: 4px solid var(--accent-b); }
+
+        .group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+        }
+
+        .group-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .panel-a .group-title { color: var(--accent-a); }
+        .panel-b .group-title { color: var(--accent-b); }
+
+        .panel-stats {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .stats-badge {
+            background-color: var(--bg-main);
+            border: 1px solid var(--card-border);
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        /* Timer Badge Design */
+        .timer-badge {
+            background: var(--bg-main);
+            border: 1px solid var(--warning);
+            color: var(--warning);
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .timer-badge.urgent {
+            border-color: var(--danger);
+            color: var(--danger);
+            animation: pulse 1s infinite;
+            background-color: rgba(225, 29, 72, 0.1);
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(0.98); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Question Box */
+        .question-box {
+            text-align: center;
+            background: var(--bg-main);
+            border: 1px solid var(--card-border);
+            padding: 32px 24px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            word-wrap: break-word;
+        }
+
+        .molecule-display {
+            font-size: 3.2rem;
+            font-weight: 800;
+            margin: 16px 0;
+            letter-spacing: 2px;
+            color: #ffffff;
+        }
+
+        .target-text {
+            color: var(--text-muted);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .target-element-highlight {
+            color: var(--warning);
+            font-weight: 800;
+            font-size: 1.3rem;
+            padding: 0 4px;
+        }
+
+        /* Options Grid */
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .opt-btn {
+            background-color: #283548;
+            color: #ffffff;
+            border: 1px solid var(--card-border);
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .opt-btn:hover:not(:disabled) {
+            background-color: #334155;
+            border-color: #475569;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+        }
+
+        .opt-btn.correct {
+            background-color: var(--success) !important;
+            border-color: #047857 !important;
+            color: #ffffff;
+            box-shadow: 0 0 15px rgba(5, 150, 105, 0.4);
+        }
+
+        .opt-btn.wrong {
+            background-color: var(--danger) !important;
+            border-color: #be123c !important;
+            color: #ffffff;
+            opacity: 0.9;
+        }
+
+        /* Explanation & Action Box */
+        .explanation-box {
+            background-color: var(--bg-main);
+            border-left: 4px solid var(--accent-a);
+            padding: 16px 20px;
+            border-radius: 4px 8px 8px 4px;
+            font-size: 0.95rem;
+            color: #e2e8f0;
+            margin-bottom: 20px;
+            display: none;
+            line-height: 1.6;
+        }
+
+        .panel-b .explanation-box {
+            border-left-color: var(--accent-b);
+        }
+
+        .next-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            display: none;
+            transition: all 0.2s;
+            margin-top: auto;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .panel-a .next-btn { background-color: var(--accent-a); color: #fff; }
+        .panel-a .next-btn:hover { background-color: #2563eb; }
+
+        .panel-b .next-btn { background-color: var(--accent-b); color: #fff; }
+        .panel-b .next-btn:hover { background-color: #dc2626; } /* E kuqe e erret ne hover */
+
+        /* Solo Container & Database Explorer */
+        .solo-container, .db-container {
+            display: none;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 32px;
+            max-width: 900px;
+            margin: 0 auto;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2);
+        }
+        
+        .solo-header {
+            display: flex;
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 24px;
+        }
+
+        .solo-header-controls {
+            display: flex; 
+            gap: 16px; 
+            align-items: center;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 14px 20px;
+            background: var(--bg-main);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            margin-bottom: 24px;
+            transition: border-color 0.2s;
+        }
+        
+        .search-bar:focus {
+            outline: none;
+            border-color: var(--accent-a);
+        }
+        
+        .table-responsive-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            max-height: 600px;
+            overflow-y: auto;
+            border-radius: 8px;
+            border: 1px solid var(--card-border);
+        }
+
+        .db-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 700px;
+        }
+
+        .db-table th, .db-table td {
+            padding: 14px 20px;
+            text-align: left;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .db-table th {
+            background-color: var(--bg-main);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .db-table tr:hover {
+            background-color: rgba(255,255,255,0.02);
+        }
+
+        .badge-grp {
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        .grp-a { background: var(--accent-a-glow); color: var(--accent-a); }
+        .grp-b { background: var(--accent-b-glow); color: var(--accent-b); }
+
+        sub, sup { font-size: 0.65em; }
+
+        /* Rregullat Responsive */
+        @media (max-width: 1024px) {
+            .split-view { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; padding: 16px; gap: 16px; }
+            .logo { flex-wrap: wrap; justify-content: center; text-align: center; }
+            .nav-controls { width: 100%; flex-wrap: wrap; justify-content: center; }
+            .mode-btn { flex: 1 1 calc(50% - 12px); padding: 10px; font-size: 0.85rem; text-align: center; }
+            .container { padding: 16px 12px; }
+            .group-panel, .solo-container, .db-container { padding: 16px; }
+            .group-header, .solo-header { flex-direction: column; align-items: flex-start !important; gap: 16px; }
+            .panel-stats, .solo-header-controls { width: 100%; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+            #solo-filter { width: 100%; }
+            .molecule-display { font-size: 2.2rem; }
+            .options-grid { grid-template-columns: 1fr; gap: 12px; }
+            .opt-btn { padding: 14px; font-size: 1.1rem; }
+            .db-table th, .db-table td { padding: 10px; font-size: 0.85rem; white-space: nowrap; }
+            .question-box { padding: 24px 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Executive Navbar -->
+    <nav class="navbar">
+        <div class="logo">
+            <span>🔬</span> Lojëra dhe ushtrime 
+            <span class="logo-badge">100 ushtrime redoks</span>
+        </div>
+        <li class="nav-item">
+                <a href="kimi11.html">Kalo në faqen kryesore</a>
+            </li>
+        <div class="nav-controls">
+            <button class="mode-btn active" onclick="switchView('split', event)">📊 Ekran i Ndarë</button>
+            <button class="mode-btn" onclick="switchView('solo', event)">👤 Ushtro vetëm</button>
+            <button class="mode-btn" onclick="switchView('db', event)">📚 Banka</button>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <!-- SPLIT SCREEN DUO VIEW -->
+        <div id="view-split" class="split-view">
+            
+            <!-- PANEL GROUP A (1 - 50) -->
+            <div class="group-panel panel-a" id="panel-A">
+                <div class="group-header">
+                    <div class="group-title">
+                        <span>Grupi A</span>
+                        <span style="font-size:0.85rem; font-weight:normal; color:var(--text-muted);">(1–50)</span>
+                    </div>
+                    <div class="panel-stats">
+                        <div class="timer-badge" id="timer-badge-A">⏱️ <span id="timer-A">02:00</span></div>
+                        <div class="stats-badge">Pikët: <span id="score-A" style="color:#fff; font-weight:700;">0</span></div>
+                        <div class="stats-badge">Pyetja: <span id="lvl-A" style="color:#fff; font-weight:700;">1</span>/50</div>
+                    </div>
+                </div>
+
+                <div class="question-box">
+                    <div class="target-text">Llogarit numrin e oksidimit për: <span class="target-element-highlight" id="elem-A">-</span></div>
+                    <div class="molecule-display" id="mol-A">-</div>
+                </div>
+
+                <div class="options-grid" id="opts-A"></div>
+
+                <div class="explanation-box" id="exp-A"></div>
+                <button class="next-btn" id="next-A" onclick="nextQuestion('A')">Kalo te Ushtrimi Tjetër ➔</button>
+            </div>
+
+            <!-- PANEL GROUP B (51 - 100) -->
+            <div class="group-panel panel-b" id="panel-B">
+                <div class="group-header">
+                    <div class="group-title">
+                        <span>Grupi B</span>
+                        <span style="font-size:0.85rem; font-weight:normal; color:var(--text-muted);">(51–100)</span>
+                    </div>
+                    <div class="panel-stats">
+                        <div class="timer-badge" id="timer-badge-B">⏱️ <span id="timer-B">02:00</span></div>
+                        <div class="stats-badge">Pikët: <span id="score-B" style="color:#fff; font-weight:700;">0</span></div>
+                        <div class="stats-badge">Pyetja: <span id="lvl-B" style="color:#fff; font-weight:700;">1</span>/50</div>
+                    </div>
+                </div>
+
+                <div class="question-box">
+                    <div class="target-text">Llogarit numrin e oksidimit për: <span class="target-element-highlight" id="elem-B">-</span></div>
+                    <div class="molecule-display" id="mol-B">-</div>
+                </div>
+
+                <div class="options-grid" id="opts-B"></div>
+
+                <div class="explanation-box" id="exp-B"></div>
+                <button class="next-btn" id="next-B" onclick="nextQuestion('B')">Kalo te Ushtrimi Tjetër ➔</button>
+            </div>
+
+        </div>
+
+        <!-- SOLO PRACTICE MODE -->
+        <div id="view-solo" class="solo-container">
+            <div class="solo-header">
+                <h2 style="color: var(--accent-a); font-size:1.4rem;">Mënyra Ushtrim Solo</h2>
+                <div class="solo-header-controls">
+                    <select id="solo-filter" onchange="initSolo()" style="padding: 8px 16px; background:var(--bg-main); color:#fff; border:1px solid var(--card-border); border-radius:6px; font-weight:600; cursor:pointer;">
+                        <option value="all">Të 100 Ushtrimet</option>
+                        <option value="A">Vetëm Grupi A</option>
+                        <option value="B">Vetëm Grupi B</option>
+                    </select>
+                    <div class="timer-badge" id="timer-badge-solo">⏱️ <span id="timer-solo">02:20</span></div>
+                    <div class="stats-badge">Pikët: <span id="solo-score" style="color:var(--success); font-weight:800; font-size:1.1rem;">0</span></div>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <div class="target-text">Llogarit numrin e oksidimit për: <span class="target-element-highlight" id="solo-elem">-</span></div>
+                <div class="molecule-display" id="solo-mol">-</div>
+            </div>
+
+            <div class="options-grid" id="solo-opts"></div>
+            <div class="explanation-box" id="solo-exp"></div>
+            <button class="next-btn" id="solo-next" style="background:var(--accent-a); color:#fff; display:none;" onclick="nextSolo()">Kalo te Ushtrimi Tjetër ➔</button>
+        </div>
+
+        <!-- DATABASE EXPLORER VIEW -->
+        <div id="view-db" class="db-container">
+            <h2 style="margin-bottom: 20px; color: var(--text-main); font-size:1.4rem;">Banka e 100 Ushtrimeve</h2>
+            <input type="text" id="db-search" class="search-bar" placeholder="Kërko me emër formule (p.sh. KMnO4), element (Fe) ose numër oksidimi (+3)..." onkeyup="filterDatabase()">
+            
+            <div class="table-responsive-wrapper">
+                <table class="db-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Grupi</th>
+                            <th>Koha</th>
+                            <th>Komponimi</th>
+                            <th>Target</th>
+                            <th>Oksidimi</th>
+                            <th>Shpjegimi Kimik</th>
+                        </tr>
+                    </thead>
+                    <tbody id="db-table-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Data origjinale e ushtrimeve.
+        const rawExercises = [
+            // GROUP A: 1 - 50
+            { id:1, grp:'A', mol:'H<sub>2</sub>O', elem:'O', options:['-2','-1','0','+2'], ans:'-2', exp:'Oksigjeni në ujë ka numër oksidimi -2. H: 2(+1) + O = 0 ⇒ O = -2.' },
+            { id:2, grp:'A', mol:'NH<sub>3</sub>', elem:'N', options:['-3','+3','-1','+1'], ans:'-3', exp:'Hidrogjeni me jometale është +1. N + 3(+1) = 0 ⇒ N = -3.' },
+            { id:3, grp:'A', mol:'KMnO<sub>4</sub>', elem:'Mn', options:['+7','+6','+4','+2'], ans:'+7', exp:'K (+1), O (-2). (+1) + Mn + 4(-2) = 0 ⇒ Mn = +7.' },
+            { id:4, grp:'A', mol:'H<sub>2</sub>SO<sub>4</sub>', elem:'S', options:['+6','+4','-2','+2'], ans:'+6', exp:'H (+1), O (-2). 2(+1) + S + 4(-2) = 0 ⇒ S = +6.' },
+            { id:5, grp:'A', mol:'Na<sub>2</sub>Cr<sub>2</sub>O<sub>7</sub>', elem:'Cr', options:['+6','+3','+7','+12'], ans:'+6', exp:'Na (+1), O (-2). 2(+1) + 2Cr + 7(-2) = 0 ⇒ 2Cr = 12 ⇒ Cr = +6.' },
+            { id:6, grp:'A', mol:'HNO<sub>3</sub>', elem:'N', options:['+5','+3','-3','+2'], ans:'+5', exp:'H (+1), O (-2). (+1) + N + 3(-2) = 0 ⇒ N = +5.' },
+            { id:7, grp:'A', mol:'K<sub>2</sub>CrO<sub>4</sub>', elem:'Cr', options:['+6','+3','+4','+7'], ans:'+6', exp:'K (+1), O (-2). 2(+1) + Cr + 4(-2) = 0 ⇒ Cr = +6.' },
+            { id:8, grp:'A', mol:'H<sub>2</sub>O<sub>2</sub>', elem:'O', options:['-1','-2','0','+1'], ans:'-1', exp:'Përjashtim: Në perokside oksigjeni ka numër oksidimi -1.' },
+            { id:9, grp:'A', mol:'OF<sub>2</sub>', elem:'O', options:['+2','-2','-1','+1'], ans:'+2', exp:'Fluori është më elektronegativ (-1). O + 2(-1) = 0 ⇒ O = +2.' },
+            { id:10, grp:'A', mol:'NaH', elem:'H', options:['-1','+1','0','-2'], ans:'-1', exp:'Në hidride metalike hidrogjeni ka numër oksidimi -1.' },
+            { id:11, grp:'A', mol:'CO<sub>2</sub>', elem:'C', options:['+4','+2','-4','0'], ans:'+4', exp:'O (-2). C + 2(-2) = 0 ⇒ C = +4.' },
+            { id:12, grp:'A', mol:'CH<sub>4</sub>', elem:'C', options:['-4','+4','-2','+2'], ans:'-4', exp:'H (+1). C + 4(+1) = 0 ⇒ C = -4.' },
+            { id:13, grp:'A', mol:'Fe<sub>2</sub>O<sub>3</sub>', elem:'Fe', options:['+3','+2','+6','0'], ans:'+3', exp:'O (-2). 2Fe + 3(-2) = 0 ⇒ Fe = +3.' },
+            { id:14, grp:'A', mol:'FeO', elem:'Fe', options:['+2','+3','+1','0'], ans:'+2', exp:'O (-2). Fe + (-2) = 0 ⇒ Fe = +2.' },
+            { id:15, grp:'A', mol:'SO<sub>4</sub><sup>2-</sup>', elem:'S', options:['+6','+4','-2','+8'], ans:'+6', exp:'Jon poliatomik. S + 4(-2) = -2 ⇒ S = +6.' },
+            { id:16, grp:'A', mol:'NO<sub>3</sub><sup>-</sup>', elem:'N', options:['+5','+3','-3','+6'], ans:'+5', exp:'Jon poliatomik. N + 3(-2) = -1 ⇒ N = +5.' },
+            { id:17, grp:'A', mol:'PO<sub>4</sub><sup>3-</sup>', elem:'P', options:['+5','+3','-3','+8'], ans:'+5', exp:'Jon poliatomik. P + 4(-2) = -3 ⇒ P = +5.' },
+            { id:18, grp:'A', mol:'NH<sub>4</sub><sup>+</sup>', elem:'N', options:['-3','+3','-1','+5'], ans:'-3', exp:'Jon poliatomik. N + 4(+1) = +1 ⇒ N = -3.' },
+            { id:19, grp:'A', mol:'ClO<sub>4</sub><sup>-</sup>', elem:'Cl', options:['+7','+5','+3','-1'], ans:'+7', exp:'Perklorat: Cl + 4(-2) = -1 ⇒ Cl = +7.' },
+            { id:20, grp:'A', mol:'ClO<sub>3</sub><sup>-</sup>', elem:'Cl', options:['+5','+7','+3','-1'], ans:'+5', exp:'Klorat: Cl + 3(-2) = -1 ⇒ Cl = +5.' },
+            { id:21, grp:'A', mol:'ClO<sub>2</sub><sup>-</sup>', elem:'Cl', options:['+3','+5','+1','-1'], ans:'+3', exp:'Klorit: Cl + 2(-2) = -1 ⇒ Cl = +3.' },
+            { id:22, grp:'A', mol:'ClO<sup>-</sup>', elem:'Cl', options:['+1','+3','-1','0'], ans:'+1', exp:'Hipoklorit: Cl + (-2) = -1 ⇒ Cl = +1.' },
+            { id:23, grp:'A', mol:'KO<sub>2</sub>', elem:'O', options:['-1/2','-1','-2','0'], ans:'-1/2', exp:'Superoksid: Kaliumi +1. (+1) + 2O = 0 ⇒ O = -1/2.' },
+            { id:24, grp:'A', mol:'MgCl<sub>2</sub>', elem:'Mg', options:['+2','+1','-2','0'], ans:'+2', exp:'Metalet e grupit 2A kanë numër oksidimi +2.' },
+            { id:25, grp:'A', mol:'Al<sub>2</sub>O<sub>3</sub>', elem:'Al', options:['+3','+2','+6','0'], ans:'+3', exp:'Alumini në grupin 3A ka numër oksidimi +3.' },
+            { id:26, grp:'A', mol:'H<sub>3</sub>PO<sub>4</sub>', elem:'P', options:['+5','+3','+1','-3'], ans:'+5', exp:'3(+1) + P + 4(-2) = 0 ⇒ P = +5.' },
+            { id:27, grp:'A', mol:'H<sub>2</sub>S', elem:'S', options:['-2','+2','+6','0'], ans:'-2', exp:'2(+1) + S = 0 ⇒ S = -2.' },
+            { id:28, grp:'A', mol:'SF<sub>6</sub>', elem:'S', options:['+6','-6','+4','0'], ans:'+6', exp:'Fluori është -1. S + 6(-1) = 0 ⇒ S = +6.' },
+            { id:29, grp:'A', mol:'Na<sub>2</sub>O<sub>2</sub>', elem:'O', options:['-1','-2','0','+1'], ans:'-1', exp:'Peroksid natriumi: 2(+1) + 2O = 0 ⇒ O = -1.' },
+            { id:30, grp:'A', mol:'H<sub>2</sub>CO<sub>3</sub>', elem:'C', options:['+4','+2','-2','0'], ans:'+4', exp:'2(+1) + C + 3(-2) = 0 ⇒ C = +4.' },
+            { id:31, grp:'A', mol:'KClO<sub>3</sub>', elem:'Cl', options:['+5','+7','+3','-1'], ans:'+5', exp:'(+1) + Cl + 3(-2) = 0 ⇒ Cl = +5.' },
+            { id:32, grp:'A', mol:'IF<sub>7</sub>', elem:'I', options:['+7','+5','-1','+1'], ans:'+7', exp:'I + 7(-1) = 0 ⇒ I = +7.' },
+            { id:33, grp:'A', mol:'XeF<sub>4</sub>', elem:'Xe', options:['+4','+2','+6','0'], ans:'+4', exp:'Xe + 4(-1) = 0 ⇒ Xe = +4.' },
+            { id:34, grp:'A', mol:'N<sub>2</sub>O', elem:'N', options:['+1','+2','-1','+3'], ans:'+1', exp:'2N + (-2) = 0 ⇒ N = +1.' },
+            { id:35, grp:'A', mol:'NO', elem:'N', options:['+2','+1','+4','-2'], ans:'+2', exp:'N + (-2) = 0 ⇒ N = +2.' },
+            { id:36, grp:'A', mol:'N<sub>2</sub>O<sub>3</sub>', elem:'N', options:['+3','+5','+2','-3'], ans:'+3', exp:'2N + 3(-2) = 0 ⇒ N = +3.' },
+            { id:37, grp:'A', mol:'NO<sub>2</sub>', elem:'N', options:['+4','+2','+5','+3'], ans:'+4', exp:'N + 2(-2) = 0 ⇒ N = +4.' },
+            { id:38, grp:'A', mol:'N<sub>2</sub>O<sub>5</sub>', elem:'N', options:['+5','+3','+4','+6'], ans:'+5', exp:'2N + 5(-2) = 0 ⇒ N = +5.' },
+            { id:39, grp:'A', mol:'P<sub>4</sub>O<sub>10</sub>', elem:'P', options:['+5','+3','+2.5','+10'], ans:'+5', exp:'4P + 10(-2) = 0 ⇒ P = +5.' },
+            { id:40, grp:'A', mol:'H<sub>3</sub>PO<sub>3</sub>', elem:'P', options:['+3','+5','+1','-3'], ans:'+3', exp:'3(+1) + P + 3(-2) = 0 ⇒ P = +3.' },
+            { id:41, grp:'A', mol:'H<sub>3</sub>PO<sub>2</sub>', elem:'P', options:['+1','+3','+5','-1'], ans:'+1', exp:'3(+1) + P + 2(-2) = 0 ⇒ P = +1.' },
+            { id:42, grp:'A', mol:'HCN', elem:'C', options:['+2','-2','+4','0'], ans:'+2', exp:'H (+1), N (-3). (+1) + C + (-3) = 0 ⇒ C = +2.' },
+            { id:43, grp:'A', mol:'K<sub>2</sub>MnO<sub>4</sub>', elem:'Mn', options:['+6','+7','+4','+2'], ans:'+6', exp:'2(+1) + Mn + 4(-2) = 0 ⇒ Mn = +6.' },
+            { id:44, grp:'A', mol:'MnO<sub>2</sub>', elem:'Mn', options:['+4','+2','+7','0'], ans:'+4', exp:'Mn + 2(-2) = 0 ⇒ Mn = +4.' },
+            { id:45, grp:'A', mol:'Cr<sub>2</sub>O<sub>3</sub>', elem:'Cr', options:['+3','+6','+2','0'], ans:'+3', exp:'2Cr + 3(-2) = 0 ⇒ Cr = +3.' },
+            { id:46, grp:'A', mol:'BaO<sub>2</sub>', elem:'O', options:['-1','-2','0','+2'], ans:'-1', exp:'Peroksid bariumi: (+2) + 2O = 0 ⇒ O = -1.' },
+            { id:47, grp:'A', mol:'LiAlH<sub>4</sub>', elem:'H', options:['-1','+1','0','-2'], ans:'-1', exp:'Li (+1) + Al (+3) + 4H = 0 ⇒ H = -1.' },
+            { id:48, grp:'A', mol:'PCl<sub>5</sub>', elem:'P', options:['+5','+3','-5','-3'], ans:'+5', exp:'P + 5(-1) = 0 ⇒ P = +5.' },
+            { id:49, grp:'A', mol:'PCl<sub>3</sub>', elem:'P', options:['+3','+5','-3','0'], ans:'+3', exp:'P + 3(-1) = 0 ⇒ P = +3.' },
+            { id:50, grp:'A', mol:'Na<sub>2</sub>S<sub>2</sub>O<sub>3</sub>', elem:'S', options:['+2','+2.5','+6','-2'], ans:'+2', exp:'Tiosulfat: 2(+1) + 2S + 3(-2) = 0 ⇒ S = +2.' },
+
+            // GROUP B: 51 - 100
+            { id:51, grp:'B', mol:'[Fe(CN)<sub>6</sub>]<sup>4-</sup>', elem:'Fe', options:['+2','+3','+6','0'], ans:'+2', exp:'CN ka ngarkesë -1. Fe + 6(-1) = -4 ⇒ Fe = +2.' },
+            { id:52, grp:'B', mol:'[Fe(CN)<sub>6</sub>]<sup>3-</sup>', elem:'Fe', options:['+3','+2','+4','+6'], ans:'+3', exp:'Fe + 6(-1) = -3 ⇒ Fe = +3.' },
+            { id:53, grp:'B', mol:'Fe<sub>3</sub>O<sub>4</sub>', elem:'Fe', options:['+8/3','+2','+3','+8'], ans:'+8/3', exp:'Oksid i përzier: 3Fe + 4(-2) = 0 ⇒ Fe = +8/3.' },
+            { id:54, grp:'B', mol:'Pb<sub>3</sub>O<sub>4</sub>', elem:'Pb', options:['+8/3','+2','+4','+3'], ans:'+8/3', exp:'Oksid i përzier i plumbit: 3Pb + 4(-2) = 0 ⇒ Pb = +8/3.' },
+            { id:55, grp:'B', mol:'S<sub>4</sub>O<sub>6</sub><sup>2-</sup>', elem:'S', options:['+2.5','+2','+5','+6'], ans:'+2.5', exp:'4S + 6(-2) = -2 ⇒ S = +2.5.' },
+            { id:56, grp:'B', mol:'S<sub>2</sub>O<sub>8</sub><sup>2-</sup>', elem:'S', options:['+6','+7','+8','+5'], ans:'+6', exp:'Peroxydisulfate: Atomet S kanë numër oksidimi +6.' },
+            { id:57, grp:'B', mol:'CrO<sub>5</sub>', elem:'Cr', options:['+6','+10','+5','+4'], ans:'+6', exp:'Struktura përmban 2 ura perokside. Cr = +6.' },
+            { id:58, grp:'B', mol:'K<sub>2</sub>PtCl<sub>6</sub>', elem:'Pt', options:['+4','+2','+6','0'], ans:'+4', exp:'2(+1) + Pt + 6(-1) = 0 ⇒ Pt = +4.' },
+            { id:59, grp:'B', mol:'[Cu(NH<sub>3</sub>)<sub>4</sub>]SO<sub>4</sub>', elem:'Cu', options:['+2','+1','0','+4'], ans:'+2', exp:'NH3 është neutral (0). Cu + (-2) = 0 ⇒ Cu = +2.' },
+            { id:60, grp:'B', mol:'[Co(NH<sub>3</sub>)<sub>6</sub>]Cl<sub>3</sub>', elem:'Co', options:['+3','+2','+6','0'], ans:'+3', exp:'NH3 (0), Cl (-1). Co + 3(-1) = 0 ⇒ Co = +3.' },
+            { id:61, grp:'B', mol:'Ni(CO)<sub>4</sub>', elem:'Ni', options:['0','+2','+4','-2'], ans:'0', exp:'Ligandi CO është neutral (0). Ni = 0.' },
+            { id:62, grp:'B', mol:'Fe(CO)<sub>5</sub>', elem:'Fe', options:['0','+2','+5','-2'], ans:'0', exp:'CO është ligand neutral. Fe = 0.' },
+            { id:63, grp:'B', mol:'VO<sub>2</sub><sup>+</sup>', elem:'V', options:['+5','+4','+3','+2'], ans:'+5', exp:'V + 2(-2) = +1 ⇒ V = +5.' },
+            { id:64, grp:'B', mol:'VO<sup>2+</sup>', elem:'V', options:['+4','+5','+2','+3'], ans:'+4', exp:'V + (-2) = +2 ⇒ V = +4.' },
+            { id:65, grp:'B', mol:'TiO<sub>2</sub>', elem:'Ti', options:['+4','+2','+3','0'], ans:'+4', exp:'Ti + 2(-2) = 0 ⇒ Ti = +4.' },
+            { id:66, grp:'B', mol:'UO<sub>2</sub><sup>2+</sup>', elem:'U', options:['+6','+4','+2','+8'], ans:'+6', exp:'Joni uranil: U + 2(-2) = +2 ⇒ U = +6.' },
+            { id:67, grp:'B', mol:'Na<sub>3</sub>AlF<sub>6</sub>', elem:'Al', options:['+3','+6','-3','+1'], ans:'+3', exp:'3(+1) + Al + 6(-1) = 0 ⇒ Al = +3.' },
+            { id:68, grp:'B', mol:'H<sub>2</sub>S<sub>2</sub>O<sub>7</sub>', elem:'S', options:['+6','+7','+5','+12'], ans:'+6', exp:'2(+1) + 2S + 7(-2) = 0 ⇒ S = +6.' },
+            { id:69, grp:'B', mol:'C<sub>2</sub>H<sub>5</sub>OH', elem:'C', options:['-2','-4','0','+2'], ans:'-2', exp:'Mesatarja për C: 2C + 6(+1) + (-2) = 0 ⇒ C = -2.' },
+            { id:70, grp:'B', mol:'C<sub>6</sub>H<sub>12</sub>O<sub>6</sub>', elem:'C', options:['0','+2','-2','+4'], ans:'0', exp:'Glukoza: 6C + 12(+1) + 6(-2) = 0 ⇒ C = 0.' },
+            { id:71, grp:'B', mol:'HCOOH', elem:'C', options:['+2','0','+4','-2'], ans:'+2', exp:'2(+1) + C + 2(-2) = 0 ⇒ C = +2.' },
+            { id:72, grp:'B', mol:'CH<sub>3</sub>COOH', elem:'C', options:['0','+2','-2','+4'], ans:'0', exp:'Acid acetik: 2C + 4(+1) + 2(-2) = 0 ⇒ C = 0.' },
+            { id:73, grp:'B', mol:'C<sub>2</sub>O<sub>4</sub><sup>2-</sup>', elem:'C', options:['+3','+4','+2','-2'], ans:'+3', exp:'2C + 4(-2) = -2 ⇒ C = +3.' },
+            { id:74, grp:'B', mol:'BrF<sub>5</sub>', elem:'Br', options:['+5','+3','-1','+7'], ans:'+5', exp:'Br + 5(-1) = 0 ⇒ Br = +5.' },
+            { id:75, grp:'B', mol:'ICl<sub>3</sub>', elem:'I', options:['+3','+1','-1','+5'], ans:'+3', exp:'I + 3(-1) = 0 ⇒ I = +3.' },
+            { id:76, grp:'B', mol:'XeF<sub>6</sub>', elem:'Xe', options:['+6','+4','+8','0'], ans:'+6', exp:'Xe + 6(-1) = 0 ⇒ Xe = +6.' },
+            { id:77, grp:'B', mol:'XeO<sub>3</sub>', elem:'Xe', options:['+6','+3','+4','+8'], ans:'+6', exp:'Xe + 3(-2) = 0 ⇒ Xe = +6.' },
+            { id:78, grp:'B', mol:'H<sub>4</sub>XeO<sub>6</sub>', elem:'Xe', options:['+8','+6','+4','+2'], ans:'+8', exp:'4(+1) + Xe + 6(-2) = 0 ⇒ Xe = +8.' },
+            { id:79, grp:'B', mol:'NaBiO<sub>3</sub>', elem:'Bi', options:['+5','+3','+1','+6'], ans:'+5', exp:'(+1) + Bi + 3(-2) = 0 ⇒ Bi = +5.' },
+            { id:80, grp:'B', mol:'KIO<sub>4</sub>', elem:'I', options:['+7','+5','+3','-1'], ans:'+7', exp:'(+1) + I + 4(-2) = 0 ⇒ I = +7.' },
+            { id:81, grp:'B', mol:'NaBrO<sub>3</sub>', elem:'Br', options:['+5','+3','+7','-1'], ans:'+5', exp:'(+1) + Br + 3(-2) = 0 ⇒ Br = +5.' },
+            { id:82, grp:'B', mol:'HOF', elem:'O', options:['0','-2','+2','-1'], ans:'0', exp:'H (+1), F (-1). (+1) + O + (-1) = 0 ⇒ O = 0.' },
+            { id:83, grp:'B', mol:'F<sub>2</sub>O<sub>2</sub>', elem:'O', options:['+1','-1','+2','-2'], ans:'+1', exp:'2(-1) + 2O = 0 ⇒ O = +1.' },
+            { id:84, grp:'B', mol:'Ca(ClO)<sub>2</sub>', elem:'Cl', options:['+1','-1','+3','+5'], ans:'+1', exp:'Ca (+2). (+2) + 2[Cl + (-2)] = 0 ⇒ Cl = +1.' },
+            { id:85, grp:'B', mol:'NH<sub>2</sub>OH', elem:'N', options:['-1','-3','+1','0'], ans:'-1', exp:'N + 3(+1) + (-2) = 0 ⇒ N = -1.' },
+            { id:86, grp:'B', mol:'N<sub>2</sub>H<sub>4</sub>', elem:'N', options:['-2','-3','+2','0'], ans:'-2', exp:'2N + 4(+1) = 0 ⇒ N = -2.' },
+            { id:87, grp:'B', mol:'HN<sub>3</sub>', elem:'N', options:['-1/3','-3','+1/3','0'], ans:'-1/3', exp:'(+1) + 3N = 0 ⇒ Mesatarja N = -1/3.' },
+            { id:88, grp:'B', mol:'Mg<sub>3</sub>N<sub>2</sub>', elem:'N', options:['-3','+3','-2','+2'], ans:'-3', exp:'3(+2) + 2N = 0 ⇒ N = -3.' },
+            { id:89, grp:'B', mol:'CaC<sub>2</sub>', elem:'C', options:['-1','-2','+2','+4'], ans:'-1', exp:'Ca (+2) + 2C = 0 ⇒ C = -1.' },
+            { id:90, grp:'B', mol:'Al<sub>4</sub>C<sub>3</sub>', elem:'C', options:['-4','-3','+4','0'], ans:'-4', exp:'4(+3) + 3C = 0 ⇒ C = -4.' },
+            { id:91, grp:'B', mol:'FeS<sub>2</sub>', elem:'S', options:['-1','-2','+2','+4'], ans:'-1', exp:'Fe (+2) + 2S = 0 ⇒ S = -1.' },
+            { id:92, grp:'B', mol:'CuFeS<sub>2</sub>', elem:'Fe', options:['+3','+2','+4','0'], ans:'+3', exp:'Cu (+1), S (-2). (+1) + Fe + 2(-2) = 0 ⇒ Fe = +3.' },
+            { id:93, grp:'B', mol:'[Ag(NH<sub>3</sub>)<sub>2</sub>]<sup>+</sup>', elem:'Ag', options:['+1','+2','0','+3'], ans:'+1', exp:'NH3 (0). Ag = +1.' },
+            { id:94, grp:'B', mol:'[Cr(H<sub>2</sub>O)<sub>6</sub>]<sup>3+</sup>', elem:'Cr', options:['+3','+6','+2','0'], ans:'+3', exp:'H2O (0). Cr = +3.' },
+            { id:95, grp:'B', mol:'RuO<sub>4</sub>', elem:'Ru', options:['+8','+4','+6','+2'], ans:'+8', exp:'Ru + 4(-2) = 0 ⇒ Ru = +8.' },
+            { id:96, grp:'B', mol:'OsO<sub>4</sub>', elem:'Os', options:['+8','+6','+4','0'], ans:'+8', exp:'Os + 4(-2) = 0 ⇒ Os = +8.' },
+            { id:97, grp:'B', mol:'[PtCl<sub>4</sub>]<sup>2-</sup>', elem:'Pt', options:['+2','+4','0','-2'], ans:'+2', exp:'Pt + 4(-1) = -2 ⇒ Pt = +2.' },
+            { id:98, grp:'B', mol:'K<sub>2</sub>FeO<sub>4</sub>', elem:'Fe', options:['+6','+3','+2','+8'], ans:'+6', exp:'2(+1) + Fe + 4(-2) = 0 ⇒ Fe = +6.' },
+            { id:99, grp:'B', mol:'Na<sub>2</sub>S<sub>4</sub>O<sub>6</sub>', elem:'S', options:['+2.5','+2','+6','0'], ans:'+2.5', exp:'2(+1) + 4S + 6(-2) = 0 ⇒ S = +2.5.' },
+            { id:100, grp:'B', mol:'CrO<sub>4</sub><sup>2-</sup>', elem:'Cr', options:['+6','+3','+7','+4'], ans:'+6', exp:'Cr + 4(-2) = -2 ⇒ Cr = +6.' }
+        ];
+
+        // SHTO KOHËN 140 SEKONDA
+        const exercises = rawExercises.map(ex => ({ ...ex, timeSec: 140 }));
+
+        // STATE & TIMERS
+        let currentIdxA = 0, currentIdxB = 0;
+        let scoreA = 0, scoreB = 0;
+        let timerIntA = null, timerIntB = null, timerIntSolo = null;
+
+        let soloList = [], soloIdx = 0, soloScore = 0;
+
+        function formatMMSS(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = seconds % 60;
+            return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }
+
+        // TIMER MANAGERS
+        function startTimer(grp, duration) {
+            stopTimer(grp);
+            let t = duration;
+            const badge = document.getElementById(grp === 'solo' ? 'timer-badge-solo' : `timer-badge-${grp}`);
+            const display = document.getElementById(grp === 'solo' ? 'timer-solo' : `timer-${grp}`);
+
+            badge.classList.remove('urgent');
+            display.innerText = formatMMSS(t);
+
+            const interval = setInterval(() => {
+                t--;
+                display.innerText = formatMMSS(t);
+
+                if (t <= 15) badge.classList.add('urgent');
+
+                if (t <= 0) {
+                    clearInterval(interval);
+                    handleTimeOut(grp);
+                }
+            }, 1000);
+
+            if (grp === 'A') timerIntA = interval;
+            else if (grp === 'B') timerIntB = interval;
+            else if (grp === 'solo') timerIntSolo = interval;
+        }
+
+        function stopTimer(grp) {
+            if (grp === 'A' && timerIntA) clearInterval(timerIntA);
+            if (grp === 'B' && timerIntB) clearInterval(timerIntB);
+            if (grp === 'solo' && timerIntSolo) clearInterval(timerIntSolo);
+        }
+
+        function handleTimeOut(grp) {
+            if (grp === 'A' || grp === 'B') {
+                const list = grp === 'A' ? groupA : groupB;
+                const idx = grp === 'A' ? currentIdxA : currentIdxB;
+                const q = list[idx];
+                const container = document.getElementById(`opts-${grp}`);
+                const btns = container.querySelectorAll('.opt-btn');
+                
+                btns.forEach(b => {
+                    b.disabled = true;
+                    if (b.innerText === q.ans) b.classList.add('correct');
+                });
+
+                const expBox = document.getElementById(`exp-${grp}`);
+                expBox.innerHTML = `⚠️ <strong>Koha Mbaroi!</strong> ${q.exp}`;
+                expBox.style.display = 'block';
+                document.getElementById(`next-${grp}`).style.display = 'block';
+            } else if (grp === 'solo') {
+                const q = soloList[soloIdx];
+                const btns = document.querySelectorAll('#solo-opts .opt-btn');
+                btns.forEach(b => {
+                    b.disabled = true;
+                    if (b.innerText === q.ans) b.classList.add('correct');
+                });
+
+                const expBox = document.getElementById('solo-exp');
+                expBox.innerHTML = `⚠️ <strong>Koha Mbaroi!</strong> ${q.exp}`;
+                expBox.style.display = 'block';
+                document.getElementById('solo-next').style.display = 'block';
+            }
+        }
+
+        // VIEW SWITCHER
+        function switchView(viewName, e) {
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+            if(e) e.target.classList.add('active');
+
+            document.getElementById('view-split').style.display = 'none';
+            document.getElementById('view-solo').style.display = 'none';
+            document.getElementById('view-db').style.display = 'none';
+
+            if(viewName === 'split') {
+                document.getElementById('view-split').style.display = 'grid';
+                loadQuestionSplit('A');
+                loadQuestionSplit('B');
+            } else if(viewName === 'solo') {
+                document.getElementById('view-solo').style.display = 'block';
+                stopTimer('A'); stopTimer('B');
+                initSolo();
+            } else if(viewName === 'db') {
+                document.getElementById('view-db').style.display = 'block';
+                stopTimer('A'); stopTimer('B'); stopTimer('solo');
+                renderDatabase();
+            }
+        }
+
+        // SPLIT VIEW ENGINE
+        const groupA = exercises.filter(e => e.grp === 'A');
+        const groupB = exercises.filter(e => e.grp === 'B');
+
+        function loadQuestionSplit(grp) {
+            const list = grp === 'A' ? groupA : groupB;
+            const idx = grp === 'A' ? currentIdxA : currentIdxB;
+            const q = list[idx];
+
+            document.getElementById(`mol-${grp}`).innerHTML = q.mol;
+            document.getElementById(`elem-${grp}`).innerText = q.elem;
+            document.getElementById(`lvl-${grp}`).innerText = idx + 1;
+
+            const optsDiv = document.getElementById(`opts-${grp}`);
+            optsDiv.innerHTML = '';
+
+            q.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'opt-btn';
+                btn.innerHTML = opt;
+                btn.onclick = () => checkAnswerSplit(grp, btn, opt, q.ans, q.exp);
+                optsDiv.appendChild(btn);
+            });
+
+            document.getElementById(`exp-${grp}`).style.display = 'none';
+            document.getElementById(`next-${grp}`).style.display = 'none';
+
+            startTimer(grp, q.timeSec);
+        }
+
+        function checkAnswerSplit(grp, clickedBtn, selected, correct, exp) {
+            stopTimer(grp);
+            const container = document.getElementById(`opts-${grp}`);
+            const btns = container.querySelectorAll('.opt-btn');
+            btns.forEach(b => b.disabled = true);
+
+            if (selected === correct) {
+                clickedBtn.classList.add('correct');
+                if (grp === 'A') scoreA += 10; else scoreB += 10;
+            } else {
+                clickedBtn.classList.add('wrong');
+                btns.forEach(b => { if (b.innerText === correct) b.classList.add('correct'); });
+            }
+
+            document.getElementById(`score-${grp}`).innerText = grp === 'A' ? scoreA : scoreB;
+
+            const expBox = document.getElementById(`exp-${grp}`);
+            expBox.innerHTML = `<strong>Zgjidhja:</strong> ${exp}`;
+            expBox.style.display = 'block';
+
+            document.getElementById(`next-${grp}`).style.display = 'block';
+        }
+
+        function nextQuestion(grp) {
+            if (grp === 'A') {
+                currentIdxA = (currentIdxA + 1) % groupA.length;
+                loadQuestionSplit('A');
+            } else {
+                currentIdxB = (currentIdxB + 1) % groupB.length;
+                loadQuestionSplit('B');
+            }
+        }
+
+        // SOLO MODE ENGINE
+        function initSolo() {
+            const val = document.getElementById('solo-filter').value;
+            if(val === 'A') soloList = [...groupA];
+            else if(val === 'B') soloList = [...groupB];
+            else soloList = [...exercises];
+
+            soloIdx = 0;
+            soloScore = 0;
+            document.getElementById('solo-score').innerText = soloScore;
+            loadSoloQuestion();
+        }
+
+        function loadSoloQuestion() {
+            const q = soloList[soloIdx];
+            document.getElementById('solo-mol').innerHTML = q.mol;
+            document.getElementById('solo-elem').innerText = q.elem;
+
+            const optsDiv = document.getElementById('solo-opts');
+            optsDiv.innerHTML = '';
+
+            q.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'opt-btn';
+                btn.innerHTML = opt;
+                btn.onclick = () => checkSoloAnswer(btn, opt, q.ans, q.exp);
+                optsDiv.appendChild(btn);
+            });
+
+            document.getElementById('solo-exp').style.display = 'none';
+            document.getElementById('solo-next').style.display = 'none';
+
+            startTimer('solo', q.timeSec);
+        }
+
+        function checkSoloAnswer(btn, selected, correct, exp) {
+            stopTimer('solo');
+            const btns = document.querySelectorAll('#solo-opts .opt-btn');
+            btns.forEach(b => b.disabled = true);
+
+            if(selected === correct) {
+                btn.classList.add('correct');
+                soloScore += 10;
+                document.getElementById('solo-score').innerText = soloScore;
+            } else {
+                btn.classList.add('wrong');
+                btns.forEach(b => { if(b.innerText === correct) b.classList.add('correct'); });
+            }
+
+            const expBox = document.getElementById('solo-exp');
+            expBox.innerHTML = `<strong>Zgjidhja:</strong> ${exp}`;
+            expBox.style.display = 'block';
+            document.getElementById('solo-next').style.display = 'block';
+        }
+
+        function nextSolo() {
+            soloIdx = (soloIdx + 1) % soloList.length;
+            loadSoloQuestion();
+        }
+
+        // DATABASE EXPLORER
+        function renderDatabase() {
+            const tbody = document.getElementById('db-table-body');
+            tbody.innerHTML = '';
+
+            exercises.forEach(e => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${e.id}</td>
+                    <td><span class="badge-grp grp-${e.grp.toLowerCase()}">Grupi ${e.grp}</span></td>
+                    <td style="font-family:monospace; color:var(--warning); font-weight:bold;">140 s</td>
+                    <td style="font-size:1.1rem; font-weight:700;">${e.mol}</td>
+                    <td style="color:var(--warning); font-weight:700;">${e.elem}</td>
+                    <td style="color:var(--success); font-weight:700; font-size:1.05rem;">${e.ans}</td>
+                    <td style="color:var(--text-muted); font-size:0.9rem; white-space: normal;">${e.exp}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterDatabase() {
+            const query = document.getElementById('db-search').value.toLowerCase();
+            const rows = document.querySelectorAll('#db-table-body tr');
+
+            rows.forEach(row => {
+                row.style.display = row.innerText.toLowerCase().includes(query) ? '' : 'none';
+            });
+        }
+
+        // INIT ON LOAD
+        loadQuestionSplit('A');
+        loadQuestionSplit('B');
+    </script>
+</body>
+</html>
