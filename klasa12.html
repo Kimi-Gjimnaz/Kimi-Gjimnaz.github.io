@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kimia 12 - Gjimnazi Milot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #0f172a;
+            --primary-dark: #020617;
+            --accent-blue: #1e3a8a;
+            --highlight-cyan: #0ea5e9;
+            --highlight-hover: #0284c7;
+            --text-dark: #1e293b;
+            --text-light: #f8fafc;
+            --border-color: #e2e8f0;
+            --bg-body: #f8fafc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+            background-color: var(--bg-body);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+            color: var(--text-light);
+            text-align: center;
+            padding: 2rem 1rem 1.5rem 1rem;
+            border-bottom: 4px solid var(--highlight-cyan);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.6rem, 5vw, 2.4rem);
+            letter-spacing: 0.5px;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+        }
+
+        header p {
+            color: #cbd5e1;
+            font-size: clamp(0.75rem, 3vw, 0.95rem);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 500;
+        }
+
+        nav {
+            background-color: #ffffff;
+            box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1rem;
+        }
+
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--primary-blue);
+            cursor: pointer;
+            padding: 0.75rem;
+            line-height: 1;
+        }
+
+        .nav-list {
+            display: flex;
+            list-style: none;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-item a {
+            display: block;
+            padding: 1.1rem 1.2rem;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.92rem;
+            transition: all 0.25s ease;
+            white-space: nowrap;
+        }
+
+        .nav-item > a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 3px;
+            background-color: var(--highlight-cyan);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-item:hover > a::after {
+            width: 100%;
+        }
+
+        .nav-item:hover > a {
+            color: var(--highlight-hover);
+            background-color: #f8fafc;
+        }
+
+        .dropdown {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #ffffff;
+            min-width: 290px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            border-radius: 0 0 8px 8px;
+            list-style: none;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            border-top: none;
+            max-height: 380px;
+            overflow-y: auto;
+            z-index: 101;
+        }
+
+        .nav-item:hover .dropdown { 
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .dropdown a {
+            padding: 0.8rem 1.2rem;
+            border-bottom: 1px solid #f1f5f9;
+            color: #475569;
+            font-weight: 500;
+            font-size: 0.88rem;
+            white-space: normal;
+        }
+
+        .dropdown a::after { display: none; }
+
+        .dropdown a:hover {
+            background-color: var(--highlight-cyan);
+            color: #ffffff;
+            padding-left: 1.4rem;
+        }
+
+        .active-class-bar {
+            background: linear-gradient(90deg, #e2e8f0 0%, #f1f5f9 50%, #e2e8f0 100%);
+            text-align: center;
+            padding: 0.75rem 1rem;
+            font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+            font-weight: 600;
+            color: var(--text-dark);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .active-class-bar span {
+            background-color: var(--highlight-hover);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-left: 6px;
+            display: inline-block;
+        }
+
+        main {
+            flex: 1;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem 1rem;
+        }
+
+        .statement-box {
+            background: #ffffff;
+            border-left: 5px solid var(--highlight-cyan);
+            padding: 1.25rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .statement-box h2 {
+            color: var(--primary-blue);
+            margin-bottom: 0.4rem;
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
+        }
+
+        .statement-box p {
+            font-size: clamp(0.9rem, 2.8vw, 1.02rem);
+            line-height: 1.6;
+            color: #334155;
+        }
+
+        .period-header {
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 2rem 0 1rem 0;
+            border-left: 4px solid var(--highlight-cyan);
+        }
+
+        .topics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .chapter-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.4rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            scroll-margin-top: 90px;
+        }
+
+        .chapter-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px -5px rgba(0, 0, 0, 0.08);
+            border-color: var(--highlight-cyan);
+        }
+
+        .chapter-number {
+            display: inline-block;
+            background: rgba(14, 165, 233, 0.12);
+            color: var(--highlight-hover);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            margin-bottom: 0.7rem;
+            text-transform: uppercase;
+        }
+
+        .chapter-card h3 {
+            color: var(--accent-blue);
+            font-size: 1.15rem;
+            margin-bottom: 0.8rem;
+            line-height: 1.35;
+        }
+
+        .topics-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .topics-list li {
+            position: relative;
+            padding-left: 1.2rem;
+            margin-bottom: 0.55rem;
+            color: #475569;
+            font-size: 0.9rem;
+            line-height: 1.45;
+        }
+
+        .topics-list li::before {
+            content: '•';
+            position: absolute;
+            left: 0.2rem;
+            color: var(--highlight-cyan);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        footer {
+            background-color: var(--primary-dark);
+            color: #94a3b8;
+            text-align: center;
+            padding: 1.4rem 1rem;
+            font-size: 0.85rem;
+            margin-top: auto;
+            border-top: 3px solid var(--highlight-cyan);
+        }
+
+        @media (max-width: 768px) {
+            .mobile-toggle { display: block; }
+
+            .nav-list {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                background-color: #ffffff;
+                padding: 0.5rem 0;
+                border-top: 1px solid var(--border-color);
+            }
+
+            .nav-list.active { display: flex; }
+
+            .nav-item { width: 100%; text-align: left; }
+
+            .nav-item a {
+                padding: 0.9rem 1.2rem;
+                font-size: 0.95rem;
+                border-bottom: 1px solid #f1f5f9;
+            }
+
+            .nav-item > a::after { display: none; }
+
+            .dropdown {
+                position: static;
+                visibility: visible;
+                opacity: 1;
+                transform: none;
+                box-shadow: none;
+                border: none;
+                background-color: #f8fafc;
+                display: none;
+                max-height: none;
+                padding-left: 1rem;
+            }
+
+            .nav-item.open .dropdown { display: block; }
+
+            .dropdown a {
+                padding: 0.75rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .topics-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .statement-box { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header id="ballina">
+        <h1>Kimia 12 - Portali Mësimor</h1>
+        <p>Gjimnazi Milot | Kurrikula me Zgjedhje (Shkalla VI)</p>
+    </header>
+
+    <!-- Navigimi responsive -->
+    <nav>
+        <div class="nav-wrapper">
+            <span style="font-weight:700; color:var(--primary-blue);"></span>
+            <button class="mobile-toggle" id="mobileMenuBtn" aria-label="Hap Menunë">☰</button>
+        </div>
+        
+        <ul class="nav-list" id="navList">
+            <li class="nav-item">
+                <a href="kimi.html">Faqja Kryesore</a>
+            </li>
+            <li class="nav-item has-dropdown">
+                <a href="#kapitujt" class="dropdown-trigger">Kapitujt (1-20) ▾</a>
+                <ul class="dropdown">
+                    <li><a href="#kapitulli-1">1. Atomet, Molekulat & Reaksionet</a></li>
+                    <li><a href="#kapitulli-2">2. Struktura Elektronike e Atomit</a></li>
+                    <li><a href="#kapitulli-3">3. Tabela Periodike & Ligji Periodik</a></li>
+                    <li><a href="#kapitulli-4">4. Grupi IIA - Metalet Alkalino-Tokësore</a></li>
+                    <li><a href="#kapitulli-5">5. Grupi VIIA - Halogjenët</a></li>
+                    <li><a href="#kapitulli-6">6. Lidhjet Kimike & Forcat Ndërmolekulare</a></li>
+                    <li><a href="#kapitulli-7">7. Termokimia</a></li>
+                    <li><a href="#kapitulli-8">8. Reaksionet Redoks</a></li>
+                    <li><a href="#kapitulli-9">9. Elektrokimia</a></li>
+                    <li><a href="#kapitulli-10">10. Kinetika Kimike</a></li>
+                    <li><a href="#kapitulli-11">11. Ekuilibri Kimik</a></li>
+                    <li><a href="#kapitulli-12">12. Ekuilibri Jonik në Tretësira</a></li>
+                    <li><a href="#kapitulli-13">13. Hyrje në Kiminë Organike</a></li>
+                    <li><a href="#kapitulli-14">14. Alkanet</a></li>
+                    <li><a href="#kapitulli-15">15. Përbërjet Organike të Halogjenuara</a></li>
+                    <li><a href="#kapitulli-16">16. Alkenet</a></li>
+                    <li><a href="#kapitulli-17">17. Alkoolet</a></li>
+                    <li><a href="#kapitulli-18">18. Hidrokarburet Aromatike & Fenoli</a></li>
+                    <li><a href="#kapitulli-19">19. Aldehidet & Ketonet</a></li>
+                    <li><a href="#kapitulli-20">20. Acidet Karboksilike & Derivatet</a></li>
+                </ul>
+            </li>
+            <li class="nav-item has-dropdown">
+                <a href="#eksperiment" class="dropdown-trigger">Eksperimente dhe simulime ▾</a>
+                <ul class="dropdown">
+                    <li><a href="elektrokimia.html">Tema 1: Elementet Galvanike & Elektrokimia</a></li>
+                    <li><a href="kinetika.html">Tema 2: Shpejtësia e Reaksionit & Kataliza</a></li>
+                    <li><a href="ekuilibri.html">Tema 3: Titullimi Acid-Bazë & pH-metria</a></li>
+                </ul>
+            </li>
+            <li class="nav-item has-dropdown">
+                <a href="#lojëra" class="dropdown-trigger">Lojëra dhe kuize ▾</a>
+                <ul class="dropdown">
+                    <li><a href="lojërakimi12.html">Lojëra me ushtrime organike & termokimi</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Brezi i Klasës -->
+    <div class="active-class-bar">
+        Klasa e Zgjedhur: <span>Klasa 12 (Shkalla VI)</span>
+    </div>
+
+    <!-- Përmbajtja Kryesore -->
+    <main>
+
+        <div class="statement-box">
+            <h2>Plani Lëndor i Kimisë 12</h2>
+            <p>Programi përmban 136 orë mësimore të shpërndara në 20 kapituj kryesorë, duke mbuluar që nga stoikiometria, struktura e atomit, tabela periodike dhe termokimia, deri te elektrokimia, kinetika, ekuilibrat dinamikë/jonikë si dhe kimia organike e avancuar.</p>
+        </div>
+
+        <h2 id="kapitujt" style="color:var(--primary-blue); font-size:1.5rem; margin-bottom:0.5rem;">📚 Përmbajtja Analitike e Kapitujve</h2>
+
+        <!-- PERIUDHA 1 -->
+        <div class="period-header">Periudha 1: Shtator – Dhjetor (56 Orë)</div>
+        <div class="topics-grid">
+            
+            <div class="chapter-card" id="kapitulli-1">
+                <span class="chapter-number">Kapitulli 1</span>
+                <h3>Atomet, Molekulat dhe Reaksionet Kimike</h3>
+                <ul class="topics-list">
+                    <li>Atomet dhe molekulat, masa atomike relative dhe njësia karbonike</li>
+                    <li>Moli, masa molare dhe konstantja e Avogadros</li>
+                    <li>Formula empirike dhe formula molekulare</li>
+                    <li>Shkrimi i reaksioneve, barazimeve kimike dhe jonike</li>
+                    <li>Njehsime stekiometrike</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card" id="kapitulli-2">
+                <span class="chapter-number">Kapitulli 2</span>
+                <h3>Struktura Elektronike e Atomit</h3>
+                <ul class="topics-list">
+                    <li>Grimcat përbërëse të atomit, numri atomik dhe izotopet</li>
+                    <li>Modeli i atomit sipas Borit, numrat kuantikë dhe orbitalet</li>
+                    <li>Shpërndarja e elektroneve në nivele dhe nënnivele</li>
+                    <li>Energjia e jonizimit dhe ndryshimi i saj në perioda e grupe</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card" id="kapitulli-3">
+                <span class="chapter-number">Kapitulli 3</span>
+                <h3>Tabela Periodike dhe Ligji Periodik</h3>
+                <ul class="topics-list">
+                    <li>Familjet e elementeve dhe tabela periodike</li>
+                    <li>Metalet, jometalet, metaloidet dhe vetitë periodike</li>
+                    <li>Energjia e jonizimit, afria për elektronin dhe elektronegativiteti</li>
+                    <li>Ndryshimi i numrave të oksidimit dhe vetitë e oksideve</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card" id="kapitulli-4">
+                <span class="chapter-number">Kapitulli 4</span>
+                <h3>Grupi IIA - Metalet Alkalino-Tokësore</h3>
+                <ul class="topics-list">
+                    <li>Strukturat elektronike dhe vetitë fiziko-kimike të grupit IIA</li>
+                    <li>Vetitë e përbërjeve të metaleve alkalino-tokësore</li>
+                    <li>Përhapja në natyrë, reaksionet dhe përdorimi i tyre</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card" id="kapitulli-5">
+                <span class="chapter-number">Kapitulli 5</span>
+                <h3>Grupi VIIA - Halogjenët</h3>
+                <ul class="topics-list">
+                    <li>Burimet dhe metodat e përftimit të halogjenëve</li>
+                    <li>Struktura, vetitë fizike dhe reaksionet kimike</li>
+                    <li>Halogjenët si agjentë oksidues dhe reaksionet me alkalet/jonet halogjenure</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card" id="kapitulli-6">
+                <span class="chapter-number">Kapitulli 6</span>
+                <h3>Lidhjet Kimike dhe Forcat Ndërmolekulare</h3>
+                <ul class="topics-list">
+                    <li>Lidhja jonike, kovalente, bashkërenditëse dhe metalore</li>
+                    <li>Polariteti i molekulave dhe forma gjeometrike</li>
+                    <li>Forcat ndërmolekulare dhe lidhja hidrogjenore</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card" id="kapitulli-7">
+                <span class="chapter-number">Kapitulli 7</span>
+                <h3>Termokimia</h3>
+                <ul class="topics-list">
+                    <li>Nxehtësia e çliruar/thithur dhe nxehtësia specifike</li>
+                    <li>Entalpia standarde dhe barazimet termokimike</li>
+                    <li>Ligji i Hesit dhe njehsimi i ndryshimit të entalpisë</li>
+                    <li>Energjia e lidhjes në reaksionet kimike</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- PERIUDHA 2 -->
+        <div class="period-header">Periudha 2: Janar – Mars (48 Orë)</div>
+        <div class="topics-grid">
+
+            <div class="chapter-card" id="kapitulli-8">
+                <span class="chapter-number">Kapitulli 8</span>
+                <h3>Reaksionet Redoks</h3>
+                <ul class="topics-list">
+                    <li>Reaksionet redoks dhe kalimi i elektroneve</li>
+                    <li>Numrat e oksidimit dhe rregullat e përcaktimit</li>
+                    <li>Agjentët oksidues dhe agjentët reduktues</li>
+                    <li>Barazimi i reaksioneve redoks me numra oksidimi</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card" id="kapitulli-9">
+                <span class="chapter-number">Kapitulli 9</span>
+                <h3>Elektrokimia</h3>
+                <ul class="topics-list">
+                    <li>Elementet elektrokimike dhe te galvanike</li>
+                    <li>Potenciali standard i elektrodave dhe FEM</li>
+                    <li>Parashikimi i realizueshmërisë së reaksioneve</li>
+                    <li>Elektroliza në tretësira ujore dhe shkrirje</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card" id="kapitulli-10">
+                <span class="chapter-number">Kapitulli 10</span>
+                <h3>Kinetika Kimike</h3>
+                <ul class="topics-list">
+                    <li>Koncepti i shpejtësisë dhe faktorët ndikues</li>
+                    <li>Teoria e goditjeve, kompleks aktiv dhe energjia e aktivizimit</li>
+                    <li>Katalizatorët dhe rëndësia e metaleve kalimtare</li>
+                    <li>Rendi i reaksionit dhe ekuacionet e shpejtësisë</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card" id="kapitulli-11">
+                <span class="chapter-number">Kapitulli 11</span>
+                <h3>Ekuilibri Kimik</h3>
+                <ul class="topics-list">
+                    <li>Reaksionet e prapësueshme dhe ekuilibri dinamik</li>
+                    <li>Konstantes e ekuilibrit (Kc, Kp) dhe ligji i ekuilibrit</li>
+                    <li>Parimi i Le Shatelies (përqendrimi, trysnia, temperatura)</li>
+                    <li>Ekuilibrat në proceset industriale (Haber, Kontakt)</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card" id="kapitulli-12">
+                <span class="chapter-number">Kapitulli 12</span>
+                <h3>Ekuilibri Jonik në Tretësira Ujore</h3>
+                <ul class="topics-list">
+                    <li>Teoria e Bronshted-Laurit, acidet dhe bazat</li>
+                    <li>Shpërbashkimi i ujit, shkalla pH dhe konstantet Ka, Kb</li>
+                    <li>Tretësirat tampone dhe titullimi acid-bazë</li>
+                    <li>Produkti i tretshmërisë (Kpt) dhe efekti i jonit të përbashkët</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card" id="kapitulli-13">
+                <span class="chapter-number">Kapitulli 13</span>
+                <h3>Hyrje në Kiminë Organike</h3>
+                <ul class="topics-list">
+                    <li>Karboni, grupet funksionore dhe formulat organike</li>
+                    <li>Emërtimi i përbërjeve sipas IUPAC</li>
+                    <li>Izomeria e vargut, pozicionit dhe gjeometrike</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- PERIUDHA 3 -->
+        <div class="period-header">Periudha 3: Prill – Qershor (32 Orë)</div>
+        <div class="topics-grid">
+
+            <div class="chapter-card" id="kapitulli-14">
+                <span class="chapter-number">Kapitulli 14</span>
+                <h3>Alkanet</h3>
+                <ul class="topics-list">
+                    <li>Emërtimi, vetitë fizike dhe reaktiviteti i alkaneve</li>
+                    <li>Mekanizmi i zëvendësimit radikalar</li>
+                    <li>Ndikimi i lëndëve djegëse në mjedis dhe efekti serrë</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card" id="kapitulli-15">
+                <span class="chapter-number">Kapitulli 15</span>
+                <h3>Përbërjet Organike të Halogjenuara</h3>
+                <ul class="topics-list">
+                    <li>Natyra e lidhjes karbon-halogjen</li>
+                    <li>Reaksionet e zëvendësimit nukleofilik</li>
+                    <li>Reaksionet e eliminimit</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card" id="kapitulli-16">
+                <span class="chapter-number">Kapitulli 16</span>
+                <h3>Alkenet</h3>
+                <ul class="topics-list">
+                    <li>Emërtimi i alkeneve dhe natyra e lidhjes dyfishe</li>
+                    <li>Izomeria cis-trans dhe reaksionet e adicionit</li>
+                    <li>Polimerizimi i adicionit</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card" id="kapitulli-17">
+                <span class="chapter-number">Kapitulli 17</span>
+                <h3>Alkoolet</h3>
+                <ul class="topics-list">
+                    <li>Emërtimi, vetitë fizike dhe kimike të alkooleve</li>
+                    <li>Reaksionet e alkooleve dhe oksidimi i tyre</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card" id="kapitulli-18">
+                <span class="chapter-number">Kapitulli 18</span>
+                <h3>Hidrokarburet Aromatike dhe Fenoli</h3>
+                <ul class="topics-list">
+                    <li>Hidrokarburet aromatike dhe struktura e benzenit</li>
+                    <li>Emërtimi dhe mekanizmi i zëvendësimit elektrofilik</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card" id="kapitulli-19">
+                <span class="chapter-number">Kapitulli 19</span>
+                <h3>Aldehidet dhe Ketonet</h3>
+                <ul class="topics-list">
+                    <li>Grupi karbonil, natyra dhe emërtimi</li>
+                    <li>Reaksionet e adicionit dhe kondensimit</li>
+                    <li>Sheqernat si përbërje karbonile natyrore</li>
+                </ul>
+            </div>
+
+            <div class="chapter-card" id="kapitulli-20">
+                <span class="chapter-number">Kapitulli 20</span>
+                <h3>Acidet Karboksilike dhe Derivatet e Tyre</h3>
+                <ul class="topics-list">
+                    <li>Grupi karboksilik, struktura dhe aciditeti</li>
+                    <li>Reaksionet e acideve karboksilike dhe esteret</li>
+                    <li>Halogjenurët e acideve dhe derivatet e tyre</li>
+                </ul>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>© Kimia 12 | Gjimnazi Milot</p>
+    </footer>
+
+    <!-- Skripti JavaScript për Menunë Mobile -->
+    <script>
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navList = document.getElementById('navList');
+        const dropdownTriggers = document.querySelectorAll('.dropdown-trigger');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            navList.classList.toggle('active');
+            mobileMenuBtn.textContent = navList.classList.contains('active') ? '✕' : '☰';
+        });
+
+        dropdownTriggers.forEach(trigger => {
+            trigger.addEventListener('click', (e) => {
+                if (window.innerWidth <= 768) {
+                    e.preventDefault();
+                    const parent = trigger.parentElement;
+                    parent.classList.toggle('open');
+                }
+            });
+        });
+
+        document.querySelectorAll('.dropdown a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    navList.classList.remove('active');
+                    mobileMenuBtn.textContent = '☰';
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

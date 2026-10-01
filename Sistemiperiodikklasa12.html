@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistemi Periodik i Elementeve - Formulat e Plota Elektronike</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0b0f19;
+            --card-bg: #151d2a;
+            --border-color: #26334d;
+            --text-light: #f8fafc;
+            --accent-gold: #facc15;
+            
+            /* Ngjyrat e Kategorive */
+            --nonmetal: #2563eb;
+            --noble-gas: #7c3aed;
+            --alkali-metal: #dc2626;
+            --alkaline-earth: #ea580c;
+            --metalloid: #059669;
+            --halogen: #0891b2;
+            --post-transition: #0d9488;
+            --transition-metal: #d97706;
+            --lanthanide: #db2777;
+            --actinide: #c026d3;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            padding: 0.75rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 0.6rem;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, #38bdf8, #facc15);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Paneli Kryesor Sipër - Detajet & Formula Elektronike */
+        .info-panel {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 0.8rem 1.2rem;
+            width: 100%;
+            max-width: 1400px;
+            margin-bottom: 0.8rem;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 1.2rem;
+            align-items: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+
+        .element-preview {
+            width: 85px;
+            height: 100px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 6px;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            background-color: #1e293b;
+            border: 2px solid #475569;
+        }
+
+        .preview-z { font-size: 0.8rem; color: #cbd5e1; }
+        .preview-symbol { font-size: 1.7rem; text-align: center; font-weight: 800; }
+        .preview-name { font-size: 0.68rem; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        .element-details h2 {
+            font-size: 1.3rem;
+            margin-bottom: 0.3rem;
+            color: #38bdf8;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .element-details h2 span {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            background: #1e293b;
+            color: #f1f5f9;
+            border: 1px solid var(--border-color);
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 6px;
+            font-size: 0.82rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .details-grid div {
+            background: rgba(255, 255, 255, 0.04);
+            padding: 4px 8px;
+            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .details-grid strong {
+            color: #94a3b8;
+            display: block;
+            font-size: 0.7rem;
+        }
+
+        /* Kutia e Formulës Elektronike dhe theksimi i shtresës së jashtme */
+        .electronic-config-box {
+            background: #070a12;
+            border: 1.5px solid #0284c7;
+            border-radius: 8px;
+            padding: 8px 12px;
+        }
+
+        .config-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .config-title-row strong {
+            color: #38bdf8;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .config-formula {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95rem;
+            color: #94a3b8;
+            font-weight: 600;
+            line-height: 1.5;
+            word-break: break-all;
+        }
+
+        /* Stili për shtresën e jashtme elektronike të dalluar me ngjyrë */
+        .outer-shell {
+            color: var(--accent-gold) !important;
+            background-color: rgba(250, 204, 21, 0.15);
+            border: 1px dashed var(--accent-gold);
+            padding: 1px 4px;
+            border-radius: 4px;
+            font-weight: 800;
+            display: inline-block;
+        }
+
+        .search-container {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            align-items: flex-end;
+        }
+
+        .search-container input, .search-container select {
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: #070a12;
+            color: white;
+            font-size: 0.85rem;
+            outline: none;
+            width: 210px;
+        }
+
+        /* Tabela Periodike Grid (Faqe e Vetme) */
+        .table-container {
+            width: 100%;
+            max-width: 1400px;
+            overflow-x: auto;
+        }
+
+        .periodic-table {
+            display: grid;
+            grid-template-columns: 48px repeat(18, minmax(52px, 1fr));
+            grid-template-rows: 32px repeat(7, minmax(52px, 1fr)) 12px minmax(52px, 1fr) minmax(52px, 1fr);
+            gap: 3px;
+            min-width: 1020px;
+        }
+
+        /* Labelat e Grupeve dhe Periodave */
+        .header-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #38bdf8;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 4px;
+            border: 1px solid #1e293b;
+            text-align: center;
+            line-height: 1.1;
+        }
+
+        .header-label .sub-group {
+            color: var(--accent-gold);
+            font-size: 0.6rem;
+            margin-top: 1px;
+        }
+
+        .period-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: #94a3b8;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 4px;
+            border: 1px solid #1e293b;
+        }
+
+        .element-cell {
+            background-color: var(--card-bg);
+            border-radius: 5px;
+            padding: 3px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .element-cell:hover {
+            transform: scale(1.18);
+            z-index: 100;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.8);
+            border-color: #ffffff;
+        }
+
+        .element-cell.selected {
+            border: 2px solid #ffffff;
+            box-shadow: 0 0 10px #38bdf8;
+        }
+
+        .cell-z { font-size: 0.6rem; opacity: 0.85; font-weight: 700; }
+        .cell-symbol { font-size: 1rem; font-weight: 800; text-align: center; margin: 1px 0; }
+        .cell-name { font-size: 0.52rem; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .cell-mass { font-size: 0.5rem; text-align: center; opacity: 0.75; }
+
+        /* Ngjyrat e Kategorive */
+        .nonmetal { background-color: var(--nonmetal); }
+        .noble-gas { background-color: var(--noble-gas); }
+        .alkali-metal { background-color: var(--alkali-metal); }
+        .alkaline-earth { background-color: var(--alkaline-earth); }
+        .metalloid { background-color: var(--metalloid); }
+        .halogen { background-color: var(--halogen); }
+        .post-transition { background-color: var(--post-transition); }
+        .transition-metal { background-color: var(--transition-metal); }
+        .lanthanide { background-color: var(--lanthanide); }
+        .actinide { background-color: var(--actinide); }
+
+        .placeholder {
+            grid-column: span 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            color: #64748b;
+            font-weight: 700;
+            border: 1px dashed var(--border-color);
+            border-radius: 4px;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            max-width: 1400px;
+            margin-top: 0.6rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.72rem;
+            background: var(--card-bg);
+            padding: 3px 8px;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .legend-color {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        @media (max-width: 950px) {
+            .info-panel { grid-template-columns: 1fr; text-align: center; }
+            .element-preview { margin: 0 auto; }
+            .search-container { align-items: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Sistemi Periodik i Elementeve Kimike</h1>
+        <p style="color: #94a3b8; font-size: 0.8rem;">Me formulat e plota elektronike (pa shkurtime) & Shtresën e Jashtme Elektronike të dalluar me ngjyrë</p>
+    </header>
+
+    <!-- Paneli Kryesor i Detajeve të Elementit -->
+    <div class="info-panel" id="infoPanel">
+        <div class="element-preview" id="previewBox">
+            <span class="preview-z" id="prevZ">1</span>
+            <span class="preview-symbol" id="prevSym">H</span>
+            <span class="preview-name" id="prevName">Hidrogjeni</span>
+        </div>
+
+        <div class="element-details">
+            <h2 id="detTitle">Hidrogjeni <span id="detCat">Jometal</span></h2>
+            
+            <div class="details-grid">
+                <div><strong>Numri Atomik (Z)</strong> <span id="detZ">1</span></div>
+                <div><strong>Masa Atomike (A)</strong> <span id="detMass">1.008</span> g/mol</div>
+                <div><strong>Grupi (A/B)</strong> <span id="detGroup">1 (I A)</span></div>
+                <div><strong>Perioda (n max)</strong> <span id="detPeriod">1</span></div>
+                <div><strong>Elektro. Valente</strong> <span id="detValence" style="color:var(--accent-gold); font-weight:bold;">1 e⁻</span></div>
+            </div>
+
+            <div class="electronic-config-box">
+                <div class="config-title-row">
+                    <strong>⚡ Formula Elektronike e Plotë (Shtresa e jashtme e verdhë):</strong>
+                </div>
+                <div class="config-formula" id="detConfig">1s¹</div>
+            </div>
+        </div>
+
+        <div class="search-container">
+            <label for="elementSelect" style="font-size: 0.75rem; color: #94a3b8;">Kërko / Zgjidh Elementin:</label>
+            <input type="text" id="searchInput" placeholder="Emri ose Simboli..." oninput="filterElements()">
+            <select id="elementSelect" onchange="selectElementByNumber(this.value)">
+                <!-- Do mbushet me JS -->
+            </select>
+        </div>
+    </div>
+
+    <!-- Tabela Periodike në Një Faqe të Vetme -->
+    <div class="table-container">
+        <div class="periodic-table" id="periodicTable">
+            <!-- Grid gjenerohet dinamikisht nga JavaScript -->
+        </div>
+    </div>
+
+    <!-- Legjenda e Kategorive -->
+    <div class="legend" id="legend"></div>
+
+    <script>
+        // Harta e zgjerimit të plogët -> Konfiguracioni i plotë
+        const nobleGasExpansions = {
+            "[He]": "1s²",
+            "[Ne]": "1s² 2s² 2p⁶",
+            "[Ar]": "1s² 2s² 2p⁶ 3s² 3p⁶",
+            "[Kr]": "1s² 2s² 2p⁶ 3s² 3p⁶ 3d¹⁰ 4s² 4p⁶",
+            "[Xe]": "1s² 2s² 2p⁶ 3s² 3p⁶ 3d¹⁰ 4s² 4p⁶ 4d¹⁰ 5s² 5p⁶",
+            "[Rn]": "1s² 2s² 2p⁶ 3s² 3p⁶ 3d¹⁰ 4s² 4p⁶ 4d¹⁰ 5s² 5p⁶ 4f¹⁴ 5d¹⁰ 6s² 6p⁶"
+        };
+
+        // Grupet me shënimet A dhe B
+        const groupLabelsAB = {
+            1: "1 (I A)", 2: "2 (II A)", 3: "3 (III B)", 4: "4 (IV B)",
+            5: "5 (V B)", 6: "6 (VI B)", 7: "7 (VII B)", 8: "8 (VIII B)",
+            9: "9 (VIII B)", 10: "10 (VIII B)", 11: "11 (I B)", 12: "12 (II B)",
+            13: "13 (III A)", 14: "14 (IV A)", 15: "15 (V A)", 16: "16 (VI A)",
+            17: "17 (VII A)", 18: "18 (VIII A)"
+        };
+
+        // Databaza me 118 Elementët
+        const elements = [
+            { z: 1, sym: "H", name: "Hidrogjeni", mass: "1.008", g: 1, p: 1, cat: "nonmetal", config: "1s¹" },
+            { z: 2, sym: "He", name: "Heliumi", mass: "4.0026", g: 18, p: 1, cat: "noble-gas", config: "1s²" },
+            { z: 3, sym: "Li", name: "Litiumi", mass: "6.94", g: 1, p: 2, cat: "alkali-metal", config: "[He] 2s¹" },
+            { z: 4, sym: "Be", name: "Beriliumi", mass: "9.0122", g: 2, p: 2, cat: "alkaline-earth", config: "[He] 2s²" },
+            { z: 5, sym: "B", name: "Bori", mass: "10.81", g: 13, p: 2, cat: "metalloid", config: "[He] 2s² 2p¹" },
+            { z: 6, sym: "C", name: "Karboni", mass: "12.011", g: 14, p: 2, cat: "nonmetal", config: "[He] 2s² 2p²" },
+            { z: 7, sym: "N", name: "Azoti", mass: "14.007", g: 15, p: 2, cat: "nonmetal", config: "[He] 2s² 2p³" },
+            { z: 8, sym: "O", name: "Oksigjeni", mass: "15.999", g: 16, p: 2, cat: "nonmetal", config: "[He] 2s² 2p⁴" },
+            { z: 9, sym: "F", name: "Fluori", mass: "18.998", g: 17, p: 2, cat: "halogen", config: "[He] 2s² 2p⁵" },
+            { z: 10, sym: "Ne", name: "Neoni", mass: "20.180", g: 18, p: 2, cat: "noble-gas", config: "[He] 2s² 2p⁶" },
+            { z: 11, sym: "Na", name: "Natriumi", mass: "22.990", g: 1, p: 3, cat: "alkali-metal", config: "[Ne] 3s¹" },
+            { z: 12, sym: "Mg", name: "Magnezi", mass: "24.305", g: 2, p: 3, cat: "alkaline-earth", config: "[Ne] 3s²" },
+            { z: 13, sym: "Al", name: "Alumini", mass: "26.982", g: 13, p: 3, cat: "post-transition", config: "[Ne] 3s² 3p¹" },
+            { z: 14, sym: "Si", name: "Silici", mass: "28.085", g: 14, p: 3, cat: "metalloid", config: "[Ne] 3s² 3p²" },
+            { z: 15, sym: "P", name: "Fosfori", mass: "30.974", g: 15, p: 3, cat: "nonmetal", config: "[Ne] 3s² 3p³" },
+            { z: 16, sym: "S", name: "Squfuri", mass: "32.06", g: 16, p: 3, cat: "nonmetal", config: "[Ne] 3s² 3p⁴" },
+            { z: 17, sym: "Cl", name: "Klori", mass: "35.45", g: 17, p: 3, cat: "halogen", config: "[Ne] 3s² 3p⁵" },
+            { z: 18, sym: "Ar", name: "Argoni", mass: "39.948", g: 18, p: 3, cat: "noble-gas", config: "[Ne] 3s² 3p⁶" },
+            { z: 19, sym: "K", name: "Kaliumi", mass: "39.098", g: 1, p: 4, cat: "alkali-metal", config: "[Ar] 4s¹" },
+            { z: 20, sym: "Ca", name: "Kalciumi", mass: "40.078", g: 2, p: 4, cat: "alkaline-earth", config: "[Ar] 4s²" },
+            { z: 21, sym: "Sc", name: "Skandiumi", mass: "44.956", g: 3, p: 4, cat: "transition-metal", config: "[Ar] 3d¹ 4s²" },
+            { z: 22, sym: "Ti", name: "Titani", mass: "47.867", g: 4, p: 4, cat: "transition-metal", config: "[Ar] 3d² 4s²" },
+            { z: 23, sym: "V", name: "Vanadiumi", mass: "50.942", g: 5, p: 4, cat: "transition-metal", config: "[Ar] 3d³ 4s²" },
+            { z: 24, sym: "Cr", name: "Kromi", mass: "51.996", g: 6, p: 4, cat: "transition-metal", config: "[Ar] 3d⁵ 4s¹" },
+            { z: 25, sym: "Mn", name: "Mangani", mass: "54.938", g: 7, p: 4, cat: "transition-metal", config: "[Ar] 3d⁵ 4s²" },
+            { z: 26, sym: "Fe", name: "Hekuri", mass: "55.845", g: 8, p: 4, cat: "transition-metal", config: "[Ar] 3d⁶ 4s²" },
+            { z: 27, sym: "Co", name: "Kobalti", mass: "58.933", g: 9, p: 4, cat: "transition-metal", config: "[Ar] 3d⁷ 4s²" },
+            { z: 28, sym: "Ni", name: "Nikeli", mass: "58.693", g: 10, p: 4, cat: "transition-metal", config: "[Ar] 3d⁸ 4s²" },
+            { z: 29, sym: "Cu", name: "Bakri", mass: "63.546", g: 11, p: 4, cat: "transition-metal", config: "[Ar] 3d¹⁰ 4s¹" },
+            { z: 30, sym: "Zn", name: "Zinku", mass: "65.38", g: 12, p: 4, cat: "transition-metal", config: "[Ar] 3d¹⁰ 4s²" },
+            { z: 31, sym: "Ga", name: "Galiumi", mass: "69.723", g: 13, p: 4, cat: "post-transition", config: "[Ar] 3d¹⁰ 4s² 4p¹" },
+            { z: 32, sym: "Ge", name: "Gjermaniumi", mass: "72.630", g: 14, p: 4, cat: "metalloid", config: "[Ar] 3d¹⁰ 4s² 4p²" },
+            { z: 33, sym: "As", name: "Arseniku", mass: "74.922", g: 15, p: 4, cat: "metalloid", config: "[Ar] 3d¹⁰ 4s² 4p³" },
+            { z: 34, sym: "Se", name: "Seleniumi", mass: "78.971", g: 16, p: 4, cat: "nonmetal", config: "[Ar] 3d¹⁰ 4s² 4p⁴" },
+            { z: 35, sym: "Br", name: "Bromi", mass: "79.904", g: 17, p: 4, cat: "halogen", config: "[Ar] 3d¹⁰ 4s² 4p⁵" },
+            { z: 36, sym: "Kr", name: "Kriptoni", mass: "83.798", g: 18, p: 4, cat: "noble-gas", config: "[Ar] 3d¹⁰ 4s² 4p⁶" },
+            { z: 37, sym: "Rb", name: "Rubidiumi", mass: "85.468", g: 1, p: 5, cat: "alkali-metal", config: "[Kr] 5s¹" },
+            { z: 38, sym: "Sr", name: "Stronciumi", mass: "87.62", g: 2, p: 5, cat: "alkaline-earth", config: "[Kr] 5s²" },
+            { z: 39, sym: "Y", name: "Itriumi", mass: "88.906", g: 3, p: 5, cat: "transition-metal", config: "[Kr] 4d¹ 5s²" },
+            { z: 40, sym: "Zr", name: "Cirkoni", mass: "91.224", g: 4, p: 5, cat: "transition-metal", config: "[Kr] 4d² 5s²" },
+            { z: 41, sym: "Nb", name: "Niobi", mass: "92.906", g: 5, p: 5, cat: "transition-metal", config: "[Kr] 4d⁴ 5s¹" },
+            { z: 42, sym: "Mo", name: "Molibdeni", mass: "95.95", g: 6, p: 5, cat: "transition-metal", config: "[Kr] 4d⁵ 5s¹" },
+            { z: 43, sym: "Tc", name: "Tekneci", mass: "(98)", g: 7, p: 5, cat: "transition-metal", config: "[Kr] 4d⁵ 5s²" },
+            { z: 44, sym: "Ru", name: "Ruteni", mass: "101.07", g: 8, p: 5, cat: "transition-metal", config: "[Kr] 4d⁷ 5s¹" },
+            { z: 45, sym: "Rh", name: "Rodi", mass: "102.91", g: 9, p: 5, cat: "transition-metal", config: "[Kr] 4d⁸ 5s¹" },
+            { z: 46, sym: "Pd", name: "Paladi", mass: "106.42", g: 10, p: 5, cat: "transition-metal", config: "[Kr] 4d¹⁰" },
+            { z: 47, sym: "Ag", name: "Argjendi", mass: "107.87", g: 11, p: 5, cat: "transition-metal", config: "[Kr] 4d¹⁰ 5s¹" },
+            { z: 48, sym: "Cd", name: "Kadmiumi", mass: "112.41", g: 12, p: 5, cat: "transition-metal", config: "[Kr] 4d¹⁰ 5s²" },
+            { z: 49, sym: "In", name: "Indiumi", mass: "114.82", g: 13, p: 5, cat: "post-transition", config: "[Kr] 4d¹⁰ 5s² 5p¹" },
+            { z: 50, sym: "Sn", name: "Kalai", mass: "118.71", g: 14, p: 5, cat: "post-transition", config: "[Kr] 4d¹⁰ 5s² 5p²" },
+            { z: 51, sym: "Sb", name: "Antimoni", mass: "121.76", g: 15, p: 5, cat: "metalloid", config: "[Kr] 4d¹⁰ 5s² 5p³" },
+            { z: 52, sym: "Te", name: "Teluri", mass: "127.60", g: 16, p: 5, cat: "metalloid", config: "[Kr] 4d¹⁰ 5s² 5p⁴" },
+            { z: 53, sym: "I", name: "Jodi", mass: "126.90", g: 17, p: 5, cat: "halogen", config: "[Kr] 4d¹⁰ 5s² 5p⁵" },
+            { z: 54, sym: "Xe", name: "Ksenoni", mass: "131.29", g: 18, p: 5, cat: "noble-gas", config: "[Kr] 4d¹⁰ 5s² 5p⁶" },
+            { z: 55, sym: "Cs", name: "Ceziumi", mass: "132.91", g: 1, p: 6, cat: "alkali-metal", config: "[Xe] 6s¹" },
+            { z: 56, sym: "Ba", name: "Bariumi", mass: "137.33", g: 2, p: 6, cat: "alkaline-earth", config: "[Xe] 6s²" },
+            { z: 57, sym: "La", name: "Lantani", mass: "138.91", g: 4, p: 9, cat: "lanthanide", config: "[Xe] 5d¹ 6s²" },
+            { z: 58, sym: "Ce", name: "Ceri", mass: "140.12", g: 5, p: 9, cat: "lanthanide", config: "[Xe] 4f¹ 5d¹ 6s²" },
+            { z: 59, sym: "Pr", name: "Prazeodimi", mass: "140.91", g: 6, p: 9, cat: "lanthanide", config: "[Xe] 4f³ 6s²" },
+            { z: 60, sym: "Nd", name: "Neodimi", mass: "144.24", g: 7, p: 9, cat: "lanthanide", config: "[Xe] 4f⁴ 6s²" },
+            { z: 61, sym: "Pm", name: "Prometiumi", mass: "(145)", g: 8, p: 9, cat: "lanthanide", config: "[Xe] 4f⁵ 6s²" },
+            { z: 62, sym: "Sm", name: "Samariumi", mass: "150.36", g: 9, p: 9, cat: "lanthanide", config: "[Xe] 4f⁶ 6s²" },
+            { z: 63, sym: "Eu", name: "Europi", mass: "151.96", g: 10, p: 9, cat: "lanthanide", config: "[Xe] 4f⁷ 6s²" },
+            { z: 64, sym: "Gd", name: "Gadolini", mass: "157.25", g: 11, p: 9, cat: "lanthanide", config: "[Xe] 4f⁷ 5d¹ 6s²" },
+            { z: 65, sym: "Tb", name: "Terbi", mass: "158.93", g: 12, p: 9, cat: "lanthanide", config: "[Xe] 4f⁹ 6s²" },
+            { z: 66, sym: "Dy", name: "Disprozi", mass: "162.50", g: 13, p: 9, cat: "lanthanide", config: "[Xe] 4f¹⁰ 6s²" },
+            { z: 67, sym: "Ho", name: "Holmi", mass: "164.93", g: 14, p: 9, cat: "lanthanide", config: "[Xe] 4f¹¹ 6s²" },
+            { z: 68, sym: "Er", name: "Erbi", mass: "167.26", g: 15, p: 9, cat: "lanthanide", config: "[Xe] 4f¹² 6s²" },
+            { z: 69, sym: "Tm", name: "Tuli", mass: "168.93", g: 16, p: 9, cat: "lanthanide", config: "[Xe] 4f¹³ 6s²" },
+            { z: 70, sym: "Yb", name: "Iterbi", mass: "173.05", g: 17, p: 9, cat: "lanthanide", config: "[Xe] 4f¹⁴ 6s²" },
+            { z: 71, sym: "Lu", name: "Luteci", mass: "174.97", g: 18, p: 9, cat: "lanthanide", config: "[Xe] 4f¹⁴ 5d¹ 6s²" },
+            { z: 72, sym: "Hf", name: "Hafni", mass: "178.49", g: 4, p: 6, cat: "transition-metal", config: "[Xe] 4f¹⁴ 5d² 6s²" },
+            { z: 73, sym: "Ta", name: "Tantali", mass: "180.95", g: 5, p: 6, cat: "transition-metal", config: "[Xe] 4f¹⁴ 5d³ 6s²" },
+            { z: 74, sym: "W", name: "Volframi", mass: "183.84", g: 6, p: 6, cat: "transition-metal", config: "[Xe] 4f¹⁴ 5d⁴ 6s²" },
+            { z: 75, sym: "Re", name: "Reni", mass: "186.21", g: 7, p: 6, cat: "transition-metal", config: "[Xe] 4f¹⁴ 5d⁵ 6s²" },
+            { z: 76, sym: "Os", name: "Osmi", mass: "190.23", g: 8, p: 6, cat: "transition-metal", config: "[Xe] 4f¹⁴ 5d⁶ 6s²" },
+            { z: 77, sym: "Ir", name: "Iridi", mass: "192.22", g: 9, p: 6, cat: "transition-metal", config: "[Xe] 4f¹⁴ 5d⁷ 6s²" },
+            { z: 78, sym: "Pt", name: "Platina", mass: "195.08", g: 10, p: 6, cat: "transition-metal", config: "[Xe] 4f¹⁴ 5d⁹ 6s¹" },
+            { z: 79, sym: "Au", name: "Flori", mass: "196.97", g: 11, p: 6, cat: "transition-metal", config: "[Xe] 4f¹⁴ 5d¹⁰ 6s¹" },
+            { z: 80, sym: "Hg", name: "Zhiva", mass: "200.59", g: 12, p: 6, cat: "transition-metal", config: "[Xe] 4f¹⁴ 5d¹⁰ 6s²" },
+            { z: 81, sym: "Tl", name: "Tali", mass: "204.38", g: 13, p: 6, cat: "post-transition", config: "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p¹" },
+            { z: 82, sym: "Pb", name: "Plumbi", mass: "207.2", g: 14, p: 6, cat: "post-transition", config: "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p²" },
+            { z: 83, sym: "Bi", name: "Bismuti", mass: "208.98", g: 15, p: 6, cat: "post-transition", config: "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p³" },
+            { z: 84, sym: "Po", name: "Poloni", mass: "(209)", g: 16, p: 6, cat: "post-transition", config: "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁴" },
+            { z: 85, sym: "At", name: "Astati", mass: "(210)", g: 17, p: 6, cat: "halogen", config: "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁵" },
+            { z: 86, sym: "Rn", name: "Radoni", mass: "(222)", g: 18, p: 6, cat: "noble-gas", config: "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁶" },
+            { z: 87, sym: "Fr", name: "Franciumi", mass: "(223)", g: 1, p: 7, cat: "alkali-metal", config: "[Rn] 7s¹" },
+            { z: 88, sym: "Ra", name: "Radiumi", mass: "(226)", g: 2, p: 7, cat: "alkaline-earth", config: "[Rn] 7s²" },
+            { z: 89, sym: "Ac", name: "Aktini", mass: "(227)", g: 4, p: 10, cat: "actinide", config: "[Rn] 6d¹ 7s²" },
+            { z: 90, sym: "Th", name: "Tori", mass: "232.04", g: 5, p: 10, cat: "actinide", config: "[Rn] 6d² 7s²" },
+            { z: 91, sym: "Pa", name: "Protaktini", mass: "231.04", g: 6, p: 10, cat: "actinide", config: "[Rn] 5f² 6d¹ 7s²" },
+            { z: 92, sym: "U", name: "Urani", mass: "238.03", g: 7, p: 10, cat: "actinide", config: "[Rn] 5f³ 6d¹ 7s²" },
+            { z: 93, sym: "Np", name: "Neptuni", mass: "(237)", g: 8, p: 10, cat: "actinide", config: "[Rn] 5f⁴ 6d¹ 7s²" },
+            { z: 94, sym: "Pu", name: "Plutoni", mass: "(244)", g: 9, p: 10, cat: "actinide", config: "[Rn] 5f⁶ 7s²" },
+            { z: 95, sym: "Am", name: "Ameriki", mass: "(243)", g: 10, p: 10, cat: "actinide", config: "[Rn] 5f⁷ 7s²" },
+            { z: 96, sym: "Cm", name: "Kuriumi", mass: "(247)", g: 11, p: 10, cat: "actinide", config: "[Rn] 5f⁷ 6d¹ 7s²" },
+            { z: 97, sym: "Bk", name: "Berkeli", mass: "(247)", g: 12, p: 10, cat: "actinide", config: "[Rn] 5f⁹ 7s²" },
+            { z: 98, sym: "Cf", name: "Kaliforni", mass: "(251)", g: 13, p: 10, cat: "actinide", config: "[Rn] 5f¹⁰ 7s²" },
+            { z: 99, sym: "Es", name: "Ajnshtajni", mass: "(252)", g: 14, p: 10, cat: "actinide", config: "[Rn] 5f¹¹ 7s²" },
+            { z: 100, sym: "Fm", name: "Fermi", mass: "(257)", g: 15, p: 10, cat: "actinide", config: "[Rn] 5f¹² 7s²" },
+            { z: 101, sym: "Md", name: "Mendelevi", mass: "(258)", g: 16, p: 10, cat: "actinide", config: "[Rn] 5f¹³ 7s²" },
+            { z: 102, sym: "No", name: "Nobeli", mass: "(259)", g: 17, p: 10, cat: "actinide", config: "[Rn] 5f¹⁴ 7s²" },
+            { z: 103, sym: "Lr", name: "Laurenci", mass: "(266)", g: 18, p: 10, cat: "actinide", config: "[Rn] 5f¹⁴ 6d¹ 7s²" },
+            { z: 104, sym: "Rf", name: "Raderfordi", mass: "(267)", g: 4, p: 7, cat: "transition-metal", config: "[Rn] 5f¹⁴ 6d² 7s²" },
+            { z: 105, sym: "Db", name: "Dubni", mass: "(268)", g: 5, p: 7, cat: "transition-metal", config: "[Rn] 5f¹⁴ 6d³ 7s²" },
+            { z: 106, sym: "Sg", name: "Siborgi", mass: "(269)", g: 6, p: 7, cat: "transition-metal", config: "[Rn] 5f¹⁴ 6d⁴ 7s²" },
+            { z: 107, sym: "Bh", name: "Bori (Bh)", mass: "(270)", g: 7, p: 7, cat: "transition-metal", config: "[Rn] 5f¹⁴ 6d⁵ 7s²" },
+            { z: 108, sym: "Hs", name: "Hasi", mass: "(277)", g: 8, p: 7, cat: "transition-metal", config: "[Rn] 5f¹⁴ 6d⁶ 7s²" },
+            { z: 109, sym: "Mt", name: "Majtneri", mass: "(278)", g: 9, p: 7, cat: "transition-metal", config: "[Rn] 5f¹⁴ 6d⁷ 7s²" },
+            { z: 110, sym: "Ds", name: "Darmshtati", mass: "(281)", g: 10, p: 7, cat: "transition-metal", config: "[Rn] 5f¹⁴ 6d⁸ 7s²" },
+            { z: 111, sym: "Rg", name: "Rëntgeni", mass: "(282)", g: 11, p: 7, cat: "transition-metal", config: "[Rn] 5f¹⁴ 6d⁹ 7s²" },
+            { z: 112, sym: "Cn", name: "Koperniki", mass: "(285)", g: 12, p: 7, cat: "transition-metal", config: "[Rn] 5f¹⁴ 6d¹⁰ 7s²" },
+            { z: 113, sym: "Nh", name: "Nihoni", mass: "(286)", g: 13, p: 7, cat: "post-transition", config: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p¹" },
+            { z: 114, sym: "Fl", name: "Flerovi", mass: "(289)", g: 14, p: 7, cat: "post-transition", config: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p²" },
+            { z: 115, sym: "Mc", name: "Moskovi", mass: "(290)", g: 15, p: 7, cat: "post-transition", config: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p³" },
+            { z: 116, sym: "Lv", name: "Livermori", mass: "(293)", g: 16, p: 7, cat: "post-transition", config: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁴" },
+            { z: 117, sym: "Ts", name: "Tenesini", mass: "(294)", g: 17, p: 7, cat: "halogen", config: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁵" },
+            { z: 118, sym: "Og", name: "Oganesoni", mass: "(294)", g: 18, p: 7, cat: "noble-gas", config: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁶" }
+        ];
+
+        const categoryNames = {
+            "nonmetal": "Jometal",
+            "noble-gas": "Gaz Fisnik",
+            "alkali-metal": "Metal Alkali",
+            "alkaline-earth": "Metal Alkalino-Tokësor",
+            "metalloid": "Metaloid",
+            "halogen": "Halogjen",
+            "post-transition": "Metal Pas-Kalimtar",
+            "transition-metal": "Metal Kalimtar",
+            "lanthanide": "Lantanid",
+            "actinide": "Aktinid"
+        };
+
+        const grid = document.getElementById("periodicTable");
+        const elementSelect = document.getElementById("elementSelect");
+
+        // Funksioni për transformimin e konfiguracionit në të PLOTË dhe theksimin e shtresës së jashtme
+        function processElectronicConfig(shortConfig) {
+            let fullConfig = shortConfig;
+            
+            // 1. Zëvendësojmë simbolin e gazit të plogët me vargun e tij të plotë
+            for (const [key, val] of Object.entries(nobleGasExpansions)) {
+                if (fullConfig.includes(key)) {
+                    fullConfig = fullConfig.replace(key, val);
+                    break;
+                }
+            }
+
+            // 2. Ndajmë në orbitalet përpjesëtuese
+            const tokens = fullConfig.trim().split(/\s+/);
+            
+            // Gjejmë numrin kuantik kryesor maksimal (n_max -> Shtresa e Jashtme)
+            let maxN = 0;
+            tokens.forEach(tok => {
+                const match = tok.match(/^(\d+)/);
+                if (match) {
+                    const n = parseInt(match[1], 10);
+                    if (n > maxN) maxN = n;
+                }
+            });
+
+            // Formatimi dhe llogaritja e elektroneve valente të shtresës së jashtme
+            const superscripts = { '¹':1, '²':2, '³':3, '⁴':4, '⁵':5, '⁶':6, '⁷':7, '⁸':8, '⁹':9, '¹⁰':10, '¹¹':11, '¹²':12, '¹³':13, '¹⁴':14 };
+            let valenceElectrons = 0;
+
+            const formattedTokens = tokens.map(tok => {
+                const match = tok.match(/^(\d+)[a-z]+([¹²³⁴⁵⁶⁷⁸⁹¹⁰⁺⁻]+|\d+)?/i);
+                if (match) {
+                    const n = parseInt(match[1], 10);
+                    if (n === maxN) {
+                        const sup = match[2] || '¹';
+                        valenceElectrons += superscripts[sup] || parseInt(sup, 10) || 1;
+                        return `<span class="outer-shell">${tok}</span>`;
+                    }
+                }
+                return tok;
+            });
+
+            return {
+                html: formattedTokens.join(' '),
+                maxN: maxN,
+                valenceElectrons: valenceElectrons
+            };
+        }
+
+        // Ndërtimi i plotë i Gridit të Tabelës Periodike
+        function buildTable() {
+            grid.innerHTML = "";
+
+            // Mbushim dropdown-in
+            elements.forEach(el => {
+                const opt = document.createElement("option");
+                opt.value = el.z;
+                opt.textContent = `${el.z}. ${el.name} (${el.sym})`;
+                elementSelect.appendChild(opt);
+            });
+
+            // A. Shtojmë Labelat e Grupeve (Rreshti 1)
+            const emptyCorner = document.createElement("div");
+            emptyCorner.className = "period-label";
+            emptyCorner.textContent = "P/G";
+            grid.appendChild(emptyCorner);
+
+            for (let g = 1; g <= 18; g++) {
+                const gLabel = document.createElement("div");
+                gLabel.className = "header-label";
+                const parts = groupLabelsAB[g].split(" ");
+                gLabel.innerHTML = `${parts[0]} <span class="sub-group">${parts[1]} ${parts[2]||''}</span>`;
+                gLabel.style.gridRow = 1;
+                gLabel.style.gridColumn = g + 1;
+                grid.appendChild(gLabel);
+            }
+
+            // B. Shtojmë Labelat e Periodave (Rreshtat 2 deri 8)
+            for (let p = 1; p <= 7; p++) {
+                const pLabel = document.createElement("div");
+                pLabel.className = "period-label";
+                pLabel.textContent = `P${p}`;
+                pLabel.style.gridRow = p + 1;
+                pLabel.style.gridColumn = 1;
+                grid.appendChild(pLabel);
+            }
+
+            // Labelat për Lantanidet & Aktinidet (Rreshtat 10 & 11)
+            const lanLabel = document.createElement("div");
+            lanLabel.className = "period-label";
+            lanLabel.textContent = "P6 (f)";
+            lanLabel.style.gridRow = 10;
+            lanLabel.style.gridColumn = 1;
+            grid.appendChild(lanLabel);
+
+            const actLabel = document.createElement("div");
+            actLabel.className = "period-label";
+            actLabel.textContent = "P7 (f)";
+            actLabel.style.gridRow = 11;
+            actLabel.style.gridColumn = 1;
+            grid.appendChild(actLabel);
+
+            // C. Shtojmë Qelizat e Elementeve
+            elements.forEach(el => {
+                const cell = document.createElement("div");
+                cell.className = `element-cell ${el.cat}`;
+                cell.id = `elem-${el.z}`;
+
+                let row = el.p <= 7 ? el.p + 1 : el.p; // +1 për shkak të rreshtit të grupeve
+                let col = el.g + 1;                  // +1 për shkak të kolonës së periodave
+
+                cell.style.gridRow = row;
+                cell.style.gridColumn = col;
+
+                cell.innerHTML = `
+                    <span class="cell-z">${el.z}</span>
+                    <span class="cell-symbol">${el.sym}</span>
+                    <span class="cell-name">${el.name}</span>
+                    <span class="cell-mass">${el.mass}</span>
+                `;
+
+                cell.addEventListener("click", () => displayElement(el));
+                grid.appendChild(cell);
+            });
+
+            // Ruajtësit e vendeve për Lantanidet / Aktinidet në trupin e tabelës
+            addPlaceholder(7, 4, "57-71", "lanthanide");
+            addPlaceholder(8, 4, "89-103", "actinide");
+
+            renderLegend();
+            displayElement(elements[0]);
+        }
+
+        function addPlaceholder(row, col, text, cat) {
+            const ph = document.createElement("div");
+            ph.className = `placeholder ${cat}`;
+            ph.style.gridRow = row;
+            ph.style.gridColumn = col;
+            ph.textContent = text;
+            grid.appendChild(ph);
+        }
+
+        // Shfaqja e të dhënave në Panelin Sipër
+        function displayElement(el) {
+            document.querySelectorAll('.element-cell').forEach(c => c.classList.remove('selected'));
+            
+            const cell = document.getElementById(`elem-${el.z}`);
+            if (cell) cell.classList.add('selected');
+
+            // Përditësojmë pamjen e parë
+            const prevBox = document.getElementById("previewBox");
+            prevBox.className = `element-preview ${el.cat}`;
+            document.getElementById("prevZ").textContent = el.z;
+            document.getElementById("prevSym").textContent = el.sym;
+            document.getElementById("prevName").textContent = el.name;
+
+            // Përditësojmë të dhënat kryesore
+            document.getElementById("detTitle").innerHTML = `${el.name} <span>${categoryNames[el.cat]}</span>`;
+            document.getElementById("detZ").textContent = el.z;
+            document.getElementById("detMass").textContent = el.mass;
+            
+            const groupStr = el.p <= 7 ? groupLabelsAB[el.g] : "Sub-Blloku (f)";
+            document.getElementById("detGroup").textContent = groupStr;
+
+            // Përpunojmë formulën e plotë elektronike dhe shtresën e jashtme
+            const processed = processElectronicConfig(el.config);
+            document.getElementById("detConfig").innerHTML = processed.html;
+            document.getElementById("detPeriod").textContent = processed.maxN;
+            document.getElementById("detValence").textContent = `${processed.valenceElectrons} e⁻ në n=${processed.maxN}`;
+
+            elementSelect.value = el.z;
+        }
+
+        function selectElementByNumber(z) {
+            const el = elements.find(item => item.z == z);
+            if (el) displayElement(el);
+        }
+
+        function filterElements() {
+            const query = document.getElementById("searchInput").value.toLowerCase().trim();
+            if (!query) return;
+
+            const found = elements.find(el => 
+                el.name.toLowerCase().includes(query) || 
+                el.sym.toLowerCase() === query || 
+                el.z.toString() === query
+            );
+
+            if (found) displayElement(found);
+        }
+
+        function renderLegend() {
+            const legendContainer = document.getElementById("legend");
+            legendContainer.innerHTML = "";
+            Object.keys(categoryNames).forEach(catKey => {
+                const item = document.createElement("div");
+                item.className = "legend-item";
+                item.innerHTML = `
+                    <div class="legend-color ${catKey}"></div>
+                    <span>${categoryNames[catKey]}</span>
+                `;
+                legendContainer.appendChild(item);
+            });
+        }
+
+        window.onload = buildTable;
+    </script>
+</body>
+</html>

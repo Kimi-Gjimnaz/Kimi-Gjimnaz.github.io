@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portali Kombëtar i Testimeve Mjekësore - Republika e Shqipërisë</title>
+    <style>
+        :root {
+            --gov-navy: #020617;
+            --gov-blue-accent: #2563eb;
+            --gov-blue-glow: #38bdf8;
+            --gov-bg: #0f172a;          
+            --card-bg: #1e293b;        
+            --card-border: #334155;    
+            --text-main: #f8fafc;      
+            --text-muted: #94a3b8;     
+            --green-success: #16a34a;  
+            --red-alert: #dc2626;     
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            background-color: var(--gov-bg);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Bar */
+        .gov-topbar {
+            background-color: var(--gov-navy);
+            color: white;
+            padding: 6px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #c59b27;
+            height: 44px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+
+        .gov-title h1 {
+            font-size: 13px;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+            color: #f8fafc;
+        }
+
+        .gov-title h2 {
+            font-size: 10.5px;
+            margin: 1px 0 0 0;
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        .timer-card {
+            background: #1e293b;
+            color: #f8fafc;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .timer-card.warning {
+            background-color: #450a0a;
+            color: #fca5a5;
+            border-color: #991b1b;
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { opacity: 1; }
+            to { opacity: 0.7; }
+        }
+
+        /* Hapësira Kryesore */
+        .workspace {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 10px 16px;
+            height: calc(100vh - 44px);
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* DIV 1 */
+        .top-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 12px 16px;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            flex: 1;
+            overflow-y: auto;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+        }
+
+        /* Profil Seksioni */
+        .profile-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+            background: #0f172a;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid var(--card-border);
+        }
+
+        .candidate-photo {
+            width: 3cm;
+            height: 4cm;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1.5px solid var(--gov-blue-glow);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+            background-color: #1e293b;
+        }
+
+        .candidate-info {
+            text-align: center;
+            font-size: 11px;
+        }
+
+        .candidate-name {
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 2px;
+        }
+
+        .candidate-id {
+            color: var(--text-muted);
+            font-size: 10px;
+        }
+
+        .question-content-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        /* Baneri i Rezultateve (I fshehur fillimisht) */
+        .results-banner {
+            background-color: #022c22;
+            border: 1px solid var(--green-success);
+            color: #a7f3d0;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            text-align: center;
+            display: none; /* Bëhet block pas dorëzimit */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        /* Progresi */
+        .progress-box {
+            margin-bottom: 8px;
+        }
+
+        .progress-bar-bg {
+            height: 5px;
+            background: #334155;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 3px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--gov-blue-glow);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Pyetja */
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--card-border);
+            margin-bottom: 10px;
+        }
+
+        .question-badge {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--gov-blue-glow);
+        }
+
+        .meta-tag {
+            background-color: #334155;
+            color: var(--text-main);
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            border: 1px solid #475569;
+        }
+
+        .question-body {
+            font-size: 19px;
+            line-height: 1.5;
+            margin-bottom: 12px;
+            color: #ffffff;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+        }
+
+        /* Alternativat */
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .option-item {
+            background-color: #0f172a;
+            border: 1.5px solid var(--card-border);
+            border-radius: 6px;
+            padding: 10px 14px;
+            font-size: 15px;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.15s ease-in-out;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+        }
+
+        .option-item:not(.is-finished):hover {
+            border-color: var(--gov-blue-glow);
+            background-color: #1e293b;
+        }
+
+        .option-item.selected {
+            background-color: var(--green-success) !important;
+            color: #ffffff !important;
+            border-color: var(--green-success) !important;
+            font-weight: 600;
+            box-shadow: 0 3px 10px rgba(22, 163, 74, 0.3);
+        }
+
+        /* Klasat e reja për Review Mode */
+        .option-item.correct-answer {
+            background-color: var(--green-success) !important;
+            color: #ffffff !important;
+            border-color: var(--green-success) !important;
+            font-weight: 700;
+        }
+
+        .option-item.wrong-answer {
+            background-color: var(--red-alert) !important;
+            color: #ffffff !important;
+            border-color: var(--red-alert) !important;
+            opacity: 0.85;
+        }
+
+        .option-prefix {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1px solid #475569;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11.5px;
+            font-weight: 700;
+            background: #1e293b;
+            color: var(--text-main);
+            flex-shrink: 0;
+        }
+
+        .option-item.selected .option-prefix,
+        .option-item.correct-answer .option-prefix,
+        .option-item.wrong-answer .option-prefix {
+            background: #ffffff;
+            color: var(--gov-navy);
+            border-color: #ffffff;
+        }
+
+        /* DIV 2 */
+        .bottom-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 12px 16px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+            width: 100%;
+            flex-shrink: 0;
+        }
+
+        .nav-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .btn {
+            padding: 7px 16px;
+            border-radius: 5px;
+            font-size: 12.5px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .btn-secondary { background-color: #334155; color: var(--text-main); border: 1px solid #475569; }
+        .btn-secondary:hover:not(:disabled) { background-color: #475569; }
+        .btn-secondary:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
+
+        .btn-primary { background-color: var(--gov-blue-accent); color: white; }
+        .btn-primary:hover { background-color: #1d4ed8; }
+
+        .btn-submit { background-color: var(--red-alert); color: white; }
+        .btn-submit:hover { background-color: #b91c1c; }
+
+        /* Rrjeta e Pyetjeve */
+        .grid-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            font-size: 11.5px;
+            font-weight: 700;
+            color: var(--gov-blue-glow);
+        }
+
+        .grid-legend {
+            display: flex;
+            gap: 12px;
+            font-size: 10.5px;
+            font-weight: normal;
+            color: var(--text-muted);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .legend-box {
+            width: 11px;
+            height: 11px;
+            border-radius: 2px;
+            border: 1px solid var(--card-border);
+        }
+
+        .legend-box.white { background: #0f172a; }
+        .legend-box.green { background: var(--green-success); border-color: var(--green-success); }
+        .legend-box.red { background: var(--red-alert); border-color: var(--red-alert); display: none; }
+
+        .questions-grid {
+            display: grid;
+            grid-template-columns: repeat(25, 1fr);
+            gap: 5px;
+        }
+
+        @media (max-width: 1200px) {
+            .questions-grid {
+                grid-template-columns: repeat(10, 1fr);
+            }
+        }
+
+        .grid-cell {
+            background-color: #0f172a;
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11.5px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .grid-cell:hover {
+            border-color: var(--gov-blue-glow);
+            transform: translateY(-1px);
+        }
+
+        .grid-cell.answered {
+            background-color: var(--green-success) !important;
+            color: white !important;
+            border-color: var(--green-success) !important;
+        }
+
+        .grid-cell.active {
+            outline: 2px solid var(--gov-blue-glow);
+            outline-offset: 1px;
+        }
+
+        /* Klasat për Grid pas përfundimit */
+        .grid-cell.final-correct {
+            background-color: var(--green-success) !important;
+            color: white !important;
+            border-color: var(--green-success) !important;
+        }
+
+        .grid-cell.final-wrong {
+            background-color: var(--red-alert) !important;
+            color: white !important;
+            border-color: var(--red-alert) !important;
+        }
+
+        /* Modal Box */
+        .modal-backdrop {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(2, 6, 23, 0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            width: 100%;
+            max-width: 420px;
+            padding: 18px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            color: var(--text-main);
+        }
+
+        .modal-title {
+            font-size: 15px;
+            color: var(--gov-blue-glow);
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="gov-topbar">
+        <div class="gov-title">
+            <h1>REPUBLIKA E SHQIPËRISË</h1>
+            <h2>Portali Kombëtar i Vlerësimit të Licencave Mjekësore</h2>
+        </div>
+        <div class="timer-card" id="timer-box">
+            <span>⏱ Koha:</span>
+            <span id="timer-display">60:00</span>
+        </div>
+    </header>
+
+    <div class="workspace">
+        
+        <!-- DIV 1 (I SIPËRM) -->
+        <div class="top-card">
+            
+            <div class="profile-section">
+                <svg class="candidate-photo" viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="100%" height="100%" fill="#1e293b"/>
+                    <circle cx="60" cy="55" r="30" fill="#475569"/>
+                    <path d="M10 145 C10 100, 110 100, 110 145 Z" fill="#475569"/>
+                </svg>
+                <div class="candidate-info">
+                    <div class="candidate-name">Dr. Agim Hoxha</div>
+                    <div class="candidate-id">ID: K98765432M</div>
+                </div>
+            </div>
+
+            <div class="question-content-box">
+                
+                <!-- Baneri i Rezultateve -->
+                <div class="results-banner" id="results-banner">
+                    <!-- Shtohet nga JS kur mbyllet testi -->
+                </div>
+
+                <div class="progress-box">
+                    <div style="display: flex; justify-content: space-between; font-size: 10.5px; color: var(--text-muted); font-weight: 600;">
+                        <span>PROGRESI I TESTIT</span>
+                        <span id="progress-text">0 / 50 Përgjigje</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" id="progress-fill"></div>
+                    </div>
+                </div>
+
+                <div class="question-header">
+                    <span class="question-badge" id="question-number">Pyetja 1</span>
+                    <span class="meta-tag" id="question-meta">Pikët: 1 | Vështirësia: E lehtë</span>
+                </div>
+
+                <div class="question-body" id="question-text">
+                    Po ngarkohet pyetja...
+                </div>
+
+                <div class="options-list" id="options-container">
+                    <!-- Injektohen nga JS -->
+                </div>
+            </div>
+
+        </div>
+
+        <!-- DIV 2 (I POSHTËM) -->
+        <div class="bottom-card">
+            <div class="nav-actions">
+                <div>
+                    <button class="btn btn-secondary" id="btn-prev" onclick="changeQuestion(-1)">&#8592; Mëparshme</button>
+                    <button class="btn btn-primary" id="btn-next" onclick="changeQuestion(1)">Pasardhëse &#8594;</button>
+                </div>
+                <button class="btn btn-submit" id="btn-submit-test" onclick="openSubmitModal()">Dorëzo Testin</button>
+            </div>
+
+            <!-- Rrjeta e 50 Pyetjeve -->
+            <div class="grid-header">
+                <span>Pasqyra e 50 pyetjeve:</span>
+                <div class="grid-legend" id="grid-legend">
+                    <div class="legend-item"><div class="legend-box green"></div> Përgjigjur</div>
+                    <div class="legend-item"><div class="legend-box white"></div> Pa përgjigje</div>
+                </div>
+            </div>
+            <div class="questions-grid" id="questions-grid">
+                <!-- 50 kutitë injektohen këtu -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modal Konfirmimi -->
+    <div class="modal-backdrop" id="submit-modal">
+        <div class="modal-content">
+            <h3 class="modal-title">Konfirmimi i Dorëzimit</h3>
+            <p id="modal-summary-text" style="font-size: 12.5px; color: var(--text-main); line-height: 1.4;">
+                Keni plotësuar 0 nga 50 pyetje.
+            </p>
+            <p style="font-size: 11.5px; color: var(--text-muted); margin-top: 6px;">
+                A jeni të sigurt që dëshironi të përfundoni testin? Pas kësaj do të shihni rezultatet dhe përgjigjet e sakta.
+            </p>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeSubmitModal()">Kthehu pas</button>
+                <button class="btn btn-submit" onclick="confirmFinalSubmit()">Përfundo & Shiko Rezultatin</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let questionBank = [
+            {
+                text: "Cila është arteria kryesore që furnizon me gjak të oksigjenuar të gjithë organizmin e njeriut?",
+                options: ["Arteria Pulmonare", "Aorta", "Arteria Karotide", "Arteria Femorale"],
+                correctIndex: 1,
+                difficulty: "E lehtë",
+                points: 1
+            },
+            {
+                text: "Cili lloj enzime sekretet nga stomaku për zbërthimin e proteinave në mjedis acid?",
+                options: ["Amilaza", "Lipaza", "Pepsina", "Tripsina"],
+                correctIndex: 2,
+                difficulty: "Mesatare",
+                points: 2
+            },
+            {
+                text: "Në cilën pjesë të nefronit kryhet pjesa më e madhe e riabsorbimit të ujit dhe elektroliteve?",
+                options: ["Tubulin Proksimal", "Ansa e Henles", "Tubulin Distal", "Gromerul"],
+                correctIndex: 0,
+                difficulty: "E vështirë",
+                points: 3
+            }
+        ];
+
+        for(let i = 4; i <= 100; i++) {
+            let diff = i % 3 === 0 ? "E vështirë" : (i % 2 === 0 ? "Mesatare" : "E lehtë");
+            let pts = diff === "E vështirë" ? 3 : (diff === "Mesatare" ? 2 : 1);
+            questionBank.push({
+                text: `[Pyetje Mjekësore #${i}] Cila nga opsionet e mëposhtme është përgjigjja klinike e saktë për këtë rast studimi?`,
+                options: [`Konstatimi Klinik A për pyetjen ${i}`, `Vlerësimi Laboratorik B për pyetjen ${i}`, `Diagnoza Diferenciale C për pyetjen ${i}`, `Trajtimi Farmakologjik D për pyetjen ${i}`],
+                correctIndex: Math.floor(Math.random() * 4),
+                difficulty: diff,
+                points: pts
+            });
+        }
+
+        let testQuestions = [];
+        let userAnswers = new Array(50).fill(null);
+        let currentIndex = 0;
+        let timeRemaining = 60 * 60;
+        let timerInterval = null;
+        let isTestFinished = false; // Flag i ri për Review Mode
+
+        function initTest() {
+            let shuffled = [...questionBank].sort(() => 0.5 - Math.random());
+            testQuestions = shuffled.slice(0, 50);
+
+            renderGrid();
+            renderQuestion();
+            startTimer();
+        }
+
+        function startTimer() {
+            const display = document.getElementById('timer-display');
+            const timerBox = document.getElementById('timer-box');
+
+            timerInterval = setInterval(() => {
+                let minutes = Math.floor(timeRemaining / 60);
+                let seconds = timeRemaining % 60;
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = `${minutes}:${seconds}`;
+
+                if (timeRemaining <= 300 && !isTestFinished) {
+                    timerBox.classList.add('warning');
+                }
+
+                if (--timeRemaining < 0) {
+                    clearInterval(timerInterval);
+                    if(!isTestFinished) {
+                        alert("Koha përfundoi! Testi po dorëzohet automatikisht dhe do të kaloni në pamjen e rishikimit.");
+                        confirmFinalSubmit();
+                    }
+                }
+            }, 1000);
+        }
+
+        function renderQuestion() {
+            let q = testQuestions[currentIndex];
+
+            document.getElementById('question-number').innerText = `Pyetja ${currentIndex + 1} nga 50`;
+            document.getElementById('question-meta').innerText = `Pikët: ${q.points} | Vështirësia: ${q.difficulty}`;
+            document.getElementById('question-text').innerText = q.text;
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            const prefixes = ['A', 'B', 'C', 'D'];
+
+            q.options.forEach((optText, index) => {
+                let div = document.createElement('div');
+                div.className = 'option-item';
+                
+                if (!isTestFinished) {
+                    // Modaliteti Gjatë Testit
+                    if (userAnswers[currentIndex] === index) {
+                        div.classList.add('selected');
+                    }
+                } else {
+                    // Modaliteti i Rishikimit (Review Mode)
+                    div.classList.add('is-finished'); 
+                    div.style.cursor = 'default';
+
+                    if (index === q.correctIndex) {
+                        div.classList.add('correct-answer'); // E sakta bëhet jeshile
+                    } else if (userAnswers[currentIndex] === index && index !== q.correctIndex) {
+                        div.classList.add('wrong-answer'); // E gabuara e zgjedhur bëhet e kuqe
+                    }
+                }
+
+                div.innerHTML = `
+                    <div class="option-prefix">${prefixes[index]}</div>
+                    <div>${optText}</div>
+                `;
+
+                div.onclick = () => selectOption(index);
+                optionsContainer.appendChild(div);
+            });
+
+            document.getElementById('btn-prev').disabled = currentIndex === 0;
+            document.getElementById('btn-next').disabled = currentIndex === 49;
+
+            updateProgressAndGridVisuals();
+        }
+
+        function selectOption(index) {
+            if (isTestFinished) return; // Parandalo klikimet pas dorëzimit
+            userAnswers[currentIndex] = index;
+            renderQuestion();
+        }
+
+        function changeQuestion(step) {
+            let nextIndex = currentIndex + step;
+            if (nextIndex >= 0 && nextIndex < 50) {
+                currentIndex = nextIndex;
+                renderQuestion();
+            }
+        }
+
+        function goToQuestion(index) {
+            currentIndex = index;
+            renderQuestion();
+        }
+
+        function renderGrid() {
+            const grid = document.getElementById('questions-grid');
+            grid.innerHTML = '';
+            for (let i = 0; i < 50; i++) {
+                let cell = document.createElement('div');
+                cell.className = 'grid-cell';
+                cell.innerText = i + 1;
+                cell.id = `grid-cell-${i}`;
+                cell.onclick = () => goToQuestion(i);
+                grid.appendChild(cell);
+            }
+        }
+
+        function updateProgressAndGridVisuals() {
+            let answeredCount = 0;
+
+            for (let i = 0; i < 50; i++) {
+                let cell = document.getElementById(`grid-cell-${i}`);
+                cell.className = 'grid-cell'; // Reset klasat
+
+                if (!isTestFinished) {
+                    // Gjatë testit
+                    if (userAnswers[i] !== null) {
+                        cell.classList.add('answered');
+                        answeredCount++;
+                    }
+                } else {
+                    // Pas dorëzimit
+                    if (userAnswers[i] !== null) answeredCount++;
+                    
+                    if (userAnswers[i] === testQuestions[i].correctIndex) {
+                        cell.classList.add('final-correct'); // Jeshile për të saktat
+                    } else {
+                        cell.classList.add('final-wrong'); // E kuqe për të gabuarat ose të lënat bosh
+                    }
+                }
+
+                if (i === currentIndex) {
+                    cell.classList.add('active');
+                }
+            }
+
+            let percent = (answeredCount / 50) * 100;
+            document.getElementById('progress-fill').style.width = percent + '%';
+            document.getElementById('progress-text').innerText = `${answeredCount} / 50 Përgjigje (${Math.round(percent)}%)`;
+        }
+
+        function openSubmitModal() {
+            if (isTestFinished) return;
+            let answeredCount = userAnswers.filter(a => a !== null).length;
+            document.getElementById('modal-summary-text').innerText = 
+                `Keni dhënë përgjigje për ${answeredCount} nga 50 pyetje në total. Pyetje të paplotësuara: ${50 - answeredCount}.`;
+            document.getElementById('submit-modal').style.display = 'flex';
+        }
+
+        function closeSubmitModal() {
+            document.getElementById('submit-modal').style.display = 'none';
+        }
+
+        function confirmFinalSubmit() {
+            clearInterval(timerInterval);
+            isTestFinished = true; // Ndrysho statusin
+            closeSubmitModal();
+
+            let totalPointsObtained = 0;
+            let maxPossiblePoints = 0;
+            let correctAnswersCount = 0;
+
+            for (let i = 0; i < 50; i++) {
+                maxPossiblePoints += testQuestions[i].points;
+                if (userAnswers[i] === testQuestions[i].correctIndex) {
+                    totalPointsObtained += testQuestions[i].points;
+                    correctAnswersCount++;
+                }
+            }
+
+            // Fshih butonin e dorëzimit dhe paralajmërimin e kohës
+            document.getElementById('btn-submit-test').style.display = 'none';
+            document.getElementById('timer-box').classList.remove('warning');
+            document.getElementById('timer-box').style.background = '#064e3b'; // Ngjyrë suksesi te koha
+            document.getElementById('timer-box').innerHTML = `<span>✅ Përfunduar</span>`;
+
+            // Trego Banerin e Rezultateve
+            const banner = document.getElementById('results-banner');
+            banner.style.display = 'block';
+            banner.innerHTML = `TESTI PËRFUNDOI! Përgjigje të Sakta: ${correctAnswersCount}/50 &nbsp;&nbsp;|&nbsp;&nbsp; Pikët e Fituara: ${totalPointsObtained} / ${maxPossiblePoints}`;
+
+            // Përditëso Legjendën e Rrjetës
+            document.getElementById('grid-legend').innerHTML = `
+                <div class="legend-item"><div class="legend-box green" style="display:block"></div> E Saktë</div>
+                <div class="legend-item"><div class="legend-box red" style="display:block"></div> E Gabuar</div>
+            `;
+
+            // Ri-Rendero pyetjen aktuale dhe rrjetën për të aplikuar ngjyrat (Jeshile/E kuqe)
+            renderQuestion();
+            
+            // Kthehu në pyetjen e parë automatikisht për ta nisur rishikimin
+            goToQuestion(0);
+        }
+
+        window.onload = initTest;
+    </script>
+</body>
+</html>
