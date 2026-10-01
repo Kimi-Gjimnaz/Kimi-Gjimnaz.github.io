@@ -22,8 +22,8 @@
             --halogen: #0891b2;
             --post-transition: #0d9488;
             --transition-metal: #d97706;
-            --lanthanide: #db2777;
-            --actinide: #c026d3;
+            --lanthanide: #ec4899;
+            --actinide: #d946ef;
         }
 
         * {
@@ -84,6 +84,7 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             background-color: #1e293b;
             border: 2px solid #475569;
+            transition: all 0.2s ease;
         }
 
         .preview-z { font-size: 0.8rem; color: #cbd5e1; }
@@ -129,7 +130,7 @@
             font-size: 0.7rem;
         }
 
-        /* Kutia e Formulës Elektronike dhe theksimi i shtresës së jashtme */
+        /* Kutia e Formulës Elektronike */
         .electronic-config-box {
             background: #070a12;
             border: 1.5px solid #0284c7;
@@ -160,7 +161,6 @@
             word-break: break-all;
         }
 
-        /* Stili për shtresën e jashtme elektronike të dalluar me ngjyrë */
         .outer-shell {
             color: var(--accent-gold) !important;
             background-color: rgba(250, 204, 21, 0.15);
@@ -189,19 +189,20 @@
             width: 210px;
         }
 
-        /* Tabela Periodike Grid (Faqe e Vetme) */
+        /* Tabela Periodike Grid */
         .table-container {
             width: 100%;
             max-width: 1400px;
             overflow-x: auto;
+            padding-bottom: 8px;
         }
 
         .periodic-table {
             display: grid;
-            grid-template-columns: 48px repeat(18, minmax(52px, 1fr));
-            grid-template-rows: 32px repeat(7, minmax(52px, 1fr)) 12px minmax(52px, 1fr) minmax(52px, 1fr);
-            gap: 3px;
-            min-width: 1020px;
+            grid-template-columns: 48px repeat(18, minmax(54px, 1fr));
+            grid-template-rows: 32px repeat(7, minmax(54px, 1fr)) 14px minmax(54px, 1fr) minmax(54px, 1fr);
+            gap: 4px;
+            min-width: 1060px;
         }
 
         /* Labelat e Grupeve dhe Periodave */
@@ -218,12 +219,6 @@
             border: 1px solid #1e293b;
             text-align: center;
             line-height: 1.1;
-        }
-
-        .header-label .sub-group {
-            color: var(--accent-gold);
-            font-size: 0.6rem;
-            margin-top: 1px;
         }
 
         .period-label {
@@ -248,27 +243,67 @@
             cursor: pointer;
             transition: all 0.15s ease;
             user-select: none;
-            border: 1px solid rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
         }
 
         .element-cell:hover {
             transform: scale(1.18);
             z-index: 100;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.8);
-            border-color: #ffffff;
+            box-shadow: 0 8px 22px rgba(0,0,0,0.9);
+            border-color: #ffffff !important;
         }
 
         .element-cell.selected {
-            border: 2px solid #ffffff;
-            box-shadow: 0 0 10px #38bdf8;
+            border: 2px solid #ffffff !important;
+            box-shadow: 0 0 12px #38bdf8;
         }
 
-        .cell-z { font-size: 0.6rem; opacity: 0.85; font-weight: 700; }
-        .cell-symbol { font-size: 1rem; font-weight: 800; text-align: center; margin: 1px 0; }
+        .cell-z { font-size: 0.6rem; opacity: 0.9; font-weight: 700; }
+        .cell-symbol { font-size: 1.05rem; font-weight: 800; text-align: center; margin: 1px 0; }
         .cell-name { font-size: 0.52rem; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .cell-mass { font-size: 0.5rem; text-align: center; opacity: 0.75; }
+        .cell-mass { font-size: 0.5rem; text-align: center; opacity: 0.8; }
 
-        /* Ngjyrat e Kategorive */
+        /* Stilimet e Veçanta me Kontrast të Lartë për Lantanidet dhe Aktinidet */
+        .lanthanide { 
+            background: linear-gradient(135deg, #be185d 0%, #ec4899 100%) !important;
+            border: 1px solid #f472b6 !important;
+            box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.2);
+        }
+
+        .actinide { 
+            background: linear-gradient(135deg, #86198f 0%, #d946ef 100%) !important;
+            border: 1px solid #e879f9 !important;
+            box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Etiketa e posaçme në krye të rreshtit të Lantanideve/Aktinideve */
+        .f-block-badge {
+            grid-column: span 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 800;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .lanthanide-badge {
+            background: linear-gradient(90deg, #9d174d, #db2777);
+            color: #fce7f3;
+            border-color: #f472b6;
+        }
+
+        .actinide-badge {
+            background: linear-gradient(90deg, #701a75, #c026d3);
+            color: #fae8ff;
+            border-color: #e879f9;
+        }
+
+        /* Ngjyrat e Kategorive të tjera */
         .nonmetal { background-color: var(--nonmetal); }
         .noble-gas { background-color: var(--noble-gas); }
         .alkali-metal { background-color: var(--alkali-metal); }
@@ -277,19 +312,19 @@
         .halogen { background-color: var(--halogen); }
         .post-transition { background-color: var(--post-transition); }
         .transition-metal { background-color: var(--transition-metal); }
-        .lanthanide { background-color: var(--lanthanide); }
-        .actinide { background-color: var(--actinide); }
 
         .placeholder {
             grid-column: span 1;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             font-size: 0.65rem;
-            color: #64748b;
-            font-weight: 700;
-            border: 1px dashed var(--border-color);
-            border-radius: 4px;
+            color: #cbd5e1;
+            font-weight: 800;
+            border: 1.5px dashed var(--border-color);
+            border-radius: 5px;
+            background: rgba(30, 41, 59, 0.5);
         }
 
         .legend {
@@ -328,8 +363,8 @@
 <body>
 
     <header>
-        <h1>Sistemi Periodik i Elementeve Kimike</h1>
-        <p style="color: #94a3b8; font-size: 0.8rem;">Me formulat e plota elektronike (pa shkurtime) & Shtresën e Jashtme Elektronike të dalluar me ngjyrë</p>
+        <h1>Sistemi periodik i elementeve kimike| Argerd Hysaj</h1>
+        <p style="color: #94a3b8; font-size: 0.8rem;">Me formulat e plota elektronike ku përcaktohet numri i grupit dhe perioda nga shtresa e jashtme elektronike të dalluar me ngjyrë</p>
     </header>
 
     <!-- Paneli Kryesor i Detajeve të Elementit -->
@@ -379,7 +414,6 @@
     <div class="legend" id="legend"></div>
 
     <script>
-        // Harta e zgjerimit të plogët -> Konfiguracioni i plotë
         const nobleGasExpansions = {
             "[He]": "1s²",
             "[Ne]": "1s² 2s² 2p⁶",
@@ -389,16 +423,27 @@
             "[Rn]": "1s² 2s² 2p⁶ 3s² 3p⁶ 3d¹⁰ 4s² 4p⁶ 4d¹⁰ 5s² 5p⁶ 4f¹⁴ 5d¹⁰ 6s² 6p⁶"
         };
 
-        // Grupet me shënimet A dhe B
         const groupLabelsAB = {
-            1: "1 (I A)", 2: "2 (II A)", 3: "3 (III B)", 4: "4 (IV B)",
-            5: "5 (V B)", 6: "6 (VI B)", 7: "7 (VII B)", 8: "8 (VIII B)",
-            9: "9 (VIII B)", 10: "10 (VIII B)", 11: "11 (I B)", 12: "12 (II B)",
-            13: "13 (III A)", 14: "14 (IV A)", 15: "15 (V A)", 16: "16 (VI A)",
-            17: "17 (VII A)", 18: "18 (VIII A)"
+            1: "1 (I A)", 2: "2 (IIA)", 3: "3 (IIIB)", 4: "4 (IVB)",
+            5: "5 (VB)", 6: "6 (VIB)", 7: "7 (VIIB)", 8: "8 (VIIIB)",
+            9: "9 (VIIIB)", 10: "10 (VIIIB)", 11: "11 (IB)", 12: "12 (IIB)",
+            13: "13 (IIIA)", 14: "14 (IVA)", 15: "15 (VA)", 16: "16 (VIA)",
+            17: "17 (VIIA)", 18: "18 (VIIIA)"
         };
 
-        // Databaza me 118 Elementët
+        const categoryNames = {
+            "nonmetal": "Jometal",
+            "noble-gas": "Gaz Fisnik",
+            "alkali-metal": "Metal Alkali",
+            "alkaline-earth": "Metal Alkalino-Tokësor",
+            "metalloid": "Metaloid",
+            "halogen": "Halogjen",
+            "post-transition": "Metal Pas-Kalimtar",
+            "transition-metal": "Metal Kalimtar",
+            "lanthanide": "Lantanid",
+            "actinide": "Aktinid"
+        };
+
         const elements = [
             { z: 1, sym: "H", name: "Hidrogjeni", mass: "1.008", g: 1, p: 1, cat: "nonmetal", config: "1s¹" },
             { z: 2, sym: "He", name: "Heliumi", mass: "4.0026", g: 18, p: 1, cat: "noble-gas", config: "1s²" },
@@ -431,7 +476,7 @@
             { z: 29, sym: "Cu", name: "Bakri", mass: "63.546", g: 11, p: 4, cat: "transition-metal", config: "[Ar] 3d¹⁰ 4s¹" },
             { z: 30, sym: "Zn", name: "Zinku", mass: "65.38", g: 12, p: 4, cat: "transition-metal", config: "[Ar] 3d¹⁰ 4s²" },
             { z: 31, sym: "Ga", name: "Galiumi", mass: "69.723", g: 13, p: 4, cat: "post-transition", config: "[Ar] 3d¹⁰ 4s² 4p¹" },
-            { z: 32, sym: "Ge", name: "Gjermaniumi", mass: "72.630", g: 14, p: 4, cat: "metalloid", config: "[Ar] 3d¹⁰ 4s² 4p²" },
+            { z: 32, sym: "Ge", name: "Germaniumi", mass: "72.630", g: 14, p: 4, cat: "metalloid", config: "[Ar] 3d¹⁰ 4s² 4p²" },
             { z: 33, sym: "As", name: "Arseniku", mass: "74.922", g: 15, p: 4, cat: "metalloid", config: "[Ar] 3d¹⁰ 4s² 4p³" },
             { z: 34, sym: "Se", name: "Seleniumi", mass: "78.971", g: 16, p: 4, cat: "nonmetal", config: "[Ar] 3d¹⁰ 4s² 4p⁴" },
             { z: 35, sym: "Br", name: "Bromi", mass: "79.904", g: 17, p: 4, cat: "halogen", config: "[Ar] 3d¹⁰ 4s² 4p⁵" },
@@ -439,108 +484,92 @@
             { z: 37, sym: "Rb", name: "Rubidiumi", mass: "85.468", g: 1, p: 5, cat: "alkali-metal", config: "[Kr] 5s¹" },
             { z: 38, sym: "Sr", name: "Stronciumi", mass: "87.62", g: 2, p: 5, cat: "alkaline-earth", config: "[Kr] 5s²" },
             { z: 39, sym: "Y", name: "Itriumi", mass: "88.906", g: 3, p: 5, cat: "transition-metal", config: "[Kr] 4d¹ 5s²" },
-            { z: 40, sym: "Zr", name: "Cirkoni", mass: "91.224", g: 4, p: 5, cat: "transition-metal", config: "[Kr] 4d² 5s²" },
-            { z: 41, sym: "Nb", name: "Niobi", mass: "92.906", g: 5, p: 5, cat: "transition-metal", config: "[Kr] 4d⁴ 5s¹" },
+            { z: 40, sym: "Zr", name: "Zirkonium", mass: "91.224", g: 4, p: 5, cat: "transition-metal", config: "[Kr] 4d² 5s²" },
+            { z: 41, sym: "Nb", name: "Niob", mass: "92.906", g: 5, p: 5, cat: "transition-metal", config: "[Kr] 4d⁴ 5s¹" },
             { z: 42, sym: "Mo", name: "Molibdeni", mass: "95.95", g: 6, p: 5, cat: "transition-metal", config: "[Kr] 4d⁵ 5s¹" },
             { z: 43, sym: "Tc", name: "Tekneci", mass: "(98)", g: 7, p: 5, cat: "transition-metal", config: "[Kr] 4d⁵ 5s²" },
             { z: 44, sym: "Ru", name: "Ruteni", mass: "101.07", g: 8, p: 5, cat: "transition-metal", config: "[Kr] 4d⁷ 5s¹" },
-            { z: 45, sym: "Rh", name: "Rodi", mass: "102.91", g: 9, p: 5, cat: "transition-metal", config: "[Kr] 4d⁸ 5s¹" },
-            { z: 46, sym: "Pd", name: "Paladi", mass: "106.42", g: 10, p: 5, cat: "transition-metal", config: "[Kr] 4d¹⁰" },
+            { z: 45, sym: "Rh", name: "Rodium", mass: "102.91", g: 9, p: 5, cat: "transition-metal", config: "[Kr] 4d⁸ 5s¹" },
+            { z: 46, sym: "Pd", name: "Palad", mass: "106.42", g: 10, p: 5, cat: "transition-metal", config: "[Kr] 4d¹⁰" },
             { z: 47, sym: "Ag", name: "Argjendi", mass: "107.87", g: 11, p: 5, cat: "transition-metal", config: "[Kr] 4d¹⁰ 5s¹" },
             { z: 48, sym: "Cd", name: "Kadmiumi", mass: "112.41", g: 12, p: 5, cat: "transition-metal", config: "[Kr] 4d¹⁰ 5s²" },
             { z: 49, sym: "In", name: "Indiumi", mass: "114.82", g: 13, p: 5, cat: "post-transition", config: "[Kr] 4d¹⁰ 5s² 5p¹" },
-            { z: 50, sym: "Sn", name: "Kalai", mass: "118.71", g: 14, p: 5, cat: "post-transition", config: "[Kr] 4d¹⁰ 5s² 5p²" },
+            { z: 50, sym: "Sn", name: "Kallai", mass: "118.71", g: 14, p: 5, cat: "post-transition", config: "[Kr] 4d¹⁰ 5s² 5p²" },
             { z: 51, sym: "Sb", name: "Antimoni", mass: "121.76", g: 15, p: 5, cat: "metalloid", config: "[Kr] 4d¹⁰ 5s² 5p³" },
             { z: 52, sym: "Te", name: "Teluri", mass: "127.60", g: 16, p: 5, cat: "metalloid", config: "[Kr] 4d¹⁰ 5s² 5p⁴" },
             { z: 53, sym: "I", name: "Jodi", mass: "126.90", g: 17, p: 5, cat: "halogen", config: "[Kr] 4d¹⁰ 5s² 5p⁵" },
             { z: 54, sym: "Xe", name: "Ksenoni", mass: "131.29", g: 18, p: 5, cat: "noble-gas", config: "[Kr] 4d¹⁰ 5s² 5p⁶" },
             { z: 55, sym: "Cs", name: "Ceziumi", mass: "132.91", g: 1, p: 6, cat: "alkali-metal", config: "[Xe] 6s¹" },
             { z: 56, sym: "Ba", name: "Bariumi", mass: "137.33", g: 2, p: 6, cat: "alkaline-earth", config: "[Xe] 6s²" },
-            { z: 57, sym: "La", name: "Lantani", mass: "138.91", g: 4, p: 9, cat: "lanthanide", config: "[Xe] 5d¹ 6s²" },
-            { z: 58, sym: "Ce", name: "Ceri", mass: "140.12", g: 5, p: 9, cat: "lanthanide", config: "[Xe] 4f¹ 5d¹ 6s²" },
-            { z: 59, sym: "Pr", name: "Prazeodimi", mass: "140.91", g: 6, p: 9, cat: "lanthanide", config: "[Xe] 4f³ 6s²" },
-            { z: 60, sym: "Nd", name: "Neodimi", mass: "144.24", g: 7, p: 9, cat: "lanthanide", config: "[Xe] 4f⁴ 6s²" },
-            { z: 61, sym: "Pm", name: "Prometiumi", mass: "(145)", g: 8, p: 9, cat: "lanthanide", config: "[Xe] 4f⁵ 6s²" },
-            { z: 62, sym: "Sm", name: "Samariumi", mass: "150.36", g: 9, p: 9, cat: "lanthanide", config: "[Xe] 4f⁶ 6s²" },
-            { z: 63, sym: "Eu", name: "Europi", mass: "151.96", g: 10, p: 9, cat: "lanthanide", config: "[Xe] 4f⁷ 6s²" },
-            { z: 64, sym: "Gd", name: "Gadolini", mass: "157.25", g: 11, p: 9, cat: "lanthanide", config: "[Xe] 4f⁷ 5d¹ 6s²" },
-            { z: 65, sym: "Tb", name: "Terbi", mass: "158.93", g: 12, p: 9, cat: "lanthanide", config: "[Xe] 4f⁹ 6s²" },
-            { z: 66, sym: "Dy", name: "Disprozi", mass: "162.50", g: 13, p: 9, cat: "lanthanide", config: "[Xe] 4f¹⁰ 6s²" },
-            { z: 67, sym: "Ho", name: "Holmi", mass: "164.93", g: 14, p: 9, cat: "lanthanide", config: "[Xe] 4f¹¹ 6s²" },
-            { z: 68, sym: "Er", name: "Erbi", mass: "167.26", g: 15, p: 9, cat: "lanthanide", config: "[Xe] 4f¹² 6s²" },
-            { z: 69, sym: "Tm", name: "Tuli", mass: "168.93", g: 16, p: 9, cat: "lanthanide", config: "[Xe] 4f¹³ 6s²" },
-            { z: 70, sym: "Yb", name: "Iterbi", mass: "173.05", g: 17, p: 9, cat: "lanthanide", config: "[Xe] 4f¹⁴ 6s²" },
-            { z: 71, sym: "Lu", name: "Luteci", mass: "174.97", g: 18, p: 9, cat: "lanthanide", config: "[Xe] 4f¹⁴ 5d¹ 6s²" },
-            { z: 72, sym: "Hf", name: "Hafni", mass: "178.49", g: 4, p: 6, cat: "transition-metal", config: "[Xe] 4f¹⁴ 5d² 6s²" },
-            { z: 73, sym: "Ta", name: "Tantali", mass: "180.95", g: 5, p: 6, cat: "transition-metal", config: "[Xe] 4f¹⁴ 5d³ 6s²" },
+            { z: 57, sym: "La", name: "Lantani", mass: "138.91", g: 3, p: 9, cat: "lanthanide", config: "[Xe] 5d¹ 6s²" },
+            { z: 58, sym: "Ce", name: "Cerium", mass: "140.12", g: 3, p: 9, cat: "lanthanide", config: "[Xe] 4f¹ 5d¹ 6s²" },
+            { z: 59, sym: "Pr", name: "Prazeodimi", mass: "140.91", g: 3, p: 9, cat: "lanthanide", config: "[Xe] 4f³ 6s²" },
+            { z: 60, sym: "Nd", name: "Neodimi", mass: "144.24", g: 3, p: 9, cat: "lanthanide", config: "[Xe] 4f⁴ 6s²" },
+            { z: 61, sym: "Pm", name: "Prometiumi", mass: "(145)", g: 3, p: 9, cat: "lanthanide", config: "[Xe] 4f⁵ 6s²" },
+            { z: 62, sym: "Sm", name: "Samariumi", mass: "150.36", g: 3, p: 9, cat: "lanthanide", config: "[Xe] 4f⁶ 6s²" },
+            { z: 63, sym: "Eu", name: "Europium", mass: "151.96", g: 3, p: 9, cat: "lanthanide", config: "[Xe] 4f⁷ 6s²" },
+            { z: 64, sym: "Gd", name: "Gadolini", mass: "157.25", g: 3, p: 9, cat: "lanthanide", config: "[Xe] 4f⁷ 5d¹ 6s²" },
+            { z: 65, sym: "Tb", name: "Terbium", mass: "158.93", g: 3, p: 9, cat: "lanthanide", config: "[Xe] 4f⁹ 6s²" },
+            { z: 66, sym: "Dy", name: "Disprozium", mass: "162.50", g: 3, p: 9, cat: "lanthanide", config: "[Xe] 4f¹⁰ 6s²" },
+            { z: 67, sym: "Ho", name: "Holmi", mass: "164.93", g: 3, p: 9, cat: "lanthanide", config: "[Xe] 4f¹¹ 6s²" },
+            { z: 68, sym: "Er", name: "Erbium", mass: "167.26", g: 3, p: 9, cat: "lanthanide", config: "[Xe] 4f¹² 6s²" },
+            { z: 69, sym: "Tm", name: "Tulium", mass: "168.93", g: 3, p: 9, cat: "lanthanide", config: "[Xe] 4f¹³ 6s²" },
+            { z: 70, sym: "Yb", name: "Iterb", mass: "173.05", g: 3, p: 9, cat: "lanthanide", config: "[Xe] 4f¹⁴ 6s²" },
+            { z: 71, sym: "Lu", name: "Luteci", mass: "174.97", g: 3, p: 9, cat: "lanthanide", config: "[Xe] 4f¹⁴ 5d¹ 6s²" },
+            { z: 72, sym: "Hf", name: "Hafnium", mass: "178.49", g: 4, p: 6, cat: "transition-metal", config: "[Xe] 4f¹⁴ 5d² 6s²" },
+            { z: 73, sym: "Ta", name: "Tantal", mass: "180.95", g: 5, p: 6, cat: "transition-metal", config: "[Xe] 4f¹⁴ 5d³ 6s²" },
             { z: 74, sym: "W", name: "Volframi", mass: "183.84", g: 6, p: 6, cat: "transition-metal", config: "[Xe] 4f¹⁴ 5d⁴ 6s²" },
-            { z: 75, sym: "Re", name: "Reni", mass: "186.21", g: 7, p: 6, cat: "transition-metal", config: "[Xe] 4f¹⁴ 5d⁵ 6s²" },
-            { z: 76, sym: "Os", name: "Osmi", mass: "190.23", g: 8, p: 6, cat: "transition-metal", config: "[Xe] 4f¹⁴ 5d⁶ 6s²" },
-            { z: 77, sym: "Ir", name: "Iridi", mass: "192.22", g: 9, p: 6, cat: "transition-metal", config: "[Xe] 4f¹⁴ 5d⁷ 6s²" },
-            { z: 78, sym: "Pt", name: "Platina", mass: "195.08", g: 10, p: 6, cat: "transition-metal", config: "[Xe] 4f¹⁴ 5d⁹ 6s¹" },
-            { z: 79, sym: "Au", name: "Flori", mass: "196.97", g: 11, p: 6, cat: "transition-metal", config: "[Xe] 4f¹⁴ 5d¹⁰ 6s¹" },
-            { z: 80, sym: "Hg", name: "Zhiva", mass: "200.59", g: 12, p: 6, cat: "transition-metal", config: "[Xe] 4f¹⁴ 5d¹⁰ 6s²" },
-            { z: 81, sym: "Tl", name: "Tali", mass: "204.38", g: 13, p: 6, cat: "post-transition", config: "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p¹" },
+            { z: 75, sym: "Re", name: "Renium", mass: "186.21", g: 7, p: 6, cat: "transition-metal", config: "[Xe] 4f¹⁴ 5d⁵ 6s²" },
+            { z: 76, sym: "Os", name: "Osmium", mass: "190.23", g: 8, p: 6, cat: "transition-metal", config: "[Xe] 4f¹⁴ 5d⁶ 6s²" },
+            { z: 77, sym: "Ir", name: "Iridium", mass: "192.22", g: 9, p: 6, cat: "transition-metal", config: "[Xe] 4f¹⁴ 5d⁷ 6s²" },
+            { z: 78, sym: "Pt", name: "Platinium", mass: "195.08", g: 10, p: 6, cat: "transition-metal", config: "[Xe] 4f¹⁴ 5d⁹ 6s¹" },
+            { z: 79, sym: "Au", name: "Ar", mass: "196.97", g: 11, p: 6, cat: "transition-metal", config: "[Xe] 4f¹⁴ 5d¹⁰ 6s¹" },
+            { z: 80, sym: "Hg", name: "Mërkur", mass: "200.59", g: 12, p: 6, cat: "transition-metal", config: "[Xe] 4f¹⁴ 5d¹⁰ 6s²" },
+            { z: 81, sym: "Tl", name: "Talium", mass: "204.38", g: 13, p: 6, cat: "post-transition", config: "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p¹" },
             { z: 82, sym: "Pb", name: "Plumbi", mass: "207.2", g: 14, p: 6, cat: "post-transition", config: "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p²" },
-            { z: 83, sym: "Bi", name: "Bismuti", mass: "208.98", g: 15, p: 6, cat: "post-transition", config: "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p³" },
-            { z: 84, sym: "Po", name: "Poloni", mass: "(209)", g: 16, p: 6, cat: "post-transition", config: "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁴" },
+            { z: 83, sym: "Bi", name: "Bismuth", mass: "208.98", g: 15, p: 6, cat: "post-transition", config: "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p³" },
+            { z: 84, sym: "Po", name: "Polonium", mass: "(209)", g: 16, p: 6, cat: "post-transition", config: "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁴" },
             { z: 85, sym: "At", name: "Astati", mass: "(210)", g: 17, p: 6, cat: "halogen", config: "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁵" },
-            { z: 86, sym: "Rn", name: "Radoni", mass: "(222)", g: 18, p: 6, cat: "noble-gas", config: "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁶" },
-            { z: 87, sym: "Fr", name: "Franciumi", mass: "(223)", g: 1, p: 7, cat: "alkali-metal", config: "[Rn] 7s¹" },
-            { z: 88, sym: "Ra", name: "Radiumi", mass: "(226)", g: 2, p: 7, cat: "alkaline-earth", config: "[Rn] 7s²" },
-            { z: 89, sym: "Ac", name: "Aktini", mass: "(227)", g: 4, p: 10, cat: "actinide", config: "[Rn] 6d¹ 7s²" },
-            { z: 90, sym: "Th", name: "Tori", mass: "232.04", g: 5, p: 10, cat: "actinide", config: "[Rn] 6d² 7s²" },
-            { z: 91, sym: "Pa", name: "Protaktini", mass: "231.04", g: 6, p: 10, cat: "actinide", config: "[Rn] 5f² 6d¹ 7s²" },
-            { z: 92, sym: "U", name: "Urani", mass: "238.03", g: 7, p: 10, cat: "actinide", config: "[Rn] 5f³ 6d¹ 7s²" },
-            { z: 93, sym: "Np", name: "Neptuni", mass: "(237)", g: 8, p: 10, cat: "actinide", config: "[Rn] 5f⁴ 6d¹ 7s²" },
-            { z: 94, sym: "Pu", name: "Plutoni", mass: "(244)", g: 9, p: 10, cat: "actinide", config: "[Rn] 5f⁶ 7s²" },
-            { z: 95, sym: "Am", name: "Ameriki", mass: "(243)", g: 10, p: 10, cat: "actinide", config: "[Rn] 5f⁷ 7s²" },
-            { z: 96, sym: "Cm", name: "Kuriumi", mass: "(247)", g: 11, p: 10, cat: "actinide", config: "[Rn] 5f⁷ 6d¹ 7s²" },
-            { z: 97, sym: "Bk", name: "Berkeli", mass: "(247)", g: 12, p: 10, cat: "actinide", config: "[Rn] 5f⁹ 7s²" },
-            { z: 98, sym: "Cf", name: "Kaliforni", mass: "(251)", g: 13, p: 10, cat: "actinide", config: "[Rn] 5f¹⁰ 7s²" },
-            { z: 99, sym: "Es", name: "Ajnshtajni", mass: "(252)", g: 14, p: 10, cat: "actinide", config: "[Rn] 5f¹¹ 7s²" },
-            { z: 100, sym: "Fm", name: "Fermi", mass: "(257)", g: 15, p: 10, cat: "actinide", config: "[Rn] 5f¹² 7s²" },
-            { z: 101, sym: "Md", name: "Mendelevi", mass: "(258)", g: 16, p: 10, cat: "actinide", config: "[Rn] 5f¹³ 7s²" },
-            { z: 102, sym: "No", name: "Nobeli", mass: "(259)", g: 17, p: 10, cat: "actinide", config: "[Rn] 5f¹⁴ 7s²" },
-            { z: 103, sym: "Lr", name: "Laurenci", mass: "(266)", g: 18, p: 10, cat: "actinide", config: "[Rn] 5f¹⁴ 6d¹ 7s²" },
-            { z: 104, sym: "Rf", name: "Raderfordi", mass: "(267)", g: 4, p: 7, cat: "transition-metal", config: "[Rn] 5f¹⁴ 6d² 7s²" },
-            { z: 105, sym: "Db", name: "Dubni", mass: "(268)", g: 5, p: 7, cat: "transition-metal", config: "[Rn] 5f¹⁴ 6d³ 7s²" },
-            { z: 106, sym: "Sg", name: "Siborgi", mass: "(269)", g: 6, p: 7, cat: "transition-metal", config: "[Rn] 5f¹⁴ 6d⁴ 7s²" },
-            { z: 107, sym: "Bh", name: "Bori (Bh)", mass: "(270)", g: 7, p: 7, cat: "transition-metal", config: "[Rn] 5f¹⁴ 6d⁵ 7s²" },
+            { z: 86, sym: "Rn", name: "Radon", mass: "(222)", g: 18, p: 6, cat: "noble-gas", config: "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁶" },
+            { z: 87, sym: "Fr", name: "Francium", mass: "(223)", g: 1, p: 7, cat: "alkali-metal", config: "[Rn] 7s¹" },
+            { z: 88, sym: "Ra", name: "Radium", mass: "(226)", g: 2, p: 7, cat: "alkaline-earth", config: "[Rn] 7s²" },
+            { z: 89, sym: "Ac", name: "Aktinium", mass: "(227)", g: 3, p: 10, cat: "actinide", config: "[Rn] 6d¹ 7s²" },
+            { z: 90, sym: "Th", name: "Torium", mass: "232.04", g: 3, p: 10, cat: "actinide", config: "[Rn] 6d² 7s²" },
+            { z: 91, sym: "Pa", name: "Protaktin", mass: "231.04", g: 3, p: 10, cat: "actinide", config: "[Rn] 5f² 6d¹ 7s²" },
+            { z: 92, sym: "U", name: "Urani", mass: "238.03", g: 3, p: 10, cat: "actinide", config: "[Rn] 5f³ 6d¹ 7s²" },
+            { z: 93, sym: "Np", name: "Neptuni", mass: "(237)", g: 3, p: 10, cat: "actinide", config: "[Rn] 5f⁴ 6d¹ 7s²" },
+            { z: 94, sym: "Pu", name: "Plutoni", mass: "(244)", g: 3, p: 10, cat: "actinide", config: "[Rn] 5f⁶ 7s²" },
+            { z: 95, sym: "Am", name: "Amerik", mass: "(243)", g: 3, p: 10, cat: "actinide", config: "[Rn] 5f⁷ 7s²" },
+            { z: 96, sym: "Cm", name: "Kiriumi", mass: "(247)", g: 3, p: 10, cat: "actinide", config: "[Rn] 5f⁷ 6d¹ 7s²" },
+            { z: 97, sym: "Bk", name: "Berkelium", mass: "(247)", g: 3, p: 10, cat: "actinide", config: "[Rn] 5f⁹ 7s²" },
+            { z: 98, sym: "Cf", name: "Kalifornium", mass: "(251)", g: 3, p: 10, cat: "actinide", config: "[Rn] 5f¹⁰ 7s²" },
+            { z: 99, sym: "Es", name: "Ajnshtajnium", mass: "(252)", g: 3, p: 10, cat: "actinide", config: "[Rn] 5f¹¹ 7s²" },
+            { z: 100, sym: "Fm", name: "Fermium", mass: "(257)", g: 3, p: 10, cat: "actinide", config: "[Rn] 5f¹² 7s²" },
+            { z: 101, sym: "Md", name: "Mendelevium", mass: "(258)", g: 3, p: 10, cat: "actinide", config: "[Rn] 5f¹³ 7s²" },
+            { z: 102, sym: "No", name: "Nobelium", mass: "(259)", g: 3, p: 10, cat: "actinide", config: "[Rn] 5f¹⁴ 7s²" },
+            { z: 103, sym: "Lr", name: "Laurencium", mass: "(266)", g: 3, p: 10, cat: "actinide", config: "[Rn] 5f¹⁴ 6d¹ 7s²" },
+            { z: 104, sym: "Rf", name: "Radhërfordium", mass: "(267)", g: 4, p: 7, cat: "transition-metal", config: "[Rn] 5f¹⁴ 6d² 7s²" },
+            { z: 105, sym: "Db", name: "Dubnium", mass: "(268)", g: 5, p: 7, cat: "transition-metal", config: "[Rn] 5f¹⁴ 6d³ 7s²" },
+            { z: 106, sym: "Sg", name: "Siborgium", mass: "(269)", g: 6, p: 7, cat: "transition-metal", config: "[Rn] 5f¹⁴ 6d⁴ 7s²" },
+            { z: 107, sym: "Bh", name: "Bohrium (Bh)", mass: "(270)", g: 7, p: 7, cat: "transition-metal", config: "[Rn] 5f¹⁴ 6d⁵ 7s²" },
             { z: 108, sym: "Hs", name: "Hasi", mass: "(277)", g: 8, p: 7, cat: "transition-metal", config: "[Rn] 5f¹⁴ 6d⁶ 7s²" },
-            { z: 109, sym: "Mt", name: "Majtneri", mass: "(278)", g: 9, p: 7, cat: "transition-metal", config: "[Rn] 5f¹⁴ 6d⁷ 7s²" },
-            { z: 110, sym: "Ds", name: "Darmshtati", mass: "(281)", g: 10, p: 7, cat: "transition-metal", config: "[Rn] 5f¹⁴ 6d⁸ 7s²" },
-            { z: 111, sym: "Rg", name: "Rëntgeni", mass: "(282)", g: 11, p: 7, cat: "transition-metal", config: "[Rn] 5f¹⁴ 6d⁹ 7s²" },
-            { z: 112, sym: "Cn", name: "Koperniki", mass: "(285)", g: 12, p: 7, cat: "transition-metal", config: "[Rn] 5f¹⁴ 6d¹⁰ 7s²" },
-            { z: 113, sym: "Nh", name: "Nihoni", mass: "(286)", g: 13, p: 7, cat: "post-transition", config: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p¹" },
-            { z: 114, sym: "Fl", name: "Flerovi", mass: "(289)", g: 14, p: 7, cat: "post-transition", config: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p²" },
-            { z: 115, sym: "Mc", name: "Moskovi", mass: "(290)", g: 15, p: 7, cat: "post-transition", config: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p³" },
-            { z: 116, sym: "Lv", name: "Livermori", mass: "(293)", g: 16, p: 7, cat: "post-transition", config: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁴" },
-            { z: 117, sym: "Ts", name: "Tenesini", mass: "(294)", g: 17, p: 7, cat: "halogen", config: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁵" },
-            { z: 118, sym: "Og", name: "Oganesoni", mass: "(294)", g: 18, p: 7, cat: "noble-gas", config: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁶" }
+            { z: 109, sym: "Mt", name: "Majtnerium", mass: "(278)", g: 9, p: 7, cat: "transition-metal", config: "[Rn] 5f¹⁴ 6d⁷ 7s²" },
+            { z: 110, sym: "Ds", name: "Darmstadtium", mass: "(281)", g: 10, p: 7, cat: "transition-metal", config: "[Rn] 5f¹⁴ 6d⁸ 7s²" },
+            { z: 111, sym: "Rg", name: "Rëntgenium", mass: "(282)", g: 11, p: 7, cat: "transition-metal", config: "[Rn] 5f¹⁴ 6d⁹ 7s²" },
+            { z: 112, sym: "Cn", name: "Kopernikium", mass: "(285)", g: 12, p: 7, cat: "transition-metal", config: "[Rn] 5f¹⁴ 6d¹⁰ 7s²" },
+            { z: 113, sym: "Nh", name: "Nihonium", mass: "(286)", g: 13, p: 7, cat: "post-transition", config: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p¹" },
+            { z: 114, sym: "Fl", name: "Flerovium", mass: "(289)", g: 14, p: 7, cat: "post-transition", config: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p²" },
+            { z: 115, sym: "Mc", name: "Moskovium", mass: "(290)", g: 15, p: 7, cat: "post-transition", config: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p³" },
+            { z: 116, sym: "Lv", name: "Livermorium", mass: "(293)", g: 16, p: 7, cat: "post-transition", config: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁴" },
+            { z: 117, sym: "Ts", name: "Tenesin", mass: "(294)", g: 17, p: 7, cat: "halogen", config: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁵" },
+            { z: 118, sym: "Og", name: "Oganeson", mass: "(294)", g: 18, p: 7, cat: "noble-gas", config: "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁶" }
         ];
-
-        const categoryNames = {
-            "nonmetal": "Jometal",
-            "noble-gas": "Gaz Fisnik",
-            "alkali-metal": "Metal Alkali",
-            "alkaline-earth": "Metal Alkalino-Tokësor",
-            "metalloid": "Metaloid",
-            "halogen": "Halogjen",
-            "post-transition": "Metal Pas-Kalimtar",
-            "transition-metal": "Metal Kalimtar",
-            "lanthanide": "Lantanid",
-            "actinide": "Aktinid"
-        };
 
         const grid = document.getElementById("periodicTable");
         const elementSelect = document.getElementById("elementSelect");
 
-        // Funksioni për transformimin e konfiguracionit në të PLOTË dhe theksimin e shtresës së jashtme
         function processElectronicConfig(shortConfig) {
             let fullConfig = shortConfig;
-            
-            // 1. Zëvendësojmë simbolin e gazit të plogët me vargun e tij të plotë
             for (const [key, val] of Object.entries(nobleGasExpansions)) {
                 if (fullConfig.includes(key)) {
                     fullConfig = fullConfig.replace(key, val);
@@ -548,10 +577,7 @@
                 }
             }
 
-            // 2. Ndajmë në orbitalet përpjesëtuese
             const tokens = fullConfig.trim().split(/\s+/);
-            
-            // Gjejmë numrin kuantik kryesor maksimal (n_max -> Shtresa e Jashtme)
             let maxN = 0;
             tokens.forEach(tok => {
                 const match = tok.match(/^(\d+)/);
@@ -561,7 +587,6 @@
                 }
             });
 
-            // Formatimi dhe llogaritja e elektroneve valente të shtresës së jashtme
             const superscripts = { '¹':1, '²':2, '³':3, '⁴':4, '⁵':5, '⁶':6, '⁷':7, '⁸':8, '⁹':9, '¹⁰':10, '¹¹':11, '¹²':12, '¹³':13, '¹⁴':14 };
             let valenceElectrons = 0;
 
@@ -585,11 +610,34 @@
             };
         }
 
-        // Ndërtimi i plotë i Gridit të Tabelës Periodike
+        function renderDetails(el) {
+            document.getElementById("prevZ").textContent = el.z;
+            document.getElementById("prevSym").textContent = el.sym;
+            document.getElementById("prevName").textContent = el.name;
+            
+            const prevBox = document.getElementById("previewBox");
+            prevBox.className = `element-preview ${el.cat}`;
+
+            document.getElementById("detTitle").innerHTML = `${el.name} <span>${categoryNames[el.cat]}</span>`;
+            document.getElementById("detZ").textContent = el.z;
+            document.getElementById("detMass").textContent = el.mass;
+            document.getElementById("detGroup").textContent = groupLabelsAB[el.g] || "N/A";
+            document.getElementById("detPeriod").textContent = (el.p === 9 || el.p === 10) ? (el.p === 9 ? "6 (Lantanid)" : "7 (Aktinid)") : el.p;
+
+            const parsedConfig = processElectronicConfig(el.config);
+            document.getElementById("detConfig").innerHTML = parsedConfig.html;
+            document.getElementById("detValence").textContent = `${parsedConfig.valenceElectrons} e⁻`;
+
+            // Markimin e qelisë së zgjedhur në tabelë
+            document.querySelectorAll(".element-cell").forEach(cell => cell.classList.remove("selected"));
+            const targetCell = document.querySelector(`.element-cell[data-z="${el.z}"]`);
+            if (targetCell) targetCell.classList.add("selected");
+        }
+
         function buildTable() {
             grid.innerHTML = "";
+            elementSelect.innerHTML = "";
 
-            // Mbushim dropdown-in
             elements.forEach(el => {
                 const opt = document.createElement("option");
                 opt.value = el.z;
@@ -597,58 +645,87 @@
                 elementSelect.appendChild(opt);
             });
 
-            // A. Shtojmë Labelat e Grupeve (Rreshti 1)
+            // 1. Etiketa Këndore P/G
             const emptyCorner = document.createElement("div");
             emptyCorner.className = "period-label";
-            emptyCorner.textContent = "P/G";
+            emptyCorner.textContent = "P / G";
+            emptyCorner.style.gridRow = "1";
+            emptyCorner.style.gridColumn = "1";
             grid.appendChild(emptyCorner);
 
+            // 2. Etiketat e Grupeve 1-18
             for (let g = 1; g <= 18; g++) {
                 const gLabel = document.createElement("div");
                 gLabel.className = "header-label";
+                gLabel.style.gridRow = "1";
+                gLabel.style.gridColumn = `${g + 1}`;
                 const parts = groupLabelsAB[g].split(" ");
-                gLabel.innerHTML = `${parts[0]} <span class="sub-group">${parts[1]} ${parts[2]||''}</span>`;
-                gLabel.style.gridRow = 1;
-                gLabel.style.gridColumn = g + 1;
+                gLabel.innerHTML = `<div>${parts[0]}</div><div class="sub-group">${parts[1] || ''}</div>`;
                 grid.appendChild(gLabel);
             }
 
-            // B. Shtojmë Labelat e Periodave (Rreshtat 2 deri 8)
+            // 3. Etiketat e Periodave 1-7
             for (let p = 1; p <= 7; p++) {
                 const pLabel = document.createElement("div");
                 pLabel.className = "period-label";
-                pLabel.textContent = `P${p}`;
-                pLabel.style.gridRow = p + 1;
-                pLabel.style.gridColumn = 1;
+                pLabel.style.gridRow = `${p + 1}`;
+                pLabel.style.gridColumn = "1";
+                pLabel.textContent = p;
                 grid.appendChild(pLabel);
             }
 
-            // Labelat për Lantanidet & Aktinidet (Rreshtat 10 & 11)
-            const lanLabel = document.createElement("div");
-            lanLabel.className = "period-label";
-            lanLabel.textContent = "P6 (f)";
-            lanLabel.style.gridRow = 10;
-            lanLabel.style.gridColumn = 1;
-            grid.appendChild(lanLabel);
+            // 4. Placeholders në Grupin 3 për Lantanidet dhe Aktinidet
+            const lanPlaceholder = document.createElement("div");
+            lanPlaceholder.className = "placeholder";
+            lanPlaceholder.style.gridRow = "7";
+            lanPlaceholder.style.gridColumn = "4";
+            lanPlaceholder.innerHTML = "<span>57-71</span><span style='color:#f472b6; font-size:0.55rem;'>Lantanidet</span>";
+            grid.appendChild(lanPlaceholder);
 
-            const actLabel = document.createElement("div");
-            actLabel.className = "period-label";
-            actLabel.textContent = "P7 (f)";
-            actLabel.style.gridRow = 11;
-            actLabel.style.gridColumn = 1;
-            grid.appendChild(actLabel);
+            const actPlaceholder = document.createElement("div");
+            actPlaceholder.className = "placeholder";
+            actPlaceholder.style.gridRow = "8";
+            actPlaceholder.style.gridColumn = "4";
+            actPlaceholder.innerHTML = "<span>89-103</span><span style='color:#e879f9; font-size:0.55rem;'>Aktinidet</span>";
+            grid.appendChild(actPlaceholder);
 
-            // C. Shtojmë Qelizat e Elementeve
+            // 5. Etiketat e Rreshtave f-block (Lantanidet dhe Aktinidet)
+            const lanBadge = document.createElement("div");
+            lanBadge.className = "f-block-badge lanthanide-badge";
+            lanBadge.style.gridRow = "10";
+            lanBadge.style.gridColumn = "2 / span 3";
+            lanBadge.textContent = "✨ 57 - 71 LANTANIDET";
+            grid.appendChild(lanBadge);
+
+            const actBadge = document.createElement("div");
+            actBadge.className = "f-block-badge actinide-badge";
+            actBadge.style.gridRow = "11";
+            actBadge.style.gridColumn = "2 / span 3";
+            actBadge.textContent = "⚡ 89 - 103 AKTINIDET";
+            grid.appendChild(actBadge);
+
+            // 6. Ndërtimi i qelive të elementeve
             elements.forEach(el => {
                 const cell = document.createElement("div");
                 cell.className = `element-cell ${el.cat}`;
-                cell.id = `elem-${el.z}`;
+                cell.setAttribute("data-z", el.z);
 
-                let row = el.p <= 7 ? el.p + 1 : el.p; // +1 për shkak të rreshtit të grupeve
-                let col = el.g + 1;                  // +1 për shkak të kolonës së periodave
+                // Llogaritja e pozicionit në Grid
+                let row = el.p + 1;
+                if (el.p === 9) row = 10;
+                if (el.p === 10) row = 11;
 
-                cell.style.gridRow = row;
-                cell.style.gridColumn = col;
+                let col;
+                if (el.p === 9) {
+                    col = (el.z - 57) + 5;
+                } else if (el.p === 10) {
+                    col = (el.z - 89) + 5;
+                } else {
+                    col = el.g + 1;
+                }
+
+                cell.style.gridRow = `${row}`;
+                cell.style.gridColumn = `${col}`;
 
                 cell.innerHTML = `
                     <span class="cell-z">${el.z}</span>
@@ -657,91 +734,53 @@
                     <span class="cell-mass">${el.mass}</span>
                 `;
 
-                cell.addEventListener("click", () => displayElement(el));
+                cell.addEventListener("click", () => {
+                    elementSelect.value = el.z;
+                    renderDetails(el);
+                });
+
                 grid.appendChild(cell);
             });
-
-            // Ruajtësit e vendeve për Lantanidet / Aktinidet në trupin e tabelës
-            addPlaceholder(7, 4, "57-71", "lanthanide");
-            addPlaceholder(8, 4, "89-103", "actinide");
-
-            renderLegend();
-            displayElement(elements[0]);
         }
 
-        function addPlaceholder(row, col, text, cat) {
-            const ph = document.createElement("div");
-            ph.className = `placeholder ${cat}`;
-            ph.style.gridRow = row;
-            ph.style.gridColumn = col;
-            ph.textContent = text;
-            grid.appendChild(ph);
-        }
-
-        // Shfaqja e të dhënave në Panelin Sipër
-        function displayElement(el) {
-            document.querySelectorAll('.element-cell').forEach(c => c.classList.remove('selected'));
-            
-            const cell = document.getElementById(`elem-${el.z}`);
-            if (cell) cell.classList.add('selected');
-
-            // Përditësojmë pamjen e parë
-            const prevBox = document.getElementById("previewBox");
-            prevBox.className = `element-preview ${el.cat}`;
-            document.getElementById("prevZ").textContent = el.z;
-            document.getElementById("prevSym").textContent = el.sym;
-            document.getElementById("prevName").textContent = el.name;
-
-            // Përditësojmë të dhënat kryesore
-            document.getElementById("detTitle").innerHTML = `${el.name} <span>${categoryNames[el.cat]}</span>`;
-            document.getElementById("detZ").textContent = el.z;
-            document.getElementById("detMass").textContent = el.mass;
-            
-            const groupStr = el.p <= 7 ? groupLabelsAB[el.g] : "Sub-Blloku (f)";
-            document.getElementById("detGroup").textContent = groupStr;
-
-            // Përpunojmë formulën e plotë elektronike dhe shtresën e jashtme
-            const processed = processElectronicConfig(el.config);
-            document.getElementById("detConfig").innerHTML = processed.html;
-            document.getElementById("detPeriod").textContent = processed.maxN;
-            document.getElementById("detValence").textContent = `${processed.valenceElectrons} e⁻ në n=${processed.maxN}`;
-
-            elementSelect.value = el.z;
-        }
-
-        function selectElementByNumber(z) {
-            const el = elements.find(item => item.z == z);
-            if (el) displayElement(el);
-        }
-
-        function filterElements() {
-            const query = document.getElementById("searchInput").value.toLowerCase().trim();
-            if (!query) return;
-
-            const found = elements.find(el => 
-                el.name.toLowerCase().includes(query) || 
-                el.sym.toLowerCase() === query || 
-                el.z.toString() === query
-            );
-
-            if (found) displayElement(found);
-        }
-
-        function renderLegend() {
-            const legendContainer = document.getElementById("legend");
-            legendContainer.innerHTML = "";
-            Object.keys(categoryNames).forEach(catKey => {
+        function buildLegend() {
+            const legend = document.getElementById("legend");
+            legend.innerHTML = "";
+            for (const [catKey, catName] of Object.entries(categoryNames)) {
                 const item = document.createElement("div");
                 item.className = "legend-item";
                 item.innerHTML = `
                     <div class="legend-color ${catKey}"></div>
-                    <span>${categoryNames[catKey]}</span>
+                    <span>${catName}</span>
                 `;
-                legendContainer.appendChild(item);
+                legend.appendChild(item);
+            }
+        }
+
+        function selectElementByNumber(z) {
+            const num = parseInt(z, 10);
+            const found = elements.find(e => e.z === num);
+            if (found) renderDetails(found);
+        }
+
+        function filterElements() {
+            const query = document.getElementById("searchInput").value.toLowerCase().trim();
+            document.querySelectorAll(".element-cell").forEach(cell => {
+                const z = parseInt(cell.getAttribute("data-z"), 10);
+                const el = elements.find(e => e.z === z);
+                if (el) {
+                    const match = el.name.toLowerCase().includes(query) || 
+                                  el.sym.toLowerCase().includes(query) || 
+                                  el.z.toString() === query;
+                    cell.style.opacity = match || query === "" ? "1" : "0.15";
+                }
             });
         }
 
-        window.onload = buildTable;
+        // Inicimi i faqes
+        buildTable();
+        buildLegend();
+        renderDetails(elements[0]);
     </script>
 </body>
 </html>
