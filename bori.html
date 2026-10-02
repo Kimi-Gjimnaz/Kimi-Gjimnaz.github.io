@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="sq" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Modelit atomik i Borit</title>
+    <!-- Tailwind CSS for modern layout & styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        physics: {
+                            bg: '#080c14',
+                            card: '#0f172a',
+                            accent: '#38bdf8',
+                            purple: '#a855f7',
+                            pink: '#f43f5e',
+                            gold: '#fbbf24'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #1f2d6b;
+            color: #1e466e;
+            overflow-x: hidden;
+        }
+
+        .code-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .glass-panel {
+            background: rgba(28, 43, 75, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(240, 236, 236, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glass-panel-interactive {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-panel-interactive:hover {
+            border-color: rgba(11, 37, 48, 0.3);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
+        }
+
+        /* Glow utilities */
+        .glow-cyan {
+            box-shadow: 0 0 20px rgba(20, 72, 95, 0.4);
+        }
+        .text-glow {
+            text-shadow: 0 0 10px rgba(8, 40, 54, 0.5);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f0f1f5;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #dfe1e4;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #e3e6eb;
+        }
+
+        /* Level active animation */
+        .level-btn-active {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(168, 85, 247, 0.25));
+            border-color: #38bdf8;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+        }
+
+        /* Custom Tooltip */
+        .has-tooltip:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between text-slate-200 antialiased selection:bg-cyan-500 selection:text-black">
+
+    <!-- Top Header Bar -->
+    <header class="border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 via-indigo-500 to-fuchsia-500 p-0.5 shadow-lg shadow-cyan-500/20">
+                    <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
+                        <svg class="w-6 h-6 text-cyan-400 animate-spin-slow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 4" />
+                            <circle cx="12" cy="12" r="3" fill="currentColor" />
+                            <circle cx="18" cy="12" r="1.5" fill="#38bdf8" />
+                        </svg>
+                    </div>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-300 bg-clip-text text-transparent">
+                        Simulimi i Modelit Atomik të Borit
+                    </h1>
+                    <p class="text-xs text-slate-400 flex items-center gap-2">
+                        <span>Fizikë Kuantike & Eksperiment Interaktiv</span>
+                        <span class="w-1 h-1 rounded-full bg-slate-600"></span>
+                        <span class="text-cyan-400">Teoria e Niels Bohr (1913)</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Global Quick Controls -->
+            <div class="flex items-center gap-3">
+                <!-- Play/Pause Button -->
+                <button id="playPauseBtn" class="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-200 transition">
+                    <svg id="playIcon" class="w-4 h-4 text-emerald-400 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    <svg id="pauseIcon" class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                    <span id="playPauseText">Pauzo</span>
+                </button>
+
+                <!-- Audio Toggle -->
+                <button id="soundBtn" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-300 transition">
+                    <svg id="soundOnIcon" class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M11 5L6 9H2v6h4l5 4V5z"/></svg>
+                    <svg id="soundOffIcon" class="w-4 h-4 text-slate-500 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/></svg>
+                    <span>Zëri</span>
+                </button>
+
+                <!-- Reset Button -->
+                <button id="resetSimBtn" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white transition" title="Rifillo Simulimin">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content App Body -->
+    <main class="max-w-7xl mx-auto px-4 py-6 w-full flex-grow grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- LEFT PANEL: Controls & Energy Level Diagram (3 Cols) -->
+        <section class="lg:col-span-3 flex flex-col gap-5">
+            
+            <!-- Element Picker Card -->
+            <div class="glass-panel rounded-2xl p-4 flex flex-col gap-3">
+                <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center justify-between">
+                    <span>Zgjidh Elementin Atomik</span>
+                    <span class="text-cyan-400 text-[10px] code-font bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800/50">Z = Numri Atomik</span>
+                </h2>
+                <div class="grid grid-cols-3 gap-2">
+                    <button data-element="H" class="element-btn p-2.5 rounded-xl border border-cyan-500 bg-cyan-950/40 text-cyan-300 flex flex-col items-center justify-center transition">
+                        <span class="text-lg font-extrabold">H</span>
+                        <span class="text-[10px] text-slate-400">Hidrogjen</span>
+                        <span class="text-[9px] code-font text-cyan-400 mt-1">Z = 1</span>
+                    </button>
+                    <button data-element="He+" class="element-btn p-2.5 rounded-xl border border-slate-800 bg-slate-900/50 text-slate-400 hover:border-slate-700 flex flex-col items-center justify-center transition">
+                        <span class="text-lg font-extrabold">He⁺</span>
+                        <span class="text-[10px] text-slate-400">Jon Helium</span>
+                        <span class="text-[9px] code-font text-slate-500 mt-1">Z = 2</span>
+                    </button>
+                    <button data-element="Li2+" class="element-btn p-2.5 rounded-xl border border-slate-800 bg-slate-900/50 text-slate-400 hover:border-slate-700 flex flex-col items-center justify-center transition">
+                        <span class="text-lg font-extrabold">Li²⁺</span>
+                        <span class="text-[10px] text-slate-400">Jon Litium</span>
+                        <span class="text-[9px] code-font text-slate-500 mt-1">Z = 3</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Energy Level Vertical Selector Card -->
+            <div class="glass-panel rounded-2xl p-4 flex flex-col gap-3 flex-grow justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">Diagrami i Niveleve (n)</h2>
+                        <span class="text-[11px] text-slate-400 code-font">E_n = -13.6 × Z²/n² eV</span>
+                    </div>
+                    <p class="text-xs text-slate-400 mb-3">Klikoni një nivel për të kryer tranzicionin kuantik të elektronit:</p>
+                    
+                    <!-- Vertical Energy Levels list (n=6 down to n=1) -->
+                    <div class="flex flex-col gap-1.5" id="energyLevelsContainer">
+                        <!-- Populated dynamically with JS -->
+                    </div>
+                </div>
+
+                <!-- Action Excitation / Emission Triggers -->
+                <div class="pt-3 border-t border-slate-800/80 flex flex-col gap-2">
+                    <button id="absorbRandomBtn" class="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-amber-500/20 to-orange-500/20 hover:from-amber-500/30 hover:to-orange-500/30 border border-amber-500/40 text-amber-300 text-xs font-semibold flex items-center justify-center gap-2 transition shadow-lg shadow-amber-500/5">
+                        <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        <span>Godit me Foton (Nxitje / Absorbim)</span>
+                    </button>
+
+                    <button id="decayGroundStateBtn" class="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-indigo-500/20 to-cyan-500/20 hover:from-indigo-500/30 hover:to-cyan-500/30 border border-cyan-500/40 text-cyan-300 text-xs font-semibold flex items-center justify-center gap-2 transition">
+                        <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+                        <span>Kthehu në Gjendjen Baza (n = 1)</span>
+                    </button>
+                </div>
+
+                <!-- Speed Control Slider -->
+                <div class="pt-2 flex items-center justify-between text-xs text-slate-400">
+                    <span>Shpejtësia:</span>
+                    <input type="range" id="speedSlider" min="0.2" max="3" step="0.1" value="1" class="w-28 accent-cyan-400 bg-slate-800 rounded">
+                    <span id="speedVal" class="code-font text-cyan-400 font-bold text-[11px]">1.0x</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- CENTER PANEL: Interactive Canvas Simulation Viewport (6 Cols) -->
+        <section class="lg:col-span-6 flex flex-col gap-4">
+            <div class="glass-panel rounded-2xl p-3 relative flex flex-col items-center justify-center overflow-hidden border border-slate-700/60 group">
+                
+                <!-- Status Bar overlay at top of Canvas -->
+                <div class="absolute top-4 left-4 right-4 flex justify-between items-center z-10 pointer-events-none">
+                    <div class="bg-slate-950/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-800 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                        <span id="simStatusText" class="text-xs font-semibold text-slate-200">Gjendja Stacionare (n = 1)</span>
+                    </div>
+
+                    <div id="quantumJumpBadge" class="hidden bg-fuchsia-950/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-fuchsia-500/50 text-xs font-bold text-fuchsia-300 animate-bounce">
+                        ⚡ KËRCIM KUANTIK!
+                    </div>
+                </div>
+
+                <!-- Simulation Canvas -->
+                <canvas id="bohrCanvas" width="600" height="600" class="w-full h-auto aspect-square rounded-xl cursor-crosshair bg-slate-950/90"></canvas>
+
+                <!-- Canvas Legend at Bottom -->
+                <div class="w-full px-2 py-2 mt-2 flex flex-wrap items-center justify-between text-[11px] text-slate-400 border-t border-slate-800/60">
+                    <div class="flex items-center gap-3">
+                        <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-sm shadow-rose-500/80"></span> Bërthama (+Ze)</span>
+                        <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-sm shadow-cyan-400/80"></span> Elektroni (-e)</span>
+                        <span class="flex items-center gap-1"><span class="w-2 h-0.5 bg-slate-500"></span> Orbitat stacionare</span>
+                    </div>
+                    <div class="text-cyan-400/80 code-font">Rrezja e Borit: a₀ ≈ 0.529 Å</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RIGHT PANEL: Live Physics Telemetry & Analytical Formulas (3 Cols) -->
+        <section class="lg:col-span-3 flex flex-col gap-5">
+            
+            <!-- Live Quantum State Telemetry Card -->
+            <div class="glass-panel rounded-2xl p-4 flex flex-col gap-3">
+                <h2 class="text-xs font-bold uppercase tracking-wider text-cyan-400 flex items-center justify-between border-b border-slate-800 pb-2">
+                    <span>Llogaritjet Fizike Live</span>
+                    <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M12 7h.01M15 7h.01"/></svg>
+                </h2>
+
+                <div class="space-y-2.5 text-xs">
+                    <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
+                        <span class="text-slate-400">Niveli Kuantik Kryesor (n):</span>
+                        <span id="telN" class="code-font font-bold text-lg text-cyan-300">1</span>
+                    </div>
+
+                    <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
+                        <span class="text-slate-400">Energjia e Nivelit (Eₙ):</span>
+                        <div class="text-right">
+                            <div id="telEnergyEv" class="code-font font-bold text-slate-100">-13.60 eV</div>
+                            <div id="telEnergyJ" class="code-font text-[10px] text-slate-400">-2.18e-18 J</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
+                        <span class="text-slate-400">Rrezja e Orbitës (rₙ):</span>
+                        <div class="text-right">
+                            <div id="telRadiusAng" class="code-font font-bold text-emerald-400">0.529 Å</div>
+                            <div id="telRadiusPm" class="code-font text-[10px] text-slate-400">52.9 pm</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
+                        <span class="text-slate-400">Shpejtësia e Elektronit (vₙ):</span>
+                        <span id="telVelocity" class="code-font font-semibold text-indigo-300">2.19 × 10⁶ m/s</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transition & Photon Telemetry Card -->
+            <div class="glass-panel rounded-2xl p-4 flex flex-col gap-3">
+                <h2 class="text-xs font-bold uppercase tracking-wider text-fuchsia-400 flex items-center justify-between border-b border-slate-800 pb-2">
+                    <span>Tranzicioni & Fotoni</span>
+                    <span class="w-2 h-2 rounded-full bg-fuchsia-400"></span>
+                </h2>
+
+                <div id="transitionInfoPanel" class="space-y-2.5 text-xs">
+                    <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
+                        <span class="text-slate-400">Lloji i Kalimit:</span>
+                        <span id="transType" class="code-font font-bold text-slate-300">-</span>
+                    </div>
+
+                    <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
+                        <span class="text-slate-400">Energjia e Fotonit (ΔE):</span>
+                        <span id="transDeltaE" class="code-font font-bold text-amber-300">0.00 eV</span>
+                    </div>
+
+                    <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
+                        <span class="text-slate-400">Gjatësia Valore (λ):</span>
+                        <span id="transWavelength" class="code-font font-bold text-purple-300">-</span>
+                    </div>
+
+                    <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
+                        <span class="text-slate-400">Seria Spektrale:</span>
+                        <span id="transSeries" class="code-font font-semibold text-cyan-300">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Physics Theory Formula Helper Box -->
+            <div class="glass-panel rounded-2xl p-4 text-xs text-slate-400 space-y-2">
+                <h3 class="font-bold text-slate-300 text-[11px] uppercase tracking-wider flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                    Postulatet e Borit
+                </h3>
+                <ul class="list-disc list-inside space-y-1 text-[11px] leading-relaxed">
+                    <li>Momenti këndor: <span class="code-font text-slate-200">L = n ℏ = n(h / 2π)</span></li>
+                    <li>Rrezja e orbitës: <span class="code-font text-slate-200">rₙ = (n²/Z) · a₀</span></li>
+                    <li>Emetimi i fotonit: <span class="code-font text-slate-200">ΔE = h·ν = hc / λ</span></li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <!-- BOTTOM SECTION: Interactive Spectrometer / Emission Spectrum Bar -->
+    <section class="max-w-7xl mx-auto px-4 pb-8 w-full">
+        <div class="glass-panel rounded-2xl p-5 flex flex-col gap-4">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                    <h2 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-fuchsia-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18"/></svg>
+                        Spektri i Emetimit të Atomit (Spektrometri Eksperimental)
+                    </h2>
+                    <p class="text-xs text-slate-400">Vijat spektrale që regjistrohen automatikisht gjatë çdo emetimi fotoni:</p>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button id="generateBalmerBtn" class="px-3 py-1.5 rounded-xl bg-purple-900/40 hover:bg-purple-800/50 border border-purple-500/40 text-purple-200 text-xs font-semibold transition">
+                        Gjenero Serinë Balmer (Drita e Dukshme)
+                    </button>
+                    <button id="clearSpectrumBtn" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs font-semibold transition">
+                        Pastro Spektrin
+                    </button>
+                </div>
+            </div>
+
+            <!-- Visible Spectrum Visual Ribbon with Spectrum Markers -->
+            <div class="relative w-full h-16 rounded-xl overflow-hidden border border-slate-700/80 bg-slate-950 flex flex-col justify-end p-1">
+                <!-- Background Gradient representation of Light Wavelengths from 300nm (UV) to 800nm (IR) -->
+                <div class="absolute inset-0 opacity-25 pointer-events-none" style="background: linear-gradient(to right, 
+                    #8b5cf6 0%, 
+                    #3b82f6 20%, 
+                    #06b6d4 35%, 
+                    #22c55e 50%, 
+                    #eab308 65%, 
+                    #ef4444 80%, 
+                    #881337 100%);">
+                </div>
+
+                <!-- Wavelength Scale Markers (300nm -> 800nm) -->
+                <div class="absolute top-1 left-0 right-0 px-3 flex justify-between text-[9px] code-font text-slate-400 pointer-events-none">
+                    <span>300 nm (UV)</span>
+                    <span>400 nm</span>
+                    <span>500 nm</span>
+                    <span>600 nm</span>
+                    <span>700 nm</span>
+                    <span>800 nm (IR)</span>
+                </div>
+
+                <!-- Spectral Emission Lines Overlay Container -->
+                <div id="spectrumLinesBar" class="relative w-full h-10 my-1">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </div>
+
+            <!-- Spectral Series Summary Badges -->
+            <div class="flex flex-wrap items-center justify-between text-xs text-slate-400 gap-2">
+                <div class="flex items-center gap-4 flex-wrap">
+                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-purple-600"></span> Lyman (n_f = 1, UV)</span>
+                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-cyan-400"></span> Balmer (n_f = 2, Drita e Dukshme)</span>
+                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-rose-500"></span> Paschen (n_f = 3, Infrared)</span>
+                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-amber-500"></span> Brackett (n_f = 4, Infrared)</span>
+                </div>
+                <div id="recordedCountText" class="code-font text-cyan-400">0 vija spektrale të regjistruara</div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // =========================================================================
+        // CONSTANTS & PHYSICAL VALUES
+        // =========================================================================
+        const CONSTANTS = {
+            RYD_EV: 13.605693,         // Rydberg energy in eV
+            A0_ANGSTROMS: 0.529177,     // Bohr radius in Angstroms
+            H_PLANCK: 6.62607015e-34,   // Planck constant (J·s)
+            C_SPEED: 2.99792458e8,      // Speed of light (m/s)
+            EV_TO_JOULES: 1.60217663e-19,
+            HC_EV_NM: 1239.84193        // h*c in eV·nm
+        };
+
+        const ELEMENTS = {
+            'H': { name: 'Hidrogjen', symbol: 'H', z: 1, protons: 1, neutrons: 0 },
+            'He+': { name: 'Jon Helium (He⁺)', symbol: 'He⁺', z: 2, protons: 2, neutrons: 2 },
+            'Li2+': { name: 'Jon Litium (Li²⁺)', symbol: 'Li²⁺', z: 3, protons: 3, neutrons: 4 }
+        };
+
+        // =========================================================================
+        // SIMULATION STATE
+        // =========================================================================
+        let state = {
+            elementKey: 'H',
+            currentN: 1,
+            targetN: 1,
+            electronRadiusVisual: 55, // pixels
+            electronAngle: 0,
+            isTransitioning: false,
+            transitionProgress: 0,
+            transitionType: null, // 'absorb' or 'emit'
+            transitionStartN: 1,
+            simSpeed: 1.0,
+            isPaused: false,
+            soundEnabled: true,
+            photon: null, // Active wave-packet photon
+            particles: [], // Glow burst particles during jump
+            spectrumLines: [] // Recorded emission spectral lines
+        };
+
+        // DOM Elements setup
+        const canvas = document.getElementById('bohrCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // =========================================================================
+        // PHYSICS CALCULATIONS ENGINE
+        // =========================================================================
+        function getZ() {
+            return ELEMENTS[state.elementKey].z;
+        }
+
+        /* Calculate energy level En in eV */
+        function calculateEnergy(n, z = getZ()) {
+            return -CONSTANTS.RYD_EV * (z * z) / (n * n);
+        }
+
+        /* Calculate orbit radius in Angstroms */
+        function calculateRadius(n, z = getZ()) {
+            return CONSTANTS.A0_ANGSTROMS * (n * n) / z;
+        }
+
+        /* Calculate electron orbital velocity in m/s */
+        function calculateVelocity(n, z = getZ()) {
+            return (2.1876e6) * (z / n);
+        }
+
+        /* Identify spectral series based on final quantum level */
+        function getSeriesName(nFinal) {
+            switch(nFinal) {
+                case 1: return 'Seria Lyman (UV)';
+                case 2: return 'Seria Balmer (E Dukshme)';
+                case 3: return 'Seria Paschen (IR)';
+                case 4: return 'Seria Brackett (IR)';
+                case 5: return 'Seria Pfund (Far IR)';
+                default: return `Seria n=${nFinal}`;
+            }
+        }
+
+        /* Convert wavelength (nm) to approximate RGB color hex */
+        function wavelengthToColor(wavelengthNm) {
+            let r, g, b;
+
+            if (wavelengthNm < 380) {
+                // UV Range -> Glowing Violet / Purple
+                return { hex: '#a855f7', label: 'Ultravjollcë (UV)' };
+            } else if (wavelengthNm >= 380 && wavelengthNm < 440) {
+                r = -(wavelengthNm - 440) / (440 - 380);
+                g = 0.0;
+                b = 1.0;
+            } else if (wavelengthNm >= 440 && wavelengthNm < 490) {
+                r = 0.0;
+                g = (wavelengthNm - 440) / (490 - 440);
+                b = 1.0;
+            } else if (wavelengthNm >= 490 && wavelengthNm < 510) {
+                r = 0.0;
+                g = 1.0;
+                b = -(wavelengthNm - 510) / (510 - 490);
+            } else if (wavelengthNm >= 510 && wavelengthNm < 580) {
+                r = (wavelengthNm - 510) / (580 - 510);
+                g = 1.0;
+                b = 0.0;
+            } else if (wavelengthNm >= 580 && wavelengthNm < 645) {
+                r = 1.0;
+                g = -(wavelengthNm - 645) / (645 - 580);
+                b = 0.0;
+            } else if (wavelengthNm >= 645 && wavelengthNm <= 780) {
+                r = 1.0;
+                g = 0.0;
+                b = 0.0;
+            } else {
+                // IR Range -> Crimson Deep Red
+                return { hex: '#f43f5e', label: 'Infrarred (IR)' };
+            }
+
+            // Intensity factor near spectral boundaries
+            let factor = 1.0;
+            if (wavelengthNm >= 380 && wavelengthNm < 420) {
+                factor = 0.3 + 0.7 * (wavelengthNm - 380) / (420 - 380);
+            } else if (wavelengthNm >= 700 && wavelengthNm <= 780) {
+                factor = 0.3 + 0.7 * (780 - wavelengthNm) / (780 - 700);
+            }
+
+            const R = Math.round(r * factor * 255);
+            const G = Math.round(g * factor * 255);
+            const B = Math.round(b * factor * 255);
+
+            const hex = "#" + ((1 << 24) + (R << 16) + (G << 8) + B).toString(16).slice(1);
+            return { hex: hex, label: `${Math.round(wavelengthNm)} nm` };
+        }
+
+        // =========================================================================
+        // AUDIO SYNTHESIS ENGINE (Web Audio API)
+        // =========================================================================
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playQuantumSound(type, deltaE) {
+            if (!state.soundEnabled) return;
+            try {
+                initAudio();
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                const now = audioCtx.currentTime;
+
+                if (type === 'absorb') {
+                    // Ascending pitch sound for energy absorption
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(220, now);
+                    osc.frequency.exponentialRampToValueAtTime(880 + deltaE * 50, now + 0.35);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+                    osc.start(now);
+                    osc.stop(now + 0.36);
+                } else {
+                    // Descending harmonic chime sound for photon emission
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(900 + deltaE * 40, now);
+                    osc.frequency.exponentialRampToValueAtTime(300, now + 0.45);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+                    osc.start(now);
+                    osc.stop(now + 0.46);
+                }
+            } catch (e) {
+                console.log("Audio playback notice:", e);
+            }
+        }
+
+        // =========================================================================
+        // VISUAL MAPPING & ORBIT RADIUS FUNCTIONS
+        // =========================================================================
+        // Canvas visual orbit radii mapping (scaled visually so n=1..6 fit nicely)
+        function getOrbitVisualRadius(n) {
+            // Visual radii starting at 50px up to 240px
+            return 45 + (n * 32);
+        }
+
+        /* Initiate a quantum jump transition to target n */
+        function triggerJumpTo(targetN) {
+            if (targetN < 1 || targetN > 6 || (targetN === state.currentN && !state.isTransitioning)) return;
+
+            const startN = state.currentN;
+            state.transitionStartN = startN;
+            state.targetN = targetN;
+            state.isTransitioning = true;
+            state.transitionProgress = 0;
+
+            const Ei = calculateEnergy(startN);
+            const Ef = calculateEnergy(targetN);
+            const deltaE = Math.abs(Ef - Ei);
+            const wavelengthNm = CONSTANTS.HC_EV_NM / deltaE;
+            const photonColor = wavelengthToColor(wavelengthNm);
+
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            if (targetN > startN) {
+                // ABSORPTION: Photon comes from outside towards electron
+                state.transitionType = 'absorb';
+                const currentOrbitR = getOrbitVisualRadius(startN);
+                const electronX = centerX + currentOrbitR * Math.cos(state.electronAngle);
+                const electronY = centerY + currentOrbitR * Math.sin(state.electronAngle);
+
+                // Start photon at edge of canvas
+                const angleToOuter = Math.atan2(electronY - centerY, electronX - centerX);
+                const startX = centerX + 290 * Math.cos(angleToOuter + 0.5);
+                const startY = centerY + 290 * Math.sin(angleToOuter + 0.5);
+
+                state.photon = {
+                    active: true,
+                    type: 'absorb',
+                    startX: startX,
+                    startY: startY,
+                    targetX: electronX,
+                    targetY: electronY,
+                    currX: startX,
+                    currY: startY,
+                    wavelength: wavelengthNm,
+                    color: photonColor.hex,
+                    progress: 0
+                };
+            } else {
+                // EMISSION: Electron jumps inward first, then emits photon outwards
+                state.transitionType = 'emit';
+                state.photon = null; // Created when jump completes or during jump
+            }
+
+            // Update UI status badges
+            updateTelemetryUI(targetN, startN, deltaE, wavelengthNm);
+            updateEnergyLevelButtonsUI();
+            playQuantumSound(state.transitionType, deltaE);
+        }
+
+        // =========================================================================
+        // UI UPDATES & DOM INTERACTION
+        // =========================================================================
+        function initEnergyLevelsListUI() {
+            const container = document.getElementById('energyLevelsContainer');
+            container.innerHTML = '';
+
+            for (let n = 6; n >= 1; n--) {
+                const ev = calculateEnergy(n).toFixed(2);
+                const r = calculateRadius(n).toFixed(2);
+
+                const btn = document.createElement('button');
+                btn.id = `levelBtn_${n}`;
+                btn.className = `level-btn w-full px-3 py-2 rounded-xl border border-slate-800 bg-slate-900/60 hover:bg-slate-800/80 flex items-center justify-between text-xs transition duration-200`;
+                btn.onclick = () => triggerJumpTo(n);
+
+                btn.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-lg bg-slate-800 flex items-center justify-center font-bold code-font text-cyan-400 border border-slate-700">n=${n}</span>
+                        <span class="text-slate-300 font-semibold">${n === 1 ? 'Gjendja Baza' : `Niveli Nasiur ${n}`}</span>
+                    </div>
+                    <div class="text-right code-font">
+                        <span class="text-amber-300 font-bold">${ev} eV</span>
+                        <span class="text-[10px] text-slate-400 block">${r} Å</span>
+                    </div>
+                `;
+                container.appendChild(btn);
+            }
+            updateEnergyLevelButtonsUI();
+        }
+
+        function updateEnergyLevelButtonsUI() {
+            for (let n = 1; n <= 6; n++) {
+                const btn = document.getElementById(`levelBtn_${n}`);
+                if (!btn) continue;
+                if (n === state.currentN) {
+                    btn.className = `level-btn level-btn-active w-full px-3 py-2 rounded-xl border flex items-center justify-between text-xs transition duration-200`;
+                } else {
+                    btn.className = `level-btn w-full px-3 py-2 rounded-xl border border-slate-800/80 bg-slate-900/60 hover:bg-slate-800/80 flex items-center justify-between text-xs transition duration-200 text-slate-300`;
+                }
+            }
+        }
+
+        function updateTelemetryUI(targetN, startN = null, deltaE = 0, wavelengthNm = 0) {
+            const n = targetN;
+            const z = getZ();
+            const En_eV = calculateEnergy(n, z);
+            const En_J = En_eV * CONSTANTS.EV_TO_JOULES;
+            const rn_A = calculateRadius(n, z);
+            const rn_pm = rn_A * 100;
+            const vn = calculateVelocity(n, z);
+
+            document.getElementById('telN').textContent = n;
+            document.getElementById('telEnergyEv').textContent = `${En_eV.toFixed(2)} eV`;
+            document.getElementById('telEnergyJ').textContent = `${En_J.toExponential(2)} J`;
+            document.getElementById('telRadiusAng').textContent = `${rn_A.toFixed(3)} Å`;
+            document.getElementById('telRadiusPm').textContent = `${rn_pm.toFixed(1)} pm`;
+            document.getElementById('telVelocity').textContent = `${(vn / 1e6).toFixed(2)} × 10⁶ m/s`;
+
+            // Status Badge
+            const statusEl = document.getElementById('simStatusText');
+            if (state.isTransitioning) {
+                statusEl.textContent = `Kërcim: n=${startN} ➔ n=${targetN}`;
+            } else {
+                statusEl.textContent = n === 1 ? 'Gjendja Stacionare Baza (n = 1)' : `Gjendje e Nxitur (n = ${n})`;
+            }
+
+            // Transition readout
+            if (startN !== null && startN !== targetN) {
+                const isAbsorb = targetN > startN;
+                document.getElementById('transType').textContent = isAbsorb ? 'Absorbim Fotoni (+E)' : 'Emetim Fotoni (-E)';
+                document.getElementById('transType').className = `code-font font-bold ${isAbsorb ? 'text-amber-400' : 'text-fuchsia-400'}`;
+                document.getElementById('transDeltaE').textContent = `${deltaE.toFixed(2)} eV`;
+
+                const colInfo = wavelengthToColor(wavelengthNm);
+                document.getElementById('transWavelength').textContent = `${wavelengthNm.toFixed(1)} nm`;
+                document.getElementById('transWavelength').style.color = colInfo.hex;
+
+                const series = getSeriesName(Math.min(startN, targetN));
+                document.getElementById('transSeries').textContent = series;
+            }
+        }
+
+        /* Record emitted photon line on Spectrometer Bar */
+        function addSpectralLine(nInitial, nFinal, wavelengthNm) {
+            const colorInfo = wavelengthToColor(wavelengthNm);
+            const series = getSeriesName(nFinal);
+
+            const lineObj = {
+                id: Date.now() + Math.random(),
+                nInitial,
+                nFinal,
+                wavelength: wavelengthNm,
+                color: colorInfo.hex,
+                series: series
+            };
+
+            state.spectrumLines.push(lineObj);
+            renderSpectrumBarUI();
+        }
+
+        function renderSpectrumBarUI() {
+            const bar = document.getElementById('spectrumLinesBar');
+            bar.innerHTML = '';
+
+            const minW = 300;
+            const maxW = 800;
+
+            state.spectrumLines.forEach(line => {
+                // Calculate percentage position along 300nm -> 800nm scale
+                let clampedW = Math.max(minW, Math.min(maxW, line.wavelength));
+                let pct = ((clampedW - minW) / (maxW - minW)) * 100;
+
+                const mark = document.createElement('div');
+                mark.className = `absolute top-0 bottom-0 w-1 rounded-full cursor-pointer transition transform hover:scale-150 hover:z-20 has-tooltip`;
+                mark.style.left = `${pct}%`;
+                mark.style.backgroundColor = line.color;
+                mark.style.boxShadow = `0 0 8px ${line.color}`;
+
+                mark.innerHTML = `
+                    <div class="tooltip opacity-0 invisible transition-all duration-150 absolute bottom-full mb-2 -translate-x-1/2 left-1/2 bg-slate-900 border border-slate-700 text-[10px] text-slate-200 px-2.5 py-1.5 rounded-lg shadow-xl whitespace-nowrap z-30 pointer-events-none code-font">
+                        <span class="font-bold text-cyan-300">n: ${line.nInitial} ➔ ${line.nFinal}</span> (${line.series})<br/>
+                        Gjatësia Valore: <span style="color:${line.color}">${line.wavelength.toFixed(1)} nm</span>
+                    </div>
+                `;
+
+                mark.onclick = () => {
+                    // Trigger this transition
+                    triggerJumpTo(line.nInitial);
+                    setTimeout(() => triggerJumpTo(line.nFinal), 600);
+                };
+
+                bar.appendChild(mark);
+            });
+
+            document.getElementById('recordedCountText').textContent = `${state.spectrumLines.length} vija spektrale të regjistruara`;
+        }
+
+        // =========================================================================
+        // CANVAS RENDERING ENGINE
+        // =========================================================================
+        function drawNucleus(centerX, centerY) {
+            const elem = ELEMENTS[state.elementKey];
+            
+            // Outer glow effect
+            const gradient = ctx.createRadialGradient(centerX, centerY, 5, centerX, centerY, 28);
+            gradient.addColorStop(0, '#f43f5e');
+            gradient.addColorStop(0.6, '#be123c');
+            gradient.addColorStop(1, 'transparent');
+
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 32, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Core sphere
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 14, 0, Math.PI * 2);
+            ctx.fillStyle = '#f43f5e';
+            ctx.fill();
+            ctx.strokeStyle = '#fda4af';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Label text inside nucleus
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 11px JetBrains Mono, monospace';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(`+${elem.z}e`, centerX, centerY);
+        }
+
+        function drawOrbits(centerX, centerY) {
+            for (let n = 1; n <= 6; n++) {
+                const r = getOrbitVisualRadius(n);
+                const isActive = n === state.currentN;
+
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, r, 0, Math.PI * 2);
+
+                if (isActive) {
+                    ctx.strokeStyle = 'rgba(56, 189, 248, 0.8)';
+                    ctx.lineWidth = 2;
+                    ctx.setLineDash([4, 4]);
+                } else {
+                    ctx.strokeStyle = 'rgba(51, 65, 85, 0.4)';
+                    ctx.lineWidth = 1;
+                    ctx.setLineDash([2, 4]);
+                }
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // Orbit Label n=1..6
+                ctx.fillStyle = isActive ? '#38bdf8' : '#64748b';
+                ctx.font = '10px JetBrains Mono, monospace';
+                ctx.fillText(`n=${n}`, centerX + r + 8, centerY - 4);
+            }
+        }
+
+        /* Draw sinusoidal wave-packet photon traveling across space */
+        function drawPhotonPacket(photon) {
+            if (!photon || !photon.active) return;
+
+            const dx = photon.targetX - photon.startX;
+            const dy = photon.targetY - photon.startY;
+            const dist = Math.hypot(dx, dy);
+            const angle = Math.atan2(dy, dx);
+
+            ctx.save();
+            ctx.translate(photon.currX, photon.currY);
+            ctx.rotate(angle);
+
+            // Draw wave sinusoidal packet
+            ctx.beginPath();
+            ctx.strokeStyle = photon.color;
+            ctx.lineWidth = 2.5;
+            ctx.shadowColor = photon.color;
+            ctx.shadowBlur = 12;
+
+            const waveLength = 40;
+            const amplitude = 8;
+            for (let x = -waveLength / 2; x <= waveLength / 2; x += 2) {
+                // Envelope window function so wave packet tapers at ends
+                const envelope = Math.cos((x / waveLength) * Math.PI);
+                const y = Math.sin((x / 6) + Date.now() * 0.02) * amplitude * envelope;
+                if (x === -waveLength / 2) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        /* Spawn particle sparkle effect during quantum leap */
+        function createQuantumParticles(x, y, color) {
+            for (let i = 0; i < 16; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 1 + Math.random() * 3;
+                state.particles.push({
+                    x: x,
+                    y: y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    life: 1.0,
+                    color: color
+                });
+            }
+        }
+
+        function updateAndDrawParticles() {
+            for (let i = state.particles.length - 1; i >= 0; i--) {
+                const p = state.particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life -= 0.03;
+
+                if (p.life <= 0) {
+                    state.particles.splice(i, 1);
+                    continue;
+                }
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 2 * p.life, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.globalAlpha = p.life;
+                ctx.fill();
+                ctx.globalAlpha = 1.0;
+            }
+        }
+
+        // =========================================================================
+        // ANIMATION LOOP & PHYSICS TICKER
+        // =========================================================================
+        function animate() {
+            requestAnimationFrame(animate);
+
+            if (state.isPaused) return;
+
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            // Clear canvas background
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw orbits & nucleus
+            drawOrbits(centerX, centerY);
+            drawNucleus(centerX, centerY);
+
+            // Calculate electron position & interpolation during quantum jump
+            let targetR = getOrbitVisualRadius(state.targetN);
+            let startR = getOrbitVisualRadius(state.transitionStartN);
+
+            if (state.isTransitioning) {
+                state.transitionProgress += 0.025 * state.simSpeed;
+
+                if (state.transitionType === 'absorb') {
+                    // ABSORPTION STEPS:
+                    // 1. Photon approaches electron
+                    if (state.photon) {
+                        state.photon.progress += 0.03 * state.simSpeed;
+                        state.photon.currX = state.photon.startX + (state.photon.targetX - state.photon.startX) * state.photon.progress;
+                        state.photon.currY = state.photon.startY + (state.photon.targetY - state.photon.startY) * state.photon.progress;
+
+                        if (state.photon.progress >= 1.0) {
+                            // Photon hits electron! Sparkle burst & start electron radial jump
+                            createQuantumParticles(state.photon.targetX, state.photon.targetY, state.photon.color);
+                            state.photon = null;
+                        }
+                    } else {
+                        // 2. Electron jumps radially to higher orbit
+                        state.electronRadiusVisual += (targetR - state.electronRadiusVisual) * 0.15;
+                        if (Math.abs(state.electronRadiusVisual - targetR) < 0.5) {
+                            state.electronRadiusVisual = targetR;
+                            state.currentN = state.targetN;
+                            state.isTransitioning = false;
+                            document.getElementById('quantumJumpBadge').classList.add('hidden');
+                        }
+                    }
+                } else {
+                    // EMISSION STEPS:
+                    // 1. Electron tunnels/jumps inward to lower orbit
+                    state.electronRadiusVisual += (targetR - state.electronRadiusVisual) * 0.15;
+
+                    if (!state.photon && Math.abs(state.electronRadiusVisual - targetR) < 2.0) {
+                        // 2. Spawn emitted photon departing outwards
+                        const electronX = centerX + targetR * Math.cos(state.electronAngle);
+                        const electronY = centerY + targetR * Math.sin(state.electronAngle);
+
+                        const Ei = calculateEnergy(state.transitionStartN);
+                        const Ef = calculateEnergy(state.targetN);
+                        const deltaE = Math.abs(Ef - Ei);
+                        const wavelengthNm = CONSTANTS.HC_EV_NM / deltaE;
+                        const photonCol = wavelengthToColor(wavelengthNm);
+
+                        const outAngle = state.electronAngle + 0.3;
+                        const endX = centerX + 300 * Math.cos(outAngle);
+                        const endY = centerY + 300 * Math.sin(outAngle);
+
+                        state.photon = {
+                            active: true,
+                            type: 'emit',
+                            startX: electronX,
+                            startY: electronY,
+                            targetX: endX,
+                            targetY: endY,
+                            currX: electronX,
+                            currY: electronY,
+                            wavelength: wavelengthNm,
+                            color: photonCol.hex,
+                            progress: 0
+                        };
+
+                        createQuantumParticles(electronX, electronY, photonCol.hex);
+                        addSpectralLine(state.transitionStartN, state.targetN, wavelengthNm);
+                    }
+
+                    if (state.photon) {
+                        state.photon.progress += 0.03 * state.simSpeed;
+                        state.photon.currX = state.photon.startX + (state.photon.targetX - state.photon.startX) * state.photon.progress;
+                        state.photon.currY = state.photon.startY + (state.photon.targetY - state.photon.startY) * state.photon.progress;
+
+                        if (state.photon.progress >= 1.0) {
+                            state.photon = null;
+                            state.electronRadiusVisual = targetR;
+                            state.currentN = state.targetN;
+                            state.isTransitioning = false;
+                            document.getElementById('quantumJumpBadge').classList.add('hidden');
+                        }
+                    }
+                }
+
+                document.getElementById('quantumJumpBadge').classList.remove('hidden');
+            } else {
+                state.electronRadiusVisual = targetR;
+            }
+
+            // Orbital angular motion (outer orbits rotate with lower angular speed according to Kepler/Bohr laws)
+            const angularVelocity = (0.04 / Math.pow(state.currentN, 0.7)) * state.simSpeed;
+            state.electronAngle += angularVelocity;
+
+            // Compute current electron coordinates
+            const electronX = centerX + state.electronRadiusVisual * Math.cos(state.electronAngle);
+            const electronY = centerY + state.electronRadiusVisual * Math.sin(state.electronAngle);
+
+            // Draw Photon wave packet if present
+            if (state.photon) {
+                drawPhotonPacket(state.photon);
+            }
+
+            // Draw Particles
+            updateAndDrawParticles();
+
+            // Draw Electron Particle
+            ctx.beginPath();
+            ctx.arc(electronX, electronY, 7, 0, Math.PI * 2);
+            ctx.fillStyle = '#38bdf8';
+            ctx.shadowColor = '#38bdf8';
+            ctx.shadowBlur = 15;
+            ctx.fill();
+
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+            ctx.shadowBlur = 0; // reset shadow
+        }
+
+        // =========================================================================
+        // EVENT HANDLERS & INITIALIZATION
+        // =========================================================================
+        function setupEventListeners() {
+            // Element Pickers
+            document.querySelectorAll('.element-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const elemKey = btn.getAttribute('data-element');
+                    state.elementKey = elemKey;
+
+                    document.querySelectorAll('.element-btn').forEach(b => {
+                        b.className = 'element-btn p-2.5 rounded-xl border border-slate-800 bg-slate-900/50 text-slate-400 hover:border-slate-700 flex flex-col items-center justify-center transition';
+                    });
+                    btn.className = 'element-btn p-2.5 rounded-xl border border-cyan-500 bg-cyan-950/40 text-cyan-300 flex flex-col items-center justify-center transition shadow-lg shadow-cyan-500/10';
+
+                    // Reset to n=1 upon element change
+                    initEnergyLevelsListUI();
+                    triggerJumpTo(1);
+                });
+            });
+
+            // Action Trigger: Absorb Random Photon
+            document.getElementById('absorbRandomBtn').addEventListener('click', () => {
+                if (state.currentN >= 6) {
+                    triggerJumpTo(1);
+                } else {
+                    const nextN = Math.min(6, state.currentN + Math.floor(1 + Math.random() * 3));
+                    triggerJumpTo(nextN);
+                }
+            });
+
+            // Action Trigger: Decay to Ground state
+            document.getElementById('decayGroundStateBtn').addEventListener('click', () => {
+                triggerJumpTo(1);
+            });
+
+            // Play / Pause Toggle
+            document.getElementById('playPauseBtn').addEventListener('click', () => {
+                state.isPaused = !state.isPaused;
+                document.getElementById('playIcon').classList.toggle('hidden', !state.isPaused);
+                document.getElementById('pauseIcon').classList.toggle('hidden', state.isPaused);
+                document.getElementById('playPauseText').textContent = state.isPaused ? 'Vazhdo' : 'Pauzo';
+            });
+
+            // Sound Toggle
+            document.getElementById('soundBtn').addEventListener('click', () => {
+                state.soundEnabled = !state.soundEnabled;
+                document.getElementById('soundOnIcon').classList.toggle('hidden', !state.soundEnabled);
+                document.getElementById('soundOffIcon').classList.toggle('hidden', state.soundEnabled);
+            });
+
+            // Simulation Speed Slider
+            document.getElementById('speedSlider').addEventListener('input', (e) => {
+                state.simSpeed = parseFloat(e.target.value);
+                document.getElementById('speedVal').textContent = `${state.simSpeed.toFixed(1)}x`;
+            });
+
+            // Reset Simulation Button
+            document.getElementById('resetSimBtn').addEventListener('click', () => {
+                state.currentN = 1;
+                state.targetN = 1;
+                state.isTransitioning = false;
+                state.photon = null;
+                state.spectrumLines = [];
+                renderSpectrumBarUI();
+                initEnergyLevelsListUI();
+                updateTelemetryUI(1);
+            });
+
+            // Generate Balmer Series Preset
+            document.getElementById('generateBalmerBtn').addEventListener('click', () => {
+                state.spectrumLines = [];
+                // Balmer transitions: n_initial = 3, 4, 5, 6 down to n_final = 2
+                const balmerN = [3, 4, 5, 6];
+                balmerN.forEach(nInit => {
+                    const Ei = calculateEnergy(nInit, 1);
+                    const Ef = calculateEnergy(2, 1);
+                    const deltaE = Math.abs(Ef - Ei);
+                    const wNm = CONSTANTS.HC_EV_NM / deltaE;
+                    addSpectralLine(nInit, 2, wNm);
+                });
+            });
+
+            // Clear Spectrum Button
+            document.getElementById('clearSpectrumBtn').addEventListener('click', () => {
+                state.spectrumLines = [];
+                renderSpectrumBarUI();
+            });
+        }
+
+        // Initialize Application
+        window.addEventListener('load', () => {
+            initEnergyLevelsListUI();
+            setupEventListeners();
+            updateTelemetryUI(1);
+            animate();
+        });
+    </script>
+</body>
+</html>
