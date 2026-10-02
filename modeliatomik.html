@@ -49,12 +49,13 @@
             flex-wrap: wrap;
             gap: 20px;
             align-items: center;
-            justify-content: space-between;
+            justify-content: flex-start;
         }
         .control-group {
             display: flex;
             flex-direction: column;
             gap: 6px;
+            flex: 1 1 auto;
         }
         .control-group label {
             font-size: 13px;
@@ -63,6 +64,7 @@
         }
         .btn-group {
             display: flex;
+            flex-wrap: wrap;
             gap: 8px;
         }
         button {
@@ -94,6 +96,7 @@
         }
         .sim-area {
             position: relative;
+            width: 100%;
             background: #020617;
             border: 2px solid #1e293b;
             border-radius: 12px;
@@ -105,6 +108,9 @@
         }
         canvas {
             display: block;
+            width: 100%;
+            max-width: 900px;
+            height: auto;
             background: #020617;
         }
         .stats-panel {
@@ -144,471 +150,34 @@
         .info-card strong {
             color: #f8fafc;
         }
+        @media (max-width: 600px) {
+            body {
+                padding: 12px;
+            }
+            header {
+                margin-bottom: 16px;
+            }
+            header h1 {
+                font-size: 22px;
+            }
+            .control-panel {
+                gap: 16px;
+                padding: 14px;
+            }
+            .control-group {
+                flex-basis: 100%;
+                min-width: 0;
+            }
+            .btn-group button {
+                flex: 1 1 auto;
+            }
+            input[type="range"] {
+                width: 100%;
+            }
+            .stats-panel {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
-
-    <header>
-        <h1>Eksperimenti i Radhërfordit me Fletën e Arit</h1>
-        <p>Zbulo strukturën bërthamore të atomit dhe shpërndarjen e thërrmijave alfa (α)</p>
-    </header>
-
-    <div class="main-container">
-        
-        <!-- Paneli i Kontrollit -->
-        <div class="control-panel">
-            <div class="control-group">
-                <label>Mënyra e Pamjes:</label>
-                <div class="btn-group">
-                    <button id="btnMacro" class="active" onclick="setView('macro')">Laboratori (Macro)</button>
-                    <button id="btnMicro" onclick="setView('micro')">Atomi (Micro)</button>
-                </div>
-            </div>
-
-            <div class="control-group">
-                <label>Modeli Fisik:</label>
-                <div class="btn-group">
-                    <button id="btnRutherford" class="active" onclick="setModel('rutherford')">Radhërford</button>
-                    <button id="btnThomson" onclick="setModel('thomson')">Tomson</button>
-                </div>
-            </div>
-
-            <div class="control-group">
-                <label>Shpejtësia e Rrezatimit:</label>
-                <input type="range" id="rateSlider" min="1" max="10" value="5" oninput="updateRate(this.value)">
-            </div>
-
-            <div class="control-group">
-                <div class="btn-group">
-                    <button onclick="togglePlay()" id="btnPlay">Pauzo</button>
-                    <button class="danger" onclick="resetStats()">Pastro Statistikat</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Zonja e Simulimit -->
-        <div class="sim-area">
-            <canvas id="canvas" width="900" height="500"></canvas>
-        </div>
-
-        <!-- Statistikat -->
-        <div class="stats-panel">
-            <div class="stat-card">
-                <div>Gjithsej Thërrmija (α)</div>
-                <div class="val" id="cntTotal">0</div>
-            </div>
-            <div class="stat-card">
-                <div>Kaluan Drejt (θ &lt; 5°)</div>
-                <div class="val" id="cntStraight">0 (0%)</div>
-            </div>
-            <div class="stat-card deflect">
-                <div>Devijuan (5° - 90°)</div>
-                <div class="val" id="cntDeflected">0 (0%)</div>
-            </div>
-            <div class="stat-card back">
-                <div>U Kthyen Mbrapsht (&gt; 90°)</div>
-                <div class="val" id="cntBack">0 (0%)</div>
-            </div>
-        </div>
-
-        <!-- Shpjegimi Shkencor -->
-        <div class="info-card" id="infoText">
-            <strong>Vëzhgimi i Radhërfordit (1911):</strong> Shumica e thërrmijave alfa ($\alpha$) e përshkojnë fletën e arit në rrugë drejtvizore, sepse atomi është kryesisht hapësirë e zbrazët. Vetëm 1 në rreth 8000 thërrmija devijohet me kënd të madh ose kthehet mbrapsht, duke provuar se e gjithë ngarkesa pozitive dhe masa e atomit është e përqendruar në një <strong>bërthamë</strong> shumë të vogël.
-        </div>
-
-    </div>
-
-    <script>
-        const canvas = document.getElementById("canvas");
-        const ctx = canvas.getContext("2d");
-
-        // Gjendja e simulimit
-        let currentView = 'macro'; // 'macro' ose 'micro'
-        let currentModel = 'rutherford'; // 'rutherford' ose 'thomson'
-        let isRunning = true;
-        let spawnRate = 5;
-
-        // Numëruesit e statistikave
-        let stats = { total: 0, straight: 0, deflected: 0, back: 0 };
-
-        // Lista e thërrmijave dhe shkëndijave fluoreshente
-        let particles = [];
-        let scintillations = [];
-        let nuclei = [];
-
-        // Qendra e pëlhurës
-        const cx = canvas.width / 2;
-        const cy = canvas.height / 2;
-
-        // Inicimi i bërthamave për pamjen Micro
-        function initNuclei() {
-            nuclei = [];
-            const rows = 3;
-            const cols = 3;
-            const spacingX = 140;
-            const spacingY = 120;
-            const startX = cx - ((cols - 1) * spacingX) / 2;
-            const startY = cy - ((rows - 1) * spacingY) / 2;
-
-            for (let r = 0; r < rows; r++) {
-                for (let c = 0; c < cols; c++) {
-                    nuclei.push({
-                        x: startX + c * spacingX,
-                        y: startY + r * spacingY,
-                        radius: 10
-                    });
-                }
-            }
-        }
-        initNuclei();
-
-        // Klasa e Thërrmijës Alfa
-        class AlphaParticle {
-            constructor() {
-                if (currentView === 'macro') {
-                    this.x = 80;
-                    this.y = cy + (Math.random() - 0.5) * 12; // Rrezja e ngushtë nga slita
-                    this.vx = 5;
-                    this.vy = 0;
-                    this.state = 'approaching'; // 'approaching', 'scattered'
-                } else {
-                    // Micro View
-                    this.x = 0;
-                    this.y = Math.random() * canvas.height;
-                    this.vx = 6;
-                    this.vy = 0;
-                }
-                this.history = [];
-                this.hasScattered = false;
-            }
-
-            update() {
-                this.history.push({x: this.x, y: this.y});
-                if (this.history.length > 20) this.history.shift();
-
-                if (currentView === 'macro') {
-                    // Kur mbërrin te fleta e arit (x = cx)
-                    if (this.state === 'approaching' && this.x >= cx) {
-                        this.state = 'scattered';
-                        let angle = 0;
-
-                        if (currentModel === 'rutherford') {
-                            // Përzgjedhja statistikore e këndit sipas formulës së Radhërfordit
-                            let rand = Math.random();
-                            if (rand < 0.96) {
-                                // 96% kalojnë drejt ose me devijim minimal (< 5 gradë)
-                                angle = (Math.random() - 0.5) * (Math.PI / 36);
-                            } else if (rand < 0.998) {
-                                // Devijim mesatar (5° - 90°)
-                                angle = (Math.random() - 0.5) * (Math.PI / 2);
-                            } else {
-                                // Kthim mbrapsht (> 90°) ~ 1 në disa mijëra
-                                angle = Math.PI - (Math.random() - 0.5) * (Math.PI / 3);
-                                if (Math.random() < 0.5) angle = -angle;
-                            }
-                        } else {
-                            // Modeli i Tomsonit: Pothuajse asnjë devijim
-                            angle = (Math.random() - 0.5) * (Math.PI / 180);
-                        }
-
-                        let speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
-                        this.vx = Math.cos(angle) * speed;
-                        this.vy = Math.sin(angle) * speed;
-
-                        // Regjistrimi i statistikës
-                        let deg = Math.abs(angle * (180 / Math.PI));
-                        stats.total++;
-                        if (deg < 5) stats.straight++;
-                        else if (deg <= 90) stats.deflected++;
-                        else stats.back++;
-
-                        updateStatsUI();
-                    }
-                } else {
-                    // Physics simulation for Micro view (Coulomb Repulsion)
-                    if (currentModel === 'rutherford') {
-                        nuclei.forEach(n => {
-                            let dx = this.x - n.x;
-                            let dy = this.y - n.y;
-                            let distSq = dx * dx + dy * dy;
-                            let dist = Math.sqrt(distSq);
-
-                            if (dist < 200) {
-                                let force = 18000 / Math.max(distSq, 100);
-                                let ax = (dx / dist) * force;
-                                let ay = (dy / dist) * force;
-                                this.vx += ax;
-                                this.vy += ay;
-                            }
-                        });
-                    } else {
-                        // Tomson Micro: Devijim i zbehtë
-                        if (this.x > cx - 150 && this.x < cx + 150) {
-                            this.vy += (Math.random() - 0.5) * 0.05;
-                        }
-                    }
-
-                    if (!this.hasScattered && this.x > cx + 50) {
-                        this.hasScattered = true;
-                        let finalAngle = Math.atan2(this.vy, this.vx);
-                        let deg = Math.abs(finalAngle * (180 / Math.PI));
-                        stats.total++;
-                        if (deg < 5) stats.straight++;
-                        else if (deg <= 90) stats.deflected++;
-                        else stats.back++;
-                        updateStatsUI();
-                    }
-                }
-
-                this.x += this.vx;
-                this.y += this.vy;
-
-                // Kontrolli për goditjen e ekranit në pamjen Macro
-                if (currentView === 'macro' && this.state === 'scattered') {
-                    let dx = this.x - cx;
-                    let dy = this.y - cy;
-                    let r = Math.sqrt(dx * dx + dy * dy);
-                    let screenRadius = 210;
-
-                    if (r >= screenRadius) {
-                        scintillations.push({
-                            x: this.x,
-                            y: this.y,
-                            alpha: 1.0
-                        });
-                        return false; // Hiq thërrmijën
-                    }
-                }
-
-                // Kontrolli i kufijve të pëlhurës
-                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
-                    return false;
-                }
-
-                return true;
-            }
-
-            draw() {
-                // Gjurma e lëvizjes (Trail)
-                ctx.beginPath();
-                for (let i = 0; i < this.history.length; i++) {
-                    let pt = this.history[i];
-                    ctx.lineTo(pt.x, pt.y);
-                }
-                ctx.strokeStyle = "rgba(56, 189, 248, 0.25)";
-                ctx.lineWidth = 1.5;
-                ctx.stroke();
-
-                // Thërrmija
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
-                ctx.fillStyle = "#fbbf24"; // Ngjyrë e verdhë/portokalli për α
-                ctx.fill();
-            }
-        }
-
-        // Vizatimi i Pamjes Makroskopike (Laboratorit)
-        function drawMacroView() {
-            // 1. Burimi i Rrezatimit (Kuti Plumbi me Radium)
-            ctx.fillStyle = "#334155";
-            ctx.fillRect(20, cy - 25, 50, 50);
-            ctx.fillStyle = "#f59e0b";
-            ctx.font = "bold 10px sans-serif";
-            ctx.fillText("Burim α", 23, cy - 30);
-
-            // Vrimë e ngushtë te burimi
-            ctx.fillStyle = "#020617";
-            ctx.fillRect(65, cy - 4, 10, 8);
-
-            // 2. Slita e Plumbit (Collimator)
-            ctx.fillStyle = "#475569";
-            ctx.fillRect(110, cy - 60, 10, 45);
-            ctx.fillRect(110, cy + 15, 10, 45);
-
-            // 3. Ekrani Fluoreshent Cink-Sulfur (ZnS) - Rrethi me prerje në hyrje
-            ctx.beginPath();
-            ctx.arc(cx, cy, 210, Math.PI * 0.08, Math.PI * 1.92);
-            ctx.strokeStyle = "#10b981";
-            ctx.lineWidth = 6;
-            ctx.stroke();
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = "#10b981";
-            ctx.stroke();
-            ctx.shadowBlur = 0; // Reset glow
-
-            // 4. Fleta e Arit (Gold Foil) në qendër
-            ctx.strokeStyle = "#fbbf24";
-            ctx.lineWidth = 4;
-            ctx.beginPath();
-            ctx.moveTo(cx, cy - 70);
-            ctx.lineTo(cx, cy + 70);
-            ctx.stroke();
-
-            ctx.fillStyle = "#fbbf24";
-            ctx.font = "12px sans-serif";
-            ctx.fillText("Fleta e Arit (Au)", cx - 40, cy - 80);
-            ctx.fillText("Ekrani ZnS", cx + 130, cy + 170);
-        }
-
-        // Vizatimi i Pamjes Mikroskopike (Atomi/Bërthama)
-        function drawMicroView() {
-            if (currentModel === 'rutherford') {
-                // Bërthamat e arit me ngarkesë (+)
-                nuclei.forEach(n => {
-                    // Sfera atomike (Hapësira e zbrazët e elektroneve)
-                    ctx.beginPath();
-                    ctx.arc(n.x, n.y, 55, 0, Math.PI * 2);
-                    ctx.fillStyle = "rgba(56, 189, 248, 0.03)";
-                    ctx.fill();
-                    ctx.strokeStyle = "rgba(56, 189, 248, 0.15)";
-                    ctx.lineWidth = 1;
-                    ctx.setLineDash([4, 4]);
-                    ctx.stroke();
-                    ctx.setLineDash([]);
-
-                    // Bërthama e vogël me dendësi të lartë
-                    ctx.beginPath();
-                    ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
-                    ctx.fillStyle = "#ef4444";
-                    ctx.shadowBlur = 15;
-                    ctx.shadowColor = "#ef4444";
-                    ctx.fill();
-                    ctx.shadowBlur = 0;
-
-                    // Shenja +
-                    ctx.fillStyle = "#ffffff";
-                    ctx.font = "bold 11px sans-serif";
-                    ctx.fillText("+", n.x - 3.5, n.y + 4);
-                });
-            } else {
-                // Modeli i Tomsonit (Pudingu me rrush të thënë)
-                ctx.beginPath();
-                ctx.arc(cx, cy, 160, 0, Math.PI * 2);
-                ctx.fillStyle = "rgba(239, 68, 68, 0.15)";
-                ctx.fill();
-                ctx.strokeStyle = "#ef4444";
-                ctx.lineWidth = 2;
-                ctx.stroke();
-
-                ctx.fillStyle = "#ef4444";
-                ctx.font = "14px sans-serif";
-                ctx.fillText("Sferë me ngarkesë pozitive uniforme (+)", cx - 110, cy - 170);
-
-                // Elektronet (-)
-                const electronCoords = [
-                    [-80,-40], [40,-70], [70,20], [-30,80], [10,10], 
-                    [-90,50], [90,-20], [-20,-90], [60,90], [-50,0]
-                ];
-                electronCoords.forEach(pt => {
-                    ctx.beginPath();
-                    ctx.arc(cx + pt[0], cy + pt[1], 7, 0, Math.PI * 2);
-                    ctx.fillStyle = "#38bdf8";
-                    ctx.fill();
-                    ctx.fillStyle = "#ffffff";
-                    ctx.font = "bold 10px sans-serif";
-                    ctx.fillText("-", cx + pt[0] - 2, cy + pt[1] + 3.5);
-                });
-            }
-        }
-
-        // Loop kryesor i Animacionit
-        function animate() {
-            if (isRunning) {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                // Gjenerimi i thërrmijave të reja
-                if (Math.random() < spawnRate * 0.15) {
-                    particles.push(new AlphaParticle());
-                }
-
-                // Vizatimi i prapaskenës sipas pamjes
-                if (currentView === 'macro') {
-                    drawMacroView();
-                } else {
-                    drawMicroView();
-                }
-
-                // Përpunimi i Shkëndijave në ekranin ZnS
-                for (let i = scintillations.length - 1; i >= 0; i--) {
-                    let s = scintillations[i];
-                    ctx.beginPath();
-                    ctx.arc(s.x, s.y, 5, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(56, 239, 125, ${s.alpha})`;
-                    ctx.shadowBlur = 8;
-                    ctx.shadowColor = "#10b981";
-                    ctx.fill();
-                    ctx.shadowBlur = 0;
-
-                    s.alpha -= 0.02;
-                    if (s.alpha <= 0) scintillations.splice(i, 1);
-                }
-
-                // Përpunimi i Thërrmijave Alfa
-                for (let i = particles.length - 1; i >= 0; i--) {
-                    let p = particles[i];
-                    let active = p.update();
-                    if (active) {
-                        p.draw();
-                    } else {
-                        particles.splice(i, 1);
-                    }
-                }
-            }
-            requestAnimationFrame(animate);
-        }
-
-        // Funksionet e UI dhe Kontrollit
-        function setView(view) {
-            currentView = view;
-            document.getElementById("btnMacro").className = view === 'macro' ? 'active' : '';
-            document.getElementById("btnMicro").className = view === 'micro' ? 'active' : '';
-            particles = [];
-            scintillations = [];
-        }
-
-        function setModel(model) {
-            currentModel = model;
-            document.getElementById("btnRutherford").className = model === 'rutherford' ? 'active' : '';
-            document.getElementById("btnThomson").className = model === 'thomson' ? 'active' : '';
-            
-            const info = document.getElementById("infoText");
-            if (model === 'rutherford') {
-                info.innerHTML = "<strong>Modeli i Radhërfordit (1911):</strong> Ngarkesa pozitive është e përqendruar në një bërthamë jashtëzakonisht të vogël. Thërrmijat α që i kalojnë afër bërthamës përjetojnë forca të mëdha shtytëse elektrostatike (Forca e Kulombit) dhe devijojnë fort.";
-            } else {
-                info.innerHTML = "<strong>Modeli i Tomsonit (1897):</strong> Atomi imagjinohej si 'puding me rrush të thënë'. Meqenëse ngarkesa pozitive është e shpërndarë uniformisht në të gjithë vëllimin, fusha elektrike është shumë e dobët dhe të gjitha thërrmijat alfa kalojnë pa u devijuar.";
-            }
-            resetStats();
-        }
-
-        function updateRate(val) {
-            spawnRate = parseInt(val);
-        }
-
-        function togglePlay() {
-            isRunning = !isRunning;
-            document.getElementById("btnPlay").innerText = isRunning ? "Pauzo" : "Vazhdo";
-        }
-
-        function resetStats() {
-            stats = { total: 0, straight: 0, deflected: 0, back: 0 };
-            particles = [];
-            scintillations = [];
-            updateStatsUI();
-        }
-
-        function updateStatsUI() {
-            document.getElementById("cntTotal").innerText = stats.total;
-            let pStraight = stats.total ? ((stats.straight / stats.total) * 100).toFixed(1) : 0;
-            let pDeflect = stats.total ? ((stats.deflected / stats.total) * 100).toFixed(1) : 0;
-            let pBack = stats.total ? ((stats.back / stats.total) * 100).toFixed(2) : 0;
-
-            document.getElementById("cntStraight").innerText = `${stats.straight} (${pStraight}%)`;
-            document.getElementById("cntDeflected").innerText = `${stats.deflected} (${pDeflect}%)`;
-            document.getElementById("cntBack").innerText = `${stats.back} (${pBack}%)`;
-        }
-
-        // Nisja e simulimit
-        animate();
-    </script>
-</body>
-</html>
