@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulim me numrat e oksidimit-Kimi 11</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .theory-box {
+            background-color: #e8f4f8;
+            border-left: 5px solid #3498db;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .theory-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .theory-box li {
+            margin-bottom: 8px;
+        }
+        .test-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        .group-col {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .group-title {
+            text-align: center;
+            background-color: #2c3e50;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .question {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .question p {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .options label {
+            display: block;
+            margin-bottom: 8px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        .options label:hover {
+            background-color: #f0f0f0;
+        }
+        .btn-submit {
+            display: block;
+            width: 100%;
+            max-width: 400px;
+            margin: 40px auto;
+            padding: 15px;
+            background-color: #27ae60;
+            color: white;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .btn-submit:hover {
+            background-color: #2ecc71;
+        }
+        .feedback {
+            margin-top: 10px;
+            font-size: 14px;
+            display: none;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .correct-ans { background-color: #d4edda; color: #155724; }
+        .wrong-ans { background-color: #f8d7da; color: #721c24; }
+        .result-panel {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #fff3cd;
+            border-radius: 8px;
+            display: none;
+        }
+        @media (max-width: 768px) {
+            .test-container { grid-template-columns: 1fr; }
+        }
+        :root {
+            --bg-main: #f8fafc;
+            --card-bg: #ffffff;
+            --card-border: #e2e8f0;
+            --accent-a: #0ea5e9;
+            --accent-b: #1e3a8a;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --success: #059669;
+            --danger: #e11d48;
+            --warning: #b45309;
+        }
+        * { box-sizing: border-box; }
+        body { background: #f8fafc; color: var(--text-main); padding: 0; font-family: 'Inter', system-ui, sans-serif; }
+        .quiz-header { background: linear-gradient(135deg, #020617 0%, #0f172a 100%); color: #f8fafc; text-align: center; padding: 32px 20px 26px; border-bottom: 4px solid #0ea5e9; box-shadow: 0 4px 20px rgba(15, 23, 42, .12); }
+        .quiz-header-inner { max-width: 1200px; margin: 0 auto; }
+        .quiz-eyebrow { display: block; margin-bottom: 8px; color: #7dd3fc; font-size: .78rem; font-weight: 700; letter-spacing: 1.5px; }
+        .quiz-header h1 { margin: 0; color: #f8fafc; font-family: 'Playfair Display', Georgia, serif; font-size: 2rem; font-weight: 700; }
+        .quiz-header p { margin: 8px 0 0; color: #cbd5e1; font-size: .95rem; }
+        .container { max-width: 1420px; padding: 28px 24px 48px; }
+        h2 { color: var(--text-main); }
+        .theory-box { background: #ffffff; border: 1px solid var(--card-border); border-left: 4px solid var(--accent-a); color: var(--text-main); box-shadow: 0 4px 14px rgba(15, 23, 42, .05); }
+        .theory-box h2 { font-size: 1.25rem; }
+        .test-container { gap: 24px; align-items: start; }
+        .quiz-rules { grid-column: 1 / -1; margin: 0; }
+        .quiz-rules summary { cursor: pointer; color: #0f172a; font-size: 1.05rem; font-weight: 700; }
+        .quiz-rules[open] ul { margin-top: 16px; }
+        .group-col { background: var(--card-bg); border: 1px solid var(--card-border); border-top: 4px solid var(--accent-a); border-radius: 10px; padding: 22px; color: var(--text-main); box-shadow: 0 8px 24px rgba(15, 23, 42, .06); }
+        .group-col:nth-child(2) { border-top-color: var(--accent-b); }
+        .group-title { display: flex; justify-content: space-between; align-items: center; gap: 12px; background: transparent; border-bottom: 1px solid var(--card-border); border-radius: 0; padding: 0 0 16px; margin: 0 0 20px; color: #0f172a; font-size: 1.15rem; }
+        .panel-stats { display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
+        .stats-badge, .timer-badge { background: #f8fafc; border: 1px solid var(--card-border); border-radius: 6px; padding: 7px 10px; color: var(--text-muted); font-size: .86rem; white-space: nowrap; }
+        .timer-badge { color: var(--warning); border-color: #fcd34d; background: #fffbeb; font-family: 'Courier New', monospace; font-weight: 700; }
+        .timer-badge.urgent { color: var(--danger); border-color: var(--danger); animation: pulse 1s infinite; }
+        @keyframes pulse { 50% { opacity: .65; } }
+        .question-box { min-height: 126px; display: flex; flex-direction: column; justify-content: center; background: #f8fafc; border: 1px solid var(--card-border); border-radius: 8px; padding: 22px; margin-bottom: 18px; text-align: left; }
+        .question-box p { margin: 0; font-size: 1.12rem; line-height: 1.55; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .opt-btn { min-height: 54px; padding: 12px 14px; border-radius: 7px; border: 1px solid #cbd5e1; background: #ffffff; color: #1e293b; text-align: left; font-size: 1rem; cursor: pointer; transition: border-color .2s, background-color .2s, transform .2s; }
+        .opt-btn:hover:not(:disabled) { border-color: var(--accent-a); background: #f0f9ff; transform: translateY(-1px); }
+        .opt-btn:disabled { cursor: default; }
+        .opt-btn.correct { background: #dcfce7; border-color: var(--success); color: #166534; }
+        .opt-btn.wrong { background: #ffe4e6; border-color: var(--danger); color: #9f1239; }
+        .feedback { line-height: 1.55; }
+        .correct-ans { background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; }
+        .wrong-ans { background: #fff1f2; border: 1px solid #fecdd3; color: #9f1239; }
+        .btn-submit { max-width: 240px; margin: 0 auto; background: #0f172a; border: 1px solid #0f172a; }
+        .btn-submit:hover { background: #0284c7; border-color: #0284c7; }
+        .result-panel { color: var(--text-main); background: #ffffff; border: 1px solid var(--card-border); box-shadow: 0 4px 14px rgba(15, 23, 42, .05); }
+        .group-col.is-finished .question-box { border-color: var(--success); }
+        .winner-cup { display: none; margin: 16px 0; padding: 18px; border: 1px solid #fbbf24; border-radius: 8px; background: #fffbeb; color: #854d0e; text-align: center; font-size: 1.2rem; font-weight: 700; }
+        .winner-cup .cup-icon { display: block; margin-bottom: 6px; font-size: 2.6rem; }
+        @media (max-width: 1024px) { .test-container { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) {
+            .container { padding: 20px 14px; }
+            .group-col { padding: 16px; }
+            .group-title { align-items: flex-start; flex-direction: column; }
+            .panel-stats { justify-content: flex-start; }
+            .options-grid { grid-template-columns: 1fr; }
+            .quiz-header { padding: 26px 16px 22px; }
+            .quiz-header h1 { font-size: 1.55rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="quiz-header">
+    <div class="quiz-header-inner">
+        <span class="quiz-eyebrow">GJIMNAZI MILOT · KIMI 11</span>
+        <h1>Konkurs: Numrat e Oksidimit</h1>
+        <p>Kuiz paralel me 40 pyetje për secilin grup</p>
+    </div>
+</header>
+
+<div class="container">
+    <div class="test-container">
+        <details class="theory-box quiz-rules">
+            <summary>8 rregullat për përcaktimin e numrave të oksidimit</summary>
+            <ul>
+                <li><strong>Rregulli 1:</strong> Shuma e numrave të oksidimit në një molekulë neutrale është e barabartë me 0.</li>
+                <li><strong>Rregulli 2:</strong> Numri i oksidimit i elementit në gjendje të lirë është 0.</li>
+                <li><strong>Rregulli 3:</strong> Metalet e grupit IA, në përbërjet kimike, kanë n.o. = +1.</li>
+                <li><strong>Rregulli 4:</strong> Metalet e grupit IIA, në përbërjet kimike, kanë n.o. = +2.</li>
+                <li><strong>Rregulli 5:</strong> Hidrogjeni zakonisht ka n.o. = +1; në hidruret metalike ka n.o. = -1.</li>
+                <li><strong>Rregulli 6:</strong> Oksigjeni zakonisht ka n.o. = -2; në perokside ka -1, ndërsa në OF₂ ka +2.</li>
+                <li><strong>Rregulli 7:</strong> Për jonet e thjeshta, n.o. është sa ngarkesa e jonit; shuma në jonet poliatomike është sa ngarkesa e jonit.</li>
+                <li><strong>Rregulli 8:</strong> Elementet kalimtare mund të kenë dy ose më shumë numra oksidimi në përbërjet e tyre.</li>
+            </ul>
+        </details>
+        <div class="group-col" id="panel-A">
+            <div class="group-title">
+                <strong>GRUPI A</strong>
+                <div class="panel-stats">
+                    <span class="timer-badge" id="timer-badge-A">Koha <span id="timer-A">03:00</span></span>
+                    <span class="stats-badge">Pikët: <strong id="score-A">0</strong></span>
+                    <span class="stats-badge">Pyetja: <strong id="lvl-A">1</strong>/40</span>
+                </div>
+            </div>
+            <div class="question-box" id="question-A"></div>
+            <div class="winner-cup" id="cup-A" aria-live="polite"></div>
+            <div class="options-grid" id="opts-A"></div>
+            <div class="feedback" id="fb-A"></div>
+            <button class="btn-submit" id="next-A" type="button">Pyetja tjetër</button>
+        </div>
+
+        <div class="group-col" id="panel-B">
+            <div class="group-title">
+                <strong>GRUPI B</strong>
+                <div class="panel-stats">
+                    <span class="timer-badge" id="timer-badge-B">Koha <span id="timer-B">03:00</span></span>
+                    <span class="stats-badge">Pikët: <strong id="score-B">0</strong></span>
+                    <span class="stats-badge">Pyetja: <strong id="lvl-B">1</strong>/40</span>
+                </div>
+            </div>
+            <div class="question-box" id="question-B"></div>
+            <div class="winner-cup" id="cup-B" aria-live="polite"></div>
+            <div class="options-grid" id="opts-B"></div>
+            <div class="feedback" id="fb-B"></div>
+            <button class="btn-submit" id="next-B" type="button">Pyetja tjetër</button>
+        </div>
+    </div>
+
+    <div id="resultPanel" class="result-panel" aria-live="polite"></div>
+</div>
+
+<script>
+    // Të dhënat për Grupin A
+    const groupA = [
+        { q: "1. Sa është numri i oksidimit të Manganit (Mn) në KMnO₄?", opts: ["+2", "+4", "+7", "+5"], ans: 2, exp: "1(+1) + x + 4(-2) = 0 ⇒ x = +7" },
+        { q: "2. Në reaksionin Zn + 2HCl → ZnCl₂ + H₂, cili është agjenti reduktues?", opts: ["Zn", "HCl", "ZnCl₂", "H₂"], ans: 0, exp: "Zn kalon nga 0 në +2 (oksidohet, pra është agjent reduktues)." },
+        { q: "3. Në reaksionin CuO + H₂ → Cu + H₂O, cili është agjenti oksidues?", opts: ["H₂", "CuO", "Cu", "H₂O"], ans: 1, exp: "Cu në CuO kalon nga +2 në 0 (reduktohet, pra është agjent oksidues)." },
+        { q: "4. Cili nga reaksionet e mëposhtme është reaksion REDOKS?", opts: ["NaOH + HCl → NaCl + H₂O", "2Mg + O₂ → 2MgO", "BaCl₂ + H₂SO₄ → BaSO₄ + 2HCl", "AgNO₃ + NaCl → AgCl + NaNO₃"], ans: 1, exp: "Mg dhe O₂ ndryshojnë numrat e oksidimit." },
+        { q: "5. Sa është numri i oksidimit të Squfurit (S) në acidin sulfurik (H₂SO₄)?", opts: ["+4", "+6", "-2", "+2"], ans: 1, exp: "2(+1) + x + 4(-2) = 0 ⇒ x = +6" },
+        { q: "6. Sa është numri i oksidimit të Hidrogjenit në hidririn e natriumit (NaH)?", opts: ["+1", "0", "-1", "+2"], ans: 2, exp: "Me metalet alkaline, hidrogjeni merr n.o -1." },
+        { q: "7. Sa është numri i oksidimit të Azotit (N) në acidin nitrik (HNO₃)?", opts: ["+3", "+5", "-3", "+2"], ans: 1, exp: "1(+1) + x + 3(-2) = 0 ⇒ x = +5" },
+        { q: "8. Në cilën përbërje Oksigjeni shfaq numër oksidimit të ndryshëm nga -2?", opts: ["H₂O", "CO₂", "H₂O₂", "CaO"], ans: 2, exp: "Në perokside (H₂O₂), Oksigjeni ka n.o -1." },
+        { q: "9. Në reaksionin 2Na + Cl₂ → 2NaCl, cila substancë OKSIDOHET?", opts: ["Cl₂", "Na", "NaCl", "Asnjëra"], ans: 1, exp: "Na humbet elektrone dhe rrit n.o nga 0 në +1." },
+        { q: "10. Sa është numri i oksidimit të Fosforit (P) në jonin fosfat (PO₄³⁻)?", opts: ["+3", "+5", "-3", "+4"], ans: 1, exp: "x + 4(-2) = -3 ⇒ x = +5" },
+        { q: "11. Cili është agjenti reduktues në: Fe₂O₃ + 3CO → 2Fe + 3CO₂?", opts: ["Fe₂O₃", "CO", "Fe", "CO₂"], ans: 1, exp: "C në CO oksidohet nga +2 në +4, duke vepruar si agjent reduktues." },
+        { q: "12. Sa është numri i oksidimit të Karbonit (C) në metan (CH₄)?", opts: ["+4", "-4", "+2", "0"], ans: 1, exp: "x + 4(+1) = 0 ⇒ x = -4" },
+        { q: "13. Cili nga reaksionet e mëposhtme NUK është reaksion redoks?", opts: ["C + O₂ → CO₂", "2H₂O → 2H₂ + O₂", "CaCO₃ → CaO + CO₂", "Zn + CuSO₄ → ZnSO₄ + Cu"], ans: 2, exp: "Në shpërbërjen e CaCO₃ asnjë element nuk ndryshon n.o." },
+        { q: "14. Sa është numri i oksidimit të Hekurit (Fe) në Fe₂O₃?", opts: ["+2", "+3", "+6", "0"], ans: 1, exp: "2x + 3(-2) = 0 ⇒ x = +3" },
+        { q: "15. Gjatë procesit të REDUKTIMIT, atomi apo joni:", opts: ["Humbet elektrone dhe rrit N.O.", "Merr elektrone dhe ul N.O.", "Humbet protone", "Merr neutrone"], ans: 1, exp: "Reduktimi është marrja e elektroneve, që zvogëlon numrin e oksidimit." }
+    ];
+
+    // Të dhënat për Grupin B
+    const groupB = [
+        { q: "1. Sa është numri i oksidimit të Kromit (Cr) në jonin dikromat (Cr₂O₇²⁻)?", opts: ["+3", "+6", "+7", "+4"], ans: 1, exp: "2x + 7(-2) = -2 ⇒ 2x = 12 ⇒ x = +6" },
+        { q: "2. Në reaksionin 2Fe³⁺ + Sn²⁺ → 2Fe²⁺ + Sn⁴⁺, cili është agjenti reduktues?", opts: ["Fe³⁺", "Sn²⁺", "Fe²⁺", "Sn⁴⁺"], ans: 1, exp: "Sn²⁺ kalon në +4 (oksidohet, pra është agjent reduktues)." },
+        { q: "3. Në reaksionin Cl₂ + 2KBr → 2KCl + Br₂, cili është agjenti oksidues?", opts: ["KBr", "Cl₂", "KCl", "Br₂"], ans: 1, exp: "Cl₂ merr elektrone (reduktohet 0 → -1), pra është agjent oksidues." },
+        { q: "4. Cili nga reaksionet e mëposhtme është reaksion REDOKS?", opts: ["KOH + HNO₃ → KNO₃ + H₂O", "CaCl₂ + Na₂CO₃ → CaCO₃ + 2NaCl", "Fe + CuSO₄ → FeSO₄ + Cu", "SO₃ + H₂O → H₂SO₄"], ans: 2, exp: "Fe dhe Cu ndryshojnë numrat e oksidimit." },
+        { q: "5. Sa është numri i oksidimit të Klorit (Cl) në acidin perklorik (HClO₄)?", opts: ["+1", "+5", "+7", "-1"], ans: 2, exp: "1(+1) + x + 4(-2) = 0 ⇒ x = +7" },
+        { q: "6. Sa është numri i oksidimit të një elementi në gjendje të lirë atomike (p.sh. O₂ apo Fe)?", opts: ["+1", "-1", "0", "Ndryshon sipas temp."], ans: 2, exp: "Substancat e thjeshta kanë gjithmonë n.o 0." },
+        { q: "7. Sa është numri i oksidimit të Squfurit (S) në gazin sulfur hidrik (H₂S)?", opts: ["+6", "+4", "-2", "0"], ans: 2, exp: "2(+1) + x = 0 ⇒ x = -2" },
+        { q: "8. Sa është numri i oksidimit të Oksigjenit në molekulën OF₂?", opts: ["-2", "-1", "+2", "0"], ans: 2, exp: "Fluori është më elektronegativ, ndaj Oksigjeni detyrohet të marrë n.o +2." },
+        { q: "9. Në reaksionin Mg + 2HCl → MgCl₂ + H₂, cila substancë REDUKTOHET?", opts: ["Mg", "Jonet H⁺ (HCl)", "Jonet Cl⁻", "MgCl₂"], ans: 1, exp: "H⁺ merr elektrone për t'u bërë H₂ (reduktohet)." },
+        { q: "10. Sa është numri i oksidimit të Karbonit (C) në acidin oksalik (H₂C₂O₄)?", opts: ["+2", "+3", "+4", "-2"], ans: 1, exp: "2(+1) + 2x + 4(-2) = 0 ⇒ 2x = 6 ⇒ x = +3" },
+        { q: "11. Cili është agjenti oksidues në: 2H₂S + SO₂ → 3S + 2H₂O?", opts: ["H₂S", "SO₂", "S", "H₂O"], ans: 1, exp: "S në SO₂ kalon nga +4 në 0 (reduktohet, pra është agjent oksidues)." },
+        { q: "12. Sa është numri i oksidimit të Manganit (Mn) në dioksidin e manganit (MnO₂)?", opts: ["+2", "+4", "+7", "+6"], ans: 1, exp: "x + 2(-2) = 0 ⇒ x = +4" },
+        { q: "13. Cili nga reaksionet e mëposhtme NUK është reaksion redoks?", opts: ["2KClO₃ → 2KCl + 3O₂", "CH₄ + 2O₂ → CO₂ + 2H₂O", "Na₂O + H₂O → 2NaOH", "2Al + 3Cl₂ → 2AlCl₃"], ans: 2, exp: "Asnjë element nuk ndryshon n.o gjatë këtij reaksioni." },
+        { q: "14. Sa është numri i oksidimit të Bakrit (Cu) në oksidin e bakrit(I) (Cu₂O)?", opts: ["+1", "+2", "0", "+3"], ans: 0, exp: "2x + 1(-2) = 0 ⇒ 2x = 2 ⇒ x = +1" },
+        { q: "15. Gjatë procesit të OKSIDIMIT, atomi apo joni:", opts: ["Humbet elektrone dhe rrit N.O.", "Merr elektrone dhe ul N.O.", "Humbet protone", "Ruan të njëjtin N.O."], ans: 0, exp: "Oksidimi është humbja e elektroneve, që çon në rritjen e numrit të oksidimit." }
+    ];
+
+    const extraA = [
+        ["Sa është numri i oksidimit të Kromit (Cr) në K₂Cr₂O₇?", ["+3", "+6", "+7", "+2"], 1, "2(+1) + 2x + 7(-2) = 0 ⇒ x = +6."],
+        ["Sa është numri i oksidimit të Klorit (Cl) në NaClO₃?", ["+1", "+3", "+5", "+7"], 2, "(+1) + x + 3(-2) = 0 ⇒ x = +5."],
+        ["Sa është numri i oksidimit të Azotit (N) në NH₄⁺?", ["-3", "-2", "+3", "+5"], 0, "x + 4(+1) = +1 ⇒ x = -3."],
+        ["Sa është numri i oksidimit të Squfurit (S) në SO₃?", ["+2", "+4", "+6", "-2"], 2, "x + 3(-2) = 0 ⇒ x = +6."],
+        ["Sa është numri i oksidimit të Hekurit (Fe) në FeCl₂?", ["+1", "+2", "+3", "0"], 1, "x + 2(-1) = 0 ⇒ x = +2."],
+        ["Sa është numri i oksidimit të Karbonit (C) në CO?", ["+2", "+4", "-2", "0"], 0, "x + (-2) = 0 ⇒ x = +2."],
+        ["Sa është numri mesatar i oksidimit të Oksigjenit në KO₂?", ["-2", "-1", "-1/2", "+1"], 2, "(+1) + 2x = 0 ⇒ x = -1/2."],
+        ["Sa është numri i oksidimit të Manganit (Mn) në MnO₄²⁻?", ["+4", "+6", "+7", "+2"], 1, "x + 4(-2) = -2 ⇒ x = +6."],
+        ["Sa është numri i oksidimit të Fosforit (P) në H₃PO₃?", ["+1", "+3", "+5", "-3"], 1, "3(+1) + x + 3(-2) = 0 ⇒ x = +3."],
+        ["Sa është numri i oksidimit të Klorit (Cl) në ClO₂⁻?", ["+1", "+3", "+5", "+7"], 1, "x + 2(-2) = -1 ⇒ x = +3."],
+        ["Te reaksioni CuO + H₂ → Cu + H₂O, cili është agjenti oksidues?", ["H₂", "CuO", "Cu", "H₂O"], 1, "CuO reduktohet; prandaj është agjent oksidues."],
+        ["Te reaksioni Fe₂O₃ + 2Al → 2Fe + Al₂O₃, cili është agjenti reduktues?", ["Fe₂O₃", "Al", "Fe", "Al₂O₃"], 1, "Al oksidohet nga 0 në +3 dhe është agjent reduktues."],
+        ["Cili element oksidohet në reaksionin 2K + Cl₂ → 2KCl?", ["K", "Cl", "Të dy", "Asnjëri"], 0, "K kalon nga 0 në +1, pra oksidohet."],
+        ["Cili element reduktohet në reaksionin 2Na + Cl₂ → 2NaCl?", ["Na", "Cl", "Të dy", "Asnjëri"], 1, "Cl kalon nga 0 në -1, pra reduktohet."],
+        ["Sa është numri i oksidimit të Bakrit (Cu) në CuSO₄?", ["+1", "+2", "+3", "0"], 1, "Joni SO₄²⁻ ka ngarkesë -2, ndaj Cu është +2."],
+        ["Sa është numri i oksidimit të Azotit (N) në NO₂?", ["+2", "+3", "+4", "+5"], 2, "x + 2(-2) = 0 ⇒ x = +4."],
+        ["Sa është numri i oksidimit të Hekurit (Fe) në Fe₃O₄, mesatarisht?", ["+2", "+8/3", "+3", "+4"], 1, "3x + 4(-2) = 0 ⇒ x = +8/3 (përzierje Fe²⁺/Fe³⁺)."],
+        ["Sa është numri i oksidimit të Bromit (Br) në KBrO₃?", ["+1", "+3", "+5", "+7"], 2, "(+1) + x + 3(-2) = 0 ⇒ x = +5."],
+        ["Sa është numri i oksidimit të Kromit (Cr) në Cr₂O₃?", ["+2", "+3", "+6", "0"], 1, "2x + 3(-2) = 0 ⇒ x = +3."],
+        ["Cili është produkti i reduktimit të jonit Fe³⁺ pas marrjes së një elektroni?", ["Fe⁴⁺", "Fe²⁺", "Fe", "Fe⁻"], 1, "Fe³⁺ + e⁻ → Fe²⁺."],
+        ["Cili është numri i oksidimit të Karbonit (C) në CO₃²⁻?", ["+2", "+3", "+4", "-4"], 2, "x + 3(-2) = -2 ⇒ x = +4."],
+        ["Sa është numri i oksidimit të Sulfurit (S) në SO₂?", ["+2", "+4", "+6", "-2"], 1, "x + 2(-2) = 0 ⇒ x = +4."],
+        ["Në reaksionin Zn + Cu²⁺ → Zn²⁺ + Cu, çfarë ndodh me Zn?", ["Reduktohet", "Oksidohet", "Nuk ndryshon", "Shpërbëhet"], 1, "Zn humbet 2 elektrone dhe oksidohet."],
+        ["Sa elektrone fiton Cl₂ kur shndërrohet në 2Cl⁻?", ["1", "2", "3", "4"], 1, "Cl₂ + 2e⁻ → 2Cl⁻; fitohen 2 elektrone gjithsej."],
+        ["Cili proces përfaqësohet nga: Fe²⁺ → Fe³⁺ + e⁻?", ["Reduktimi", "Oksidimi", "Neutralizimi", "Precipitimi"], 1, "Fe²⁺ humbet elektron, pra oksidohet."]
+    ];
+
+    const extraB = [
+        ["Sa është numri i oksidimit të Vanadiumit (V) në V₂O₅?", ["+2", "+3", "+5", "+7"], 2, "2x + 5(-2) = 0 ⇒ x = +5."],
+        ["Sa është numri i oksidimit të Klorit (Cl) në KClO₄?", ["+1", "+3", "+5", "+7"], 3, "(+1) + x + 4(-2) = 0 ⇒ x = +7."],
+        ["Sa është numri i oksidimit të Azotit (N) në NO₃⁻?", ["+3", "+4", "+5", "-3"], 2, "x + 3(-2) = -1 ⇒ x = +5."],
+        ["Sa është numri i oksidimit të Fosforit (P) në P₂O₅?", ["+3", "+4", "+5", "+6"], 2, "2x + 5(-2) = 0 ⇒ x = +5."],
+        ["Sa është numri i oksidimit të Hekurit (Fe) në FeCl₃?", ["+1", "+2", "+3", "0"], 2, "x + 3(-1) = 0 ⇒ x = +3."],
+        ["Sa është numri i oksidimit të Karbonit (C) në CO₂?", ["+2", "+3", "+4", "-4"], 2, "x + 2(-2) = 0 ⇒ x = +4."],
+        ["Sa është numri mesatar i oksidimit të Oksigjenit në O₂⁻?", ["-2", "-1", "-1/2", "0"], 2, "2x = -1 ⇒ x = -1/2."],
+        ["Sa është numri i oksidimit të Manganit (Mn) në MnO₄⁻?", ["+4", "+6", "+7", "+2"], 2, "x + 4(-2) = -1 ⇒ x = +7."],
+        ["Sa është numri i oksidimit të Fosforit (P) në H₃PO₄?", ["+1", "+3", "+5", "-3"], 2, "3(+1) + x + 4(-2) = 0 ⇒ x = +5."],
+        ["Sa është numri i oksidimit të Squfurit (S) në SO₃²⁻?", ["+2", "+4", "+6", "-2"], 1, "x + 3(-2) = -2 ⇒ x = +4."],
+        ["Te reaksioni Zn + CuSO₄ → ZnSO₄ + Cu, cili është agjenti oksidues?", ["Zn", "CuSO₄ (Cu²⁺)", "ZnSO₄", "Cu"], 1, "Cu²⁺ reduktohet në Cu dhe vepron si agjent oksidues."],
+        ["Te reaksioni 2Al + 3CuO → Al₂O₃ + 3Cu, cili është agjenti reduktues?", ["CuO", "Al", "Cu", "Al₂O₃"], 1, "Al oksidohet nga 0 në +3 dhe është agjent reduktues."],
+        ["Cili element reduktohet në reaksionin 2Mg + O₂ → 2MgO?", ["Mg", "O", "Të dy", "Asnjëri"], 1, "O kalon nga 0 në -2, pra reduktohet."],
+        ["Cili element oksidohet në reaksionin 2Ca + O₂ → 2CaO?", ["Ca", "O", "Të dy", "Asnjëri"], 0, "Ca kalon nga 0 në +2, pra oksidohet."],
+        ["Sa është numri i oksidimit të Manganit (Mn) në Mn₂O₃?", ["+2", "+3", "+4", "+6"], 1, "2x + 3(-2) = 0 ⇒ x = +3."],
+        ["Sa është numri i oksidimit të Azotit (N) në N₂O?", ["+1", "+2", "+3", "+5"], 0, "2x + (-2) = 0 ⇒ x = +1 mesatarisht."],
+        ["Sa është numri i oksidimit të Kromit (Cr) në CrO₃?", ["+2", "+3", "+6", "+7"], 2, "x + 3(-2) = 0 ⇒ x = +6."],
+        ["Sa është numri i oksidimit të Jodit (I) në KIO₃?", ["+1", "+3", "+5", "+7"], 2, "(+1) + x + 3(-2) = 0 ⇒ x = +5."],
+        ["Sa është numri i oksidimit të Bakrit (Cu) në Cu₂O?", ["+1", "+2", "+3", "0"], 0, "2x + (-2) = 0 ⇒ x = +1."],
+        ["Çfarë ndodh me jonin MnO₄⁻ kur Mn kalon nga +7 në +2?", ["Oksidohet", "Reduktohet", "Nuk ndryshon", "Neutralizohet"], 1, "Numri i oksidimit ulet, pra mangani reduktohet."],
+        ["Cili është numri i oksidimit të Karbonit (C) në HCO₃⁻?", ["+2", "+3", "+4", "-4"], 2, "(+1) + x + 3(-2) = -1 ⇒ x = +4."],
+        ["Sa është numri i oksidimit të Fosforit (P) në PO₄³⁻?", ["+3", "+4", "+5", "-3"], 2, "x + 4(-2) = -3 ⇒ x = +5."],
+        ["Në reaksionin 2Fe²⁺ + Cl₂ → 2Fe³⁺ + 2Cl⁻, cili reduktohet?", ["Fe²⁺", "Cl₂", "Të dy", "Asnjëri"], 1, "Cl₂ fiton elektrone dhe reduktohet në Cl⁻."],
+        ["Sa elektrone humbet një atom Al kur bëhet Al³⁺?", ["1", "2", "3", "4"], 2, "Al → Al³⁺ + 3e⁻; humbet 3 elektrone."],
+        ["Cili proces përfaqësohet nga: Cl₂ + 2e⁻ → 2Cl⁻?", ["Oksidimi", "Reduktimi", "Neutralizimi", "Shpërbërja"], 1, "Cl₂ merr elektrone, pra reduktohet."]
+    ];
+
+    groupA.push(...extraA.map((item, index) => ({ q: `${index + 16}. ${item[0]}`, opts: item[1], ans: item[2], exp: item[3] })));
+    groupB.push(...extraB.map((item, index) => ({ q: `${index + 16}. ${item[0]}`, opts: item[1], ans: item[2], exp: item[3] })));
+
+    const states = {
+        A: { questions: groupA, index: 0, score: 0, interval: null, seconds: 180, finished: false },
+        B: { questions: groupB, index: 0, score: 0, interval: null, seconds: 180, finished: false }
+    };
+
+    function formatTime(seconds) {
+        return `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
+    }
+
+    function stopTimer(group) {
+        clearInterval(states[group].interval);
+        states[group].interval = null;
+    }
+
+    function startTimer(group) {
+        const state = states[group];
+        stopTimer(group);
+        state.seconds = 120;
+        const badge = document.getElementById(`timer-badge-${group}`);
+        const display = document.getElementById(`timer-${group}`);
+        badge.classList.remove('urgent');
+        display.textContent = formatTime(state.seconds);
+        state.interval = setInterval(() => {
+            state.seconds -= 1;
+            display.textContent = formatTime(state.seconds);
+            if (state.seconds <= 15) badge.classList.add('urgent');
+            if (state.seconds <= 0) revealAnswer(group, true);
+        }, 1000);
+    }
+
+    function renderQuestion(group) {
+        const state = states[group];
+        const question = state.questions[state.index];
+        document.getElementById(`lvl-${group}`).textContent = state.index + 1;
+        document.getElementById(`question-${group}`).innerHTML = `<p>${question.q}</p>`;
+        document.getElementById(`fb-${group}`).style.display = 'none';
+        const options = document.getElementById(`opts-${group}`);
+        options.innerHTML = '';
+        const shuffledOptions = question.opts.map((option, index) => ({ option, correct: index === question.ans }));
+        for (let index = shuffledOptions.length - 1; index > 0; index -= 1) {
+            const randomIndex = Math.floor(Math.random() * (index + 1));
+            [shuffledOptions[index], shuffledOptions[randomIndex]] = [shuffledOptions[randomIndex], shuffledOptions[index]];
+        }
+        state.correctIndex = shuffledOptions.findIndex(option => option.correct);
+        shuffledOptions.forEach(({ option }, index) => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'opt-btn';
+            button.textContent = `${String.fromCharCode(65 + index)}) ${option}`;
+            button.addEventListener('click', () => revealAnswer(group, false, index));
+            options.appendChild(button);
+        });
+        const next = document.getElementById(`next-${group}`);
+        next.style.display = 'none';
+        next.textContent = state.index === state.questions.length - 1 ? 'Përfundo grupin' : 'Pyetja tjetër';
+        startTimer(group);
+    }
+
+    function revealAnswer(group, timedOut, selectedIndex) {
+        const state = states[group];
+        if (state.finished || !state.interval) return;
+        stopTimer(group);
+        const question = state.questions[state.index];
+        const buttons = document.querySelectorAll(`#opts-${group} .opt-btn`);
+        buttons.forEach((button, index) => {
+            button.disabled = true;
+            if (index === state.correctIndex) button.classList.add('correct');
+            else if (index === selectedIndex) button.classList.add('wrong');
+        });
+        const feedback = document.getElementById(`fb-${group}`);
+        if (!timedOut && selectedIndex === state.correctIndex) {
+            state.score += 10;
+            document.getElementById(`score-${group}`).textContent = state.score;
+            feedback.className = 'feedback correct-ans';
+            feedback.innerHTML = `<strong>Përgjigje e saktë!</strong> ${question.exp}`;
+        } else if (timedOut) {
+            feedback.className = 'feedback wrong-ans';
+            feedback.innerHTML = `<strong>Koha mbaroi.</strong> Përgjigjja e saktë: ${String.fromCharCode(65 + state.correctIndex)}. ${question.exp}`;
+        } else {
+            feedback.className = 'feedback wrong-ans';
+            feedback.innerHTML = `<strong>Përgjigje e gabuar.</strong> E saktë: ${String.fromCharCode(65 + state.correctIndex)}. ${question.exp}`;
+        }
+        feedback.style.display = 'block';
+        document.getElementById(`next-${group}`).style.display = 'block';
+    }
+
+    function finishGroup(group) {
+        const state = states[group];
+        state.finished = true;
+        stopTimer(group);
+        const percentage = Math.round((state.score / (state.questions.length * 10)) * 100);
+        document.getElementById(`question-${group}`).innerHTML = `<p>Grupi ${group} përfundoi me <strong>${state.score} / ${state.questions.length * 10} pikë</strong> (${percentage}%).</p>`;
+        document.getElementById(`opts-${group}`).innerHTML = '';
+        document.getElementById(`fb-${group}`).style.display = 'none';
+        document.getElementById(`lvl-${group}`).textContent = state.questions.length;
+        document.getElementById(`timer-${group}`).textContent = 'PËRFUNDUAR';
+        document.getElementById(`panel-${group}`).classList.add('is-finished');
+        const next = document.getElementById(`next-${group}`);
+        next.textContent = 'Rifillo grupin';
+        next.style.display = 'block';
+        const resultPanel = document.getElementById('resultPanel');
+        resultPanel.style.display = 'block';
+        if (!states.A.finished || !states.B.finished) {
+            const waitingGroup = states.A.finished ? 'B' : 'A';
+            resultPanel.textContent = `Grupi ${group} përfundoi me ${state.score} pikë. Pritet Grupi ${waitingGroup} për shpalljen e fituesit.`;
+            return;
+        }
+
+        const scoreA = states.A.score;
+        const scoreB = states.B.score;
+        if (scoreA === scoreB) {
+            resultPanel.textContent = `Barazim! Të dy grupet morën ${scoreA} pikë.`;
+            return;
+        }
+
+        const winner = scoreA > scoreB ? 'A' : 'B';
+        const winningCup = document.getElementById(`cup-${winner}`);
+        winningCup.innerHTML = '<span class="cup-icon" aria-hidden="true">🏆</span>Fitues është Grupi ' + winner + '!';
+        winningCup.style.display = 'block';
+        resultPanel.textContent = `Grupi ${winner} fiton me ${states[winner].score} pikë!`;
+    }
+
+    function advanceGroup(group) {
+        const state = states[group];
+        if (state.index === state.questions.length - 1) {
+            finishGroup(group);
+            return;
+        }
+        state.index += 1;
+        renderQuestion(group);
+    }
+
+    function restartGroup(group) {
+        const state = states[group];
+        stopTimer(group);
+        state.index = 0;
+        state.score = 0;
+        state.finished = false;
+        document.getElementById('cup-A').style.display = 'none';
+        document.getElementById('cup-B').style.display = 'none';
+        document.getElementById('resultPanel').style.display = 'none';
+        document.getElementById(`score-${group}`).textContent = '0';
+        document.getElementById(`panel-${group}`).classList.remove('is-finished');
+        renderQuestion(group);
+    }
+
+    Object.keys(states).forEach(group => {
+        document.getElementById(`next-${group}`).addEventListener('click', () => {
+            if (states[group].finished) restartGroup(group);
+            else advanceGroup(group);
+        });
+        renderQuestion(group);
+    });
+</script>
+
+</body>
+</html>
