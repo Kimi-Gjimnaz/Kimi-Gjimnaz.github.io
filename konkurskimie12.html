@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konkurs Kimie 12 - Grupi A & Grupi B</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 3px;
+        }
+        .glow-a {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.25);
+        }
+        .glow-b {
+            box-shadow: 0 0 20px rgba(236, 72, 153, 0.25);
+        }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        :root {
+            --ink: #172b43;
+            --muted-ink: #61748a;
+            --line: #d9e2ec;
+            --navy: #071426;
+            --blue: #1688c9;
+            --pink: #bb4e8a;
+            --green: #11805f;
+        }
+        * { box-sizing: border-box; }
+        html { min-height: 100%; background: #f2f6fa; }
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 0 !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            overflow-x: hidden;
+            background: #f2f6fa;
+            color: var(--ink);
+            font-family: Inter, "Segoe UI", Arial, sans-serif;
+            user-select: auto;
+        }
+        body button { font: inherit; }
+        .quiz-header {
+            position: relative;
+            z-index: 20;
+            margin: 0;
+            padding: 22px clamp(18px, 3vw, 44px);
+            border: 0;
+            border-bottom: 4px solid #0ea5e9;
+            border-radius: 0;
+            background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
+            box-shadow: 0 4px 20px rgba(15, 23, 42, .12);
+        }
+        .quiz-header > div:not(#presentation-status) {
+            width: min(1660px, 100%);
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+        }
+        .quiz-header h1 {
+            margin: 0;
+            color: #f8fbff;
+            background: none;
+            -webkit-text-fill-color: #f8fbff;
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-size: clamp(1.3rem, 2.2vw, 2rem);
+            font-weight: 800;
+            letter-spacing: .015em;
+            line-height: 1.15;
+        }
+        .quiz-header .quiz-title {
+            position: relative;
+            width: fit-content;
+            padding-bottom: 9px;
+            color: #fff !important;
+            background: none !important;
+            -webkit-text-fill-color: #fff !important;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: clamp(1.45rem, 2.5vw, 2.2rem);
+            font-weight: 700;
+            letter-spacing: .035em;
+        }
+        .quiz-header .quiz-title::after {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 68px;
+            height: 3px;
+            border-radius: 2px;
+            background: linear-gradient(90deg, #38bdf8, #0ea5e9);
+            content: "";
+        }
+        .quiz-subtitle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 6px !important;
+            color: #c4d3e1;
+            font-size: .86rem !important;
+        }
+        .quiz-subtitle span {
+            padding: 3px 7px;
+            border: 1px solid rgba(115,215,240,.25);
+            border-radius: 5px;
+            background: rgba(115,215,240,.09);
+            color: #9be3f1;
+            font-size: .72rem;
+            font-weight: 800;
+            letter-spacing: .06em;
+        }
+        .quiz-header p {
+            margin: 5px 0 0;
+            color: #c4d3e1;
+            font-size: .88rem;
+        }
+        .quiz-header .quiz-eyebrow {
+            margin: 0 0 4px;
+            color: #7dd3fc;
+            font-size: .67rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+        }
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 0;
+            border: 0;
+            border-radius: 0;
+            background: transparent;
+            box-shadow: none;
+        }
+        .header-mark {
+            display: grid;
+            width: 44px;
+            height: 44px;
+            flex: 0 0 auto;
+            place-items: center;
+            border: 1px solid rgba(125,211,252,.3);
+            border-radius: 10px;
+            background: rgba(14,165,233,.12);
+            color: #7dd3fc;
+            font-size: 1.35rem;
+        }
+        .header-controls { display: flex; align-items: center; justify-content: flex-end; gap: 9px; }
+        .group-timer {
+            min-width: 78px;
+            padding: 7px 16px;
+            border: 1px solid #f0d78f;
+            border-radius: 8px;
+            background: #fff9e9;
+            color: #8a6115;
+            font-family: "Courier New", monospace;
+            font-size: .9rem;
+            font-weight: 800;
+            text-align: center;
+            white-space: nowrap;
+        }
+        .group-timer.timer-warning { border-color: #e87979; background: #fff0f0; color: #ae303d; animation: timerPulse 1s ease-in-out infinite; }
+        @keyframes timerPulse { 50% { opacity: .58; } }
+        .header-button, #btn-start, #btn-reset {
+            min-height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            padding: 9px 13px;
+            border: 1px solid #d5e0e9;
+            border-radius: 9px;
+            background: #fff;
+            color: #243b54;
+            font-size: .8rem;
+            font-weight: 750;
+            cursor: pointer;
+            transition: transform .15s, background .15s, border-color .15s;
+        }
+        .header-button:hover, #btn-reset:hover { background: #f0f7fc; border-color: #8fb9d4; }
+        #btn-start { border-color: #09825f; background: #09825f; color: #fff; }
+        #btn-start:hover { background: #086c50; }
+        .header-button:focus-visible, #btn-start:focus-visible, #btn-reset:focus-visible, #start-overlay button:focus-visible {
+            outline: 3px solid rgba(22,136,201,.32);
+            outline-offset: 2px;
+        }
+        #presentation-status {
+            position: absolute;
+            right: 18px;
+            top: calc(100% + 8px);
+            z-index: 60;
+            max-width: min(420px, calc(100vw - 36px));
+            padding: 9px 12px;
+            border: 1px solid #f0d39a;
+            border-radius: 8px;
+            background: #fff8e8;
+            color: #704f17;
+            font-size: .8rem;
+        }
+        #quiz-container {
+            width: min(1660px, calc(100% - 44px));
+            min-height: 0;
+            position: relative;
+            margin: 20px auto 24px;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            align-items: stretch;
+            gap: 20px;
+            flex: 1;
+        }
+        .team-card {
+            min-width: 0;
+            min-height: 530px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: clamp(17px, 1.8vw, 27px);
+            border: 1px solid var(--line);
+            border-top: 4px solid #1688c9;
+            border-radius: 13px;
+            background: #fff;
+            color: var(--ink);
+            box-shadow: 0 8px 25px rgba(20, 47, 75, .07);
+        }
+        .team-card.group-b { border-top-color: #bb4e8a; }
+        .team-card.glow-a, .team-card.glow-b { box-shadow: 0 8px 25px rgba(20,47,75,.07); }
+        .team-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding-bottom: 14px;
+            margin-bottom: 17px;
+            border-bottom: 1px solid #e5ebf1;
+        }
+        .team-name { display: flex; align-items: center; gap: 10px; }
+        .team-name h2 { margin: 0; color: #146da1; font-size: 1.1rem; font-weight: 850; letter-spacing: .045em; }
+        .group-b .team-name h2 { color: #a33d76; }
+        .team-dot { width: 10px; height: 10px; border-radius: 50%; background: #1688c9; }
+        .group-b .team-dot { background: #bb4e8a; }
+        .team-stats { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 7px 13px; color: var(--muted-ink); font-size: .8rem; font-weight: 650; }
+        .team-stats strong { color: var(--ink); font-size: 1rem; }
+        .group-a #score-a { color: #146da1; }
+        .group-b #score-b { color: #a33d76; }
+        .team-progress { height: 7px; margin-bottom: 18px; overflow: hidden; border: 0; border-radius: 999px; background: #e8eef4; }
+        .team-progress > div { width: 0; height: 100%; transition: width .2s ease; }
+        #prog-bar-a { background: linear-gradient(90deg,#1688c9,#56c5de); }
+        #prog-bar-b { background: linear-gradient(90deg,#bb4e8a,#ec8fba); }
+        .question-card {
+            min-height: 136px;
+            display: flex;
+            align-items: center;
+            margin: 0 0 17px;
+            padding: clamp(17px, 2vw, 27px);
+            border: 1px solid #dce6ef;
+            border-radius: 10px;
+            background: #f7fafd;
+            box-shadow: inset 0 1px 2px rgba(23,43,67,.025);
+        }
+        .question-card p { margin: 0; color: #172b43; font-size: clamp(1rem, 1.45vw, 1.35rem); font-weight: 650; line-height: 1.5; }
+        .options-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+        .answer-option {
+            min-height: 58px;
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 11px 13px;
+            border: 1px solid #d4dfe9;
+            border-radius: 9px;
+            background: #fff;
+            color: #263b51;
+            text-align: left;
+            font-size: clamp(.85rem, 1.05vw, 1rem);
+            line-height: 1.4;
+            cursor: pointer;
+            transition: border-color .15s, background .15s, transform .15s, box-shadow .15s;
+        }
+        .answer-option:hover:not(:disabled) { border-color: #71afd2; background: #f0f8fc; transform: translateY(-1px); }
+        .answer-option:focus-visible { outline: 3px solid rgba(22,136,201,.25); outline-offset: 2px; }
+        .answer-option:disabled { cursor: default; }
+        .answer-letter {
+            width: 27px;
+            height: 27px;
+            flex: 0 0 auto;
+            display: grid;
+            place-items: center;
+            border: 1px solid #dce5ec;
+            border-radius: 7px;
+            background: #f5f8fb;
+            color: #526a80;
+            font-size: .78rem;
+            font-weight: 800;
+        }
+        .group-a .answer-option.correct { border-color: #52ae82; background: #eaf7ef; color: #155a39; }
+        .group-b .answer-option.correct { border-color: #52ae82; background: #eaf7ef; color: #155a39; }
+        .answer-option.wrong { border-color: #df7580; background: #fff0f0; color: #8d2935; }
+        .team-footer {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            padding-top: 13px;
+            margin-top: 18px;
+            border-top: 1px solid #e8edf2;
+            color: var(--muted-ink);
+            font-size: .78rem;
+        }
+        .team-footer strong { color: var(--ink); }
+        .answer-feedback {
+            min-height: 0;
+            margin-top: 12px;
+            padding: 0;
+            color: #42586e;
+            font-size: .84rem;
+            line-height: 1.5;
+        }
+        .answer-feedback:not(:empty) {
+            padding: 10px 12px;
+            border: 1px solid #dce6ef;
+            border-radius: 8px;
+            background: #f7fafd;
+        }
+        .answer-feedback.correct-feedback { border-color: #b8dfc6; background: #eff9f2; color: #205c3a; }
+        .answer-feedback.wrong-feedback { border-color: #f0c5c5; background: #fff4f3; color: #843b3b; }
+        .continue-button {
+            display: none;
+            min-height: 46px;
+            width: 100%;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            margin-top: 12px;
+            padding: 10px 16px;
+            border: 1px solid #0c7659;
+            border-radius: 9px;
+            background: #0c7659;
+            color: #fff;
+            font-size: .88rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: background .15s, transform .15s;
+        }
+        .continue-button.visible { display: inline-flex; }
+        .continue-button:hover { background: #095d47; transform: translateY(-1px); }
+        .continue-button:focus-visible { outline: 3px solid rgba(22,136,201,.28); outline-offset: 2px; }
+        .continue-button:disabled { border-color: #aab7c3; background: #aab7c3; cursor: default; transform: none; }
+        .completion-message { color: #12805e; font-weight: 800; }
+        .waiting-message { grid-column: 1 / -1; padding: 12px; border: 1px dashed #cbd7e2; border-radius: 8px; color: var(--muted-ink); font-size: .85rem; text-align: center; }
+        #start-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 30;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: clamp(20px, 4vw, 50px);
+            background: rgba(7,20,38,.91);
+            border: 1px solid rgba(255,255,255,.18);
+            border-radius: 14px;
+            text-align: center;
+            backdrop-filter: blur(8px);
+        }
+        #start-overlay.hidden, #results-modal.hidden { display: none !important; }
+        #start-overlay > div { margin-bottom: 17px; padding: 14px; border: 1px solid rgba(115,215,240,.28); border-radius: 50%; background: rgba(115,215,240,.09); }
+        #start-overlay svg { width: 55px; height: 55px; color: #73d7f0; }
+        #start-overlay h2 { margin: 0 0 9px; font-size: clamp(1.4rem, 3vw, 2.35rem); }
+        #start-overlay p { max-width: 670px; margin: 0 0 22px; font-size: clamp(.9rem, 1.3vw, 1.05rem); line-height: 1.65; }
+        #start-overlay h2 { color: #f8fbff; }
+        #start-overlay p { color: #d0dce8; }
+        #start-overlay button {
+            border: 0;
+            border-radius: 10px;
+            background: linear-gradient(110deg,#087a5a,#129a73);
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 800;
+        }
+        #results-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 22px;
+            background: rgba(7,20,38,.82);
+        }
+        #results-modal > div {
+            width: min(760px, 100%);
+            max-width: 760px;
+            padding: clamp(22px, 4vw, 42px);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            background: #fff;
+            color: var(--ink);
+            text-align: center;
+            box-shadow: 0 24px 70px rgba(0,0,0,.3);
+        }
+        #results-modal h2 { color: var(--ink); }
+        #results-modal [id^="res-score"] { color: var(--ink); }
+        #results-modal .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+        #results-modal .grid > div { padding: 18px; border: 1px solid #dce5ed; border-radius: 11px; background: #f7fafd; }
+        #results-modal .grid > div:first-child { border-color: #bfdef0; }
+        #results-modal .grid > div:last-child { border-color: #efd0e1; }
+        #results-modal h3 { margin: 0 0 8px; }
+        #results-modal p { margin-top: 0; }
+        #results-modal button { min-height: 48px; border: 0; border-radius: 9px; background: #09825f; color: white; font-weight: 750; cursor: pointer; }
+        #results-modal button:hover { background: #086c50; }
+        .header-mark svg { width: 27px; height: 27px; }
+        .timer-panel svg { width: 21px; height: 21px; color: #f6c76f; }
+        .header-controls svg { width: 17px; height: 17px; }
+        #winner-banner { padding: 13px 16px; border-radius: 10px; font-size: clamp(1rem, 2vw, 1.4rem); }
+        #quiz-container > #start-overlay { grid-column: 1 / -1; }
+        .hidden { display: none !important; }
+        .presentation-mode { background: #edf3f8; }
+        .presentation-mode .quiz-header { padding-top: 11px; padding-bottom: 11px; }
+        .presentation-mode #quiz-container { width: min(1760px, calc(100% - 34px)); margin-top: 14px; gap: 15px; }
+        .presentation-mode .team-card { min-height: 0; padding: clamp(15px, 1.5vw, 25px); }
+        .presentation-mode .question-card { min-height: clamp(120px, 19vh, 190px); }
+        .presentation-mode .answer-option { min-height: clamp(54px, 8vh, 76px); }
+        .presentation-mode #start-overlay { inset: 0; }
+        @media (min-width: 1000px) and (max-height: 850px) {
+            #quiz-container { margin-top: 14px; margin-bottom: 14px; gap: 14px; }
+            .team-card { min-height: 0; padding: 17px 20px; }
+            .team-heading { margin-bottom: 12px; padding-bottom: 10px; }
+            .team-progress { margin-bottom: 12px; }
+            .question-card { min-height: 116px; margin-bottom: 12px; padding: 17px 20px; }
+            .answer-option { min-height: 49px; padding: 8px 11px; }
+            .team-footer { margin-top: 12px; padding-top: 10px; }
+        }
+        @media (max-width: 900px) {
+            .quiz-header > div:not(#presentation-status) { align-items: flex-start; flex-direction: column; gap: 13px; }
+            .header-controls { width: 100%; flex-wrap: wrap; justify-content: flex-start; }
+            #quiz-container { width: min(700px, calc(100% - 28px)); grid-template-columns: 1fr; }
+            .team-card { min-height: 0; }
+            .team-heading { align-items: flex-start; flex-direction: column; }
+            .team-stats { justify-content: flex-start; }
+        }
+        @media (max-width: 560px) {
+            .header-controls { align-items: stretch; }
+            .header-button, #btn-start, #btn-reset { flex: 1; padding: 8px; font-size: .72rem; }
+            #quiz-container { width: calc(100% - 20px); margin-top: 10px; gap: 12px; }
+            .team-card { padding: 15px; }
+            .options-grid { grid-template-columns: 1fr; }
+            .question-card { min-height: 105px; padding: 15px; }
+            #results-modal .grid { grid-template-columns: 1fr; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between p-3 md:p-6 overflow-x-hidden select-none">
+
+    <!-- Header & Central Control Bar -->
+    <header class="glass-panel rounded-2xl p-4 mb-4 shadow-2xl relative z-20">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+            
+            <!-- Logo & Title -->
+            <div class="header-content">
+                <div class="header-mark" aria-hidden="true">
+                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                    </svg>
+                </div>
+                <div>
+                    <span class="quiz-eyebrow">GJIMNAZI MILOT · KIMI 12</span>
+                    <h1 class="quiz-title">KONKURSI I KIMISË</h1>
+                    <p class="quiz-subtitle"><span>KLASA XII</span> Sfida e dy grupeve paralele · 90 sekonda për çdo pyetje</p>
+                </div>
+            </div>
+
+            <!-- Global Action Controls -->
+            <div class="header-controls">
+                <button id="btn-start" onclick="startQuiz()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-bold rounded-xl shadow-lg transition-all flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
+                    Fillo Konkursin
+                </button>
+                <button id="btn-reset" onclick="resetQuiz()" class="px-4 py-2.5 bg-slate-700 hover:bg-slate-600 active:scale-95 text-slate-200 font-semibold rounded-xl shadow transition-all flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                    Rifillo
+                </button>
+                <button id="btn-present" class="header-button" type="button" aria-pressed="false">⛶ Pamja projektor</button>
+            </div>
+            <div id="presentation-status" role="status" aria-live="polite" hidden></div>
+
+        </div>
+    </header>
+
+    <!-- Main Split-Screen Layout for Group A and Group B -->
+    <main id="quiz-container" class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 flex-grow relative">
+        
+        <!-- Overlay before start -->
+        <div id="start-overlay" class="absolute inset-0 bg-slate-950/85 backdrop-blur-md z-30 rounded-2xl flex flex-col items-center justify-center p-6 text-center border border-slate-800">
+            <div class="p-4 bg-blue-600/20 rounded-full mb-4 border border-blue-500/30">
+                <svg class="w-16 h-16 text-blue-400 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                </svg>
+            </div>
+            <h2 class="text-3xl font-extrabold text-white mb-2">Gati për Konkursin e Kimisë?</h2>
+            <p class="text-slate-300 max-w-lg mb-6 text-sm leading-relaxed">
+                Bëhet sfidë direkte ndërmjet <b>Grupit A</b> dhe <b>Grupit B</b>. Secili grup ka 30 pyetje unike. 
+                Për çdo pyetje, secili grup ka <b>90 sekonda</b> për të zgjedhur përgjigjen.
+            </p>
+            <button onclick="startQuiz()" class="px-8 py-4 bg-gradient-to-r from-blue-600 to-pink-600 hover:from-blue-500 hover:to-pink-500 text-white text-lg font-black rounded-2xl shadow-xl transform hover:scale-105 transition-all">
+                NIS KONKURSIN · 90 SEKONDA PËR PYETJE
+            </button>
+        </div>
+
+        <!-- GROUP A PANEL -->
+        <section class="glass-panel glow-a team-card group-a relative">
+            <div>
+                <!-- Group A Header -->
+                <div class="team-heading">
+                    <div class="team-name">
+                        <span class="team-dot" aria-hidden="true"></span>
+                        <h2>GRUPI A</h2>
+                    </div>
+                    <div class="team-stats">
+                        <span class="group-timer" id="timer-a" role="timer" aria-label="Koha: 90 sekonda për pyetjen e Grupit A">90.0 s</span>
+                        <span class="text-slate-400">Pikët: <strong id="score-a" class="text-blue-400 text-lg font-extrabold">0</strong></span>
+                        <span class="text-slate-400">Pyetja: <strong id="prog-num-a" class="text-slate-200">1</strong>/30</span>
+                    </div>
+                </div>
+
+                <!-- Progress Bar A -->
+                <div class="team-progress" aria-label="Përparimi i Grupit A">
+                    <div id="prog-bar-a" class="bg-gradient-to-r from-blue-600 to-cyan-400 h-full w-0 transition-all duration-300"></div>
+                </div>
+
+                <!-- Question A Box -->
+                <div class="question-card">
+                    <p id="q-text-a">
+                        Kliko "Fillo Konkursin" për të shfaqur pyetjet e Grupit A.
+                    </p>
+                </div>
+
+                <!-- Options A Box -->
+                <div id="options-a" class="options-grid">
+                    <!-- Dynamic options generated by JS -->
+                </div>
+                <div id="feedback-a" class="answer-feedback" aria-live="polite"></div>
+                <button id="continue-a" class="continue-button" type="button">
+                    Vazhdo me pyetjen tjetër <span aria-hidden="true">→</span>
+                </button>
+            </div>
+
+            <!-- Footer Stats A -->
+            <div class="team-footer">
+                <span>Saktësia: <strong id="acc-a" class="text-slate-200">0%</strong></span>
+                <span>Përgjigjura: <strong id="ans-count-a" class="text-slate-200">0/30</strong></span>
+            </div>
+        </section>
+
+        <!-- GROUP B PANEL -->
+        <section class="glass-panel glow-b team-card group-b relative">
+            <div>
+                <!-- Group B Header -->
+                <div class="team-heading">
+                    <div class="team-name">
+                        <span class="team-dot" aria-hidden="true"></span>
+                        <h2>GRUPI B</h2>
+                    </div>
+                    <div class="team-stats">
+                        <span class="group-timer" id="timer-b" role="timer" aria-label="Koha: 90 sekonda për pyetjen e Grupit B">90.0 s</span>
+                        <span class="text-slate-400">Pikët: <strong id="score-b" class="text-pink-400 text-lg font-extrabold">0</strong></span>
+                        <span class="text-slate-400">Pyetja: <strong id="prog-num-b" class="text-slate-200">1</strong>/30</span>
+                    </div>
+                </div>
+
+                <!-- Progress Bar B -->
+                <div class="team-progress" aria-label="Përparimi i Grupit B">
+                    <div id="prog-bar-b" class="bg-gradient-to-r from-pink-600 to-rose-400 h-full w-0 transition-all duration-300"></div>
+                </div>
+
+                <!-- Question B Box -->
+                <div class="question-card">
+                    <p id="q-text-b">
+                        Kliko "Fillo Konkursin" për të shfaqur pyetjet e Grupit B.
+                    </p>
+                </div>
+
+                <!-- Options B Box -->
+                <div id="options-b" class="options-grid">
+                    <!-- Dynamic options generated by JS -->
+                </div>
+                <div id="feedback-b" class="answer-feedback" aria-live="polite"></div>
+                <button id="continue-b" class="continue-button" type="button">
+                    Vazhdo me pyetjen tjetër <span aria-hidden="true">→</span>
+                </button>
+            </div>
+
+            <!-- Footer Stats B -->
+            <div class="team-footer">
+                <span>Saktësia: <strong id="acc-b" class="text-slate-200">0%</strong></span>
+                <span>Përgjigjura: <strong id="ans-count-b" class="text-slate-200">0/30</strong></span>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal Results Window (Shown when timer finishes or quiz ends) -->
+    <div id="results-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-lg z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass-panel border border-slate-700 rounded-3xl p-6 md:p-8 max-w-2xl w-full text-center shadow-2xl relative overflow-hidden">
+            
+            <div id="winner-banner" class="py-3 px-6 rounded-2xl font-black text-xl md:text-2xl mb-6 shadow-lg uppercase tracking-wider">
+                <!-- Winner Text injected here -->
+            </div>
+
+            <h2 class="text-2xl font-bold text-slate-100 mb-6">Rezultatet Përfundimtare të Konkursit</h2>
+
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <!-- Stats Group A -->
+                <div class="bg-blue-950/40 border border-blue-500/30 rounded-2xl p-4">
+                    <h3 class="text-lg font-black text-blue-400 mb-2">GRUPI A</h3>
+                    <p class="text-3xl font-extrabold text-slate-100 mb-1" id="res-score-a">0/30</p>
+                    <p class="text-xs text-slate-400">Pikë të Sakta</p>
+                    <div class="mt-3 pt-3 border-t border-blue-900/50 text-xs text-slate-300 space-y-1">
+                        <div>Saktësia: <strong id="res-acc-a" class="text-blue-300">0%</strong></div>
+                        <div>Të përgjigjura: <strong id="res-ans-a" class="text-slate-200">0</strong></div>
+                    </div>
+                </div>
+
+                <!-- Stats Group B -->
+                <div class="bg-pink-950/40 border border-pink-500/30 rounded-2xl p-4">
+                    <h3 class="text-lg font-black text-pink-400 mb-2">GRUPI B</h3>
+                    <p class="text-3xl font-extrabold text-slate-100 mb-1" id="res-score-b">0/30</p>
+                    <p class="text-xs text-slate-400">Pikë të Sakta</p>
+                    <div class="mt-3 pt-3 border-t border-pink-900/50 text-xs text-slate-300 space-y-1">
+                        <div>Saktësia: <strong id="res-acc-b" class="text-pink-300">0%</strong></div>
+                        <div>Të përgjigjura: <strong id="res-ans-b" class="text-slate-200">0</strong></div>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="resetQuiz()" class="w-full py-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-lg rounded-xl shadow-lg transition-all">
+                Fillo një Konkurs të Ri
+            </button>
+        </div>
+    </div>
+
+    <!-- JavaScript Quiz Logic & High-Level Chemistry Question Data -->
+    <script>
+        // 30 HIGH-LEVEL CHEMISTRY 12 QUESTIONS FOR GROUP A
+        const questionsA = [
+            {
+                q: "Sa është numri i atomeve të oksigjenit në 0.25 mol Al2(SO4)3?",
+                options: ["1.50 × 10^23", "1.81 × 10^24", "3.01 × 10^23", "6.02 × 10^23"],
+                answer: 1 // index 1 = 1.81 × 10^24
+            },
+            {
+                q: "Në spektrometrinë e masës, cili proçes ndodh menjëherë pas jonizimit të kampionit?",
+                options: ["Avullimi", "Përshpejtimi në fushë elektrike", "Përkulja në fushë magnetike", "Detektimi"],
+                answer: 1
+            },
+            {
+                q: "Cili është konfigurimi elektronik i kationit Cu+ (Z=29)?",
+                options: ["[Ar] 3d10 4s1", "[Ar] 3d10", "[Ar] 3d9 4s1", "[Ar] 3d8 4s2"],
+                answer: 1
+            },
+            {
+                q: "Cila nga vetitë e mëposhtme zvogëlohet gjatë kalimit nga e majta në të djathtë në Periodën 3?",
+                options: ["Energjia e jonizimit të parë", "Elektronegativiteti", "Rrezja atomike", "Ngarkesa bërthamore efektive"],
+                answer: 2
+            },
+            {
+                q: "Një përbërje përmban 40% C, 6.7% H dhe 53.3% O sipas masës. Formula empirike e saj është:",
+                options: ["CH2O", "C2H4O2", "CHO", "C3H6O3"],
+                answer: 0
+            },
+            {
+                q: "Sa gram NaOH (M = 40 g/mol) nevojiten për të përgatitur 250 mL tretësirë me përqendrim 0.2 M?",
+                options: ["1.0 g", "2.0 g", "4.0 g", "8.0 g"],
+                answer: 1
+            },
+            {
+                q: "Cili nga oksidet e Periodës 3 ka karakter amfoter?",
+                options: ["Na2O", "MgO", "Al2O3", "SiO2"],
+                answer: 2
+            },
+            {
+                q: "Pse energjia e parë e jonizimit e Al (Z=13) është më e vogël se ajo e Mg (Z=12)?",
+                options: ["Rrezja e Al është më e madhe", "Elektroni i Al shkëputet nga nënniveli 3p", "Mg ka më shumë protone", "Al ka strukturë gjigante"],
+                answer: 1
+            },
+            {
+                q: "Cili është barazimi jonik i shkurtuar për reakcionin e neutralizimit HCl(aq) + NaOH(aq)?",
+                options: ["Na+ + Cl- → NaCl", "H+ + OH- → H2O", "HCl + OH- → H2O + Cl-", "H+ + NaOH → Na+ + H2O"],
+                answer: 1
+            },
+            {
+                q: "Nëse izotopi 35Cl ka abundancë 75% dhe 37Cl ka abundancë 25%, Ar relative e Klorit është:",
+                options: ["35.0", "35.5", "36.0", "36.5"],
+                answer: 1
+            },
+            {
+                q: "Cila nga substancat e mëposhtme të periodës 3 ka pikën më të lartë të shkrirjes?",
+                options: ["Na", "Al", "Si", "P4"],
+                answer: 2
+            },
+            {
+                q: "Sa është numri total i orbitaleve me elektron në atomin e Fosforit (Z=15) në gjendje bazë?",
+                options: ["5", "7", "9", "15"],
+                answer: 2
+            },
+            {
+                q: "Rrezja e jonit Na+ është më e vogël se rrezja e atomit Na sepse:",
+                options: ["Humbet një shtresë elektronike", "Ulet ngarkesa bërthamore", "Rritet shtytja mes elektroneve", "Shtohen neutrone"],
+                answer: 0
+            },
+            {
+                q: "Cili element i periodës 3 vepron me ujin për të dhënë një tretësirë alkaline dhe gaz hidrogjen?",
+                options: ["Na", "Si", "P", "S"],
+                answer: 0
+            },
+            {
+                q: "Sa mole gaz H2 çlirohen nga reakcioni i plotë i 2 mol Al me HCl të tepërt?",
+                options: ["1 mol", "2 mol", "3 mol", "4.5 mol"],
+                answer: 2
+            },
+            {
+                q: "Pse P4, S8 dhe Cl2 janë jopërcjellës të rrymës elektrike?",
+                options: ["Nuk kanë jone ose elektrone të lira", "Kanë lidhje metalike të forta", "Kanë strukturë gjigante kovalente", "Tretren shpejt në ujë"],
+                answer: 0
+            },
+            {
+                q: "Sa është numri i oksidimit të Fosforit në jonin PO4^(3-)?",
+                options: ["+3", "+4", "+5", "-3"],
+                answer: 2
+            },
+            {
+                q: "Cili element ka energjinë më të lartë të elektronegativitetit në sistemin periodik?",
+                options: ["Oksigjeni (O)", "Klori (Cl)", "Fluori (F)", "Neoni (Ne)"],
+                answer: 2
+            },
+            {
+                q: "Në spektrometrin e masës, përkulja e joneve varet nga:",
+                options: ["Vetëm masa", "Vetëm ngarkesa", "Raporti masë/ngarkesë (m/z)", "Sasia e kampionit"],
+                answer: 2
+            },
+            {
+                q: "Cila nga vetitë e mëposhtme karakterizon metalet kalimtare?",
+                options: ["Valencë e fiksuar", "Komponime të ngjyrosura", "Pika të ulëta shkrirjeje", "Mosveprim si katalizatorë"],
+                answer: 1
+            },
+            {
+                q: "Cili është rendi i saktë i rritjes së rrezes jonike për izoelektronikët: N3-, F-, Na+, Mg2+?",
+                options: ["Mg2+ < Na+ < F- < N3-", "N3- < F- < Na+ < Mg2+", "Na+ < Mg2+ < F- < N3-", "F- < N3- < Mg2+ < Na+"],
+                answer: 0
+            },
+            {
+                q: "Kur SiO2 vepron me NaOH të nxehtë formohet:",
+                options: ["Si(OH)4", "Na2SiO3 + H2O", "SiCl4", "SiO3 + NaH"],
+                answer: 1
+            },
+            {
+                q: "Sa gram CaCO3 nevojiten për të përftuar 4.48 L CO2 në kushte standarde (Vm = 22.4 L/mol)?",
+                options: ["10 g", "20 g", "50 g", "100 g"],
+                answer: 1
+            },
+            {
+                q: "Parimi i ndalimit i Paulit thotë se:",
+                options: ["Orbitalet mbushen me radhë energjie", "Dy elektrone në një atom s'mund të kenë 4 numra kuantikë të njëjtë", "Elektronet qëndrojnë të patrajtuara sa më shumë", "Shtresat kanë numër infinit elektronik"],
+                answer: 1
+            },
+            {
+                q: "Oksidi i Skenës SO3 kur tretet në ujë jep:",
+                options: ["H2SO3", "H2SO4", "H2S", "S + H2O"],
+                answer: 1
+            },
+            {
+                q: "Masa molare e një gazi që ka dendësi 1.43 g/L në STP është afërsisht:",
+                options: ["16 g/mol", "28 g/mol", "32 g/mol", "44 g/mol"],
+                answer: 2
+            },
+            {
+                q: "Pse pika e shkrirjes e Squfurit (S8) është më e lartë se ajo e Fosforit (P4)?",
+                options: ["Lidhjet kovalente te S8 janë më të forta", "Molekula S8 është më e madhe dhe ka forca van der Waals më të forta", "Squfuri është metaloid", "Fosfori ka më shumë elektrone"],
+                answer: 1
+            },
+            {
+                q: "Çfarë ndodh gjatë këtij reaksioni: Cl2 + 2KBr → 2KCl + Br2?",
+                options: ["Klori oksidohet", "Joni Bromur reduktohet", "Klori vepron si agjent oksidues", "Nuk ndodh reakcion redoks"],
+                answer: 2
+            },
+            {
+                q: "Sa është përqendrimi molar i joneve Cl- nëse përzihen 100 mL 0.1M NaCl me 100 mL 0.2M CaCl2?",
+                options: ["0.15 M", "0.25 M", "0.30 M", "0.50 M"],
+                answer: 1
+            },
+            {
+                q: "Energjia e tretë e jonizimit korrespondon me ekuacionin:",
+                options: ["X(g) → X3+(g) + 3e-", "X2+(g) → X3+(g) + e-", "X2+(l) → X3+(l) + e-", "X(g) + 3e- → X3-(g)"],
+                answer: 1
+            }
+        ];
+
+        // 30 HIGH-LEVEL CHEMISTRY 12 QUESTIONS FOR GROUP B
+        const questionsB = [
+            {
+                q: "Sa është numri total i elektroneve ne 0.1 mol të joni NH4+?",
+                options: ["6.02 × 10^22", "6.02 × 10^23", "6.02 × 10^24", "1.20 × 10^23"],
+                answer: 1
+            },
+            {
+                q: "Cili është konfigurimi elektronik i kationit Fe3+ (Z=26)?",
+                options: ["[Ar] 3d6 4s2", "[Ar] 3d5", "[Ar] 3d6", "[Ar] 3d3 4s2"],
+                answer: 1
+            },
+            {
+                q: "Pse energjia e parë e jonizimit e Elemntit S (Z=16) është më e ulët se ajo e P (Z=15)?",
+                options: ["P ka rreze më të madhe", "Shtytja e çiftit të elektroneve në orbitalin 3p te S", "S ka më pak protone", "P ka karakter metalik"],
+                answer: 1
+            },
+            {
+                q: "Formula molekulare e një përbërje me formulë empirike CH2O dhe masë molare 180 g/mol është:",
+                options: ["C3H6O3", "C4H8O4", "C6H12O6", "C5H10O5"],
+                answer: 2
+            },
+            {
+                q: "Cili nga oksidet e mëposhtme acidike të Periodës 3 reagon me ujë për të dhënë acidin më të fortë?",
+                options: ["SiO2", "P4O10", "SO3", "Cl2O7"],
+                answer: 3
+            },
+            {
+                q: "Çfarë mase HCl gjendet në 50 mL tretësirë 2.0 M HCl (M = 36.5 g/mol)?",
+                options: ["1.825 g", "3.65 g", "7.30 g", "36.5 g"],
+                answer: 1
+            },
+            {
+                q: "Në spektrometrinë e masës, piku me vlerën m/z më të madhe zakonisht përfaqëson:",
+                options: ["Fragmentin më të paqëndrueshëm", "Jonin molekular (M+)", "Izotopin më të lehtë", "Jonin bazë"],
+                answer: 1
+            },
+            {
+                q: "Cili element i Periodës 3 ka përcjellshmërinë elektrike më të lartë?",
+                options: ["Na", "Mg", "Al", "Si"],
+                answer: 2
+            },
+            {
+                q: "Kur Mg vepron me me avull uji të nxehtë (H2O g), produktet janë:",
+                options: ["Mg(OH)2 + H2", "MgO + H2", "MgH2 + O2", "Nuk ka reakcion"],
+                answer: 1
+            },
+            {
+                q: "Rrezja jonike e Cl- është më e madhe se rrezja atomike e Cl sepse:",
+                options: ["Shtohet një shtresë e re", "Krijohet shtytje shtesë midis elektroneve te shtresa e jashtme", "Zvogëlohet numri i protoneve", "Formohet lidhje kovalente"],
+                answer: 1
+            },
+            {
+                q: "Sa është vëllimi i gazit O2 në STP që nevojitet për djegien e plotë të 1 mol S8?",
+                options: ["22.4 L", "179.2 L", "8 L", "224 L"],
+                answer: 1
+            },
+            {
+                q: "Rregulli i Hundit përcakton se:",
+                options: ["Orbitalet me energji të barabartë mbushen fillimisht me teka elektronesh me spin paralel", "Elektronet rrotullohen vetëm orar", "Shtresa e tretë ka max 8 elektrone", "Atomi s'mund të ketë jone"],
+                answer: 0
+            },
+            {
+                q: "Cili prej gazrave të mëposhtëm formon mjedis acid kur tretet në ujë?",
+                options: ["Ar", "P4O10", "Cl2O7 / Cl2", "NH3"],
+                answer: 2
+            },
+            {
+                q: "Sa është numri i lidhjeve kovalente te molekula e Fosforit të bardhë (P4)?",
+                options: ["4", "6", "8", "12"],
+                answer: 1
+            },
+            {
+                q: "Cili element ka konfigurimin elektronik të jashtëm 3s2 3p4?",
+                options: ["Silici", "Fosfori", "Squfuri", "Klori"],
+                answer: 2
+            },
+            {
+                q: "Sa gram Klorur Natriumi (NaCl) formohen nga reakcioni i 0.5 mol Na me Cl2 të tepërt?",
+                options: ["14.6 g", "29.25 g", "58.5 g", "117 g"],
+                answer: 1
+            },
+            {
+                q: "Pse Al2O3 ka pikë shkrirjeje shumë të lartë?",
+                options: ["Ka strukturë molekulare ne rrjetë", "Ka lidhje jonike shumë të forta midis Al3+ dhe O2-", "Përmban lidhje hidrogjenore", "Është gaz në temperaturë dhome"],
+                answer: 1
+            },
+            {
+                q: "Gjatë titrimit të 25 mL 0.1M HCl me NaOH 0.1M, pika e ekuivalencës arrihet në pH:",
+                options: ["1", "4", "7", "11"],
+                answer: 2
+            },
+            {
+                q: "Elektronegativiteti është masa e aftësisë së atomit për të:",
+                options: ["Lëshuar elektrone", "Tërhequr çiftin e elektroneve të lidhjes kovalente", "Thithur rreze alfa", "Jonizuar në gaz"],
+                answer: 1
+            },
+            {
+                q: "Numri atomik Z përfaqëson:",
+                options: ["Numrin e meutroneve", "Numrin e protoneve në bërthamë", "Masan atomike", "Numrin e valencave"],
+                answer: 1
+            },
+            {
+                q: "Cila përbërje e klorit ka lidhje kovalente jopolare?",
+                options: ["HCl", "NaCl", "Cl2", "PCl3"],
+                answer: 2
+            },
+            {
+                q: "Në reakcionin: 2Al + 3Cl2 → 2AlCl3, sa mole elektrone transferohen gjithsej?",
+                options: ["2 mol", "3 mol", "6 mol", "12 mol"],
+                answer: 2
+            },
+            {
+                q: "Kombinimi i cilit oksid me ujë Krijon acidin e fuqishëm H2SO4?",
+                options: ["SO2", "SO3", "S8", "H2S"],
+                answer: 1
+            },
+            {
+                q: "Cila ngjyrë përftohet gjatë spërkatjes së tretësirës së Al3+ me hidroksid natriumi të tepërt?",
+                options: ["Tretësirë e kthjellët pa precipitat", "Precipitat i kuq", "Precipitat i verdhë", "Precipitat i zi"],
+                answer: 0
+            },
+            {
+                q: "Sa lloje nënnivelesh energjetike ekzistojnë në nivelin n = 3?",
+                options: ["1 (s)", "2 (s, p)", "3 (s, p, d)", "4 (s, p, d, f)"],
+                answer: 2
+            },
+            {
+                q: "Rritja e ngarkesës bërthamore përgjatë periodës 3 shkakton:",
+                options: ["Rritje të rrezes atomike", "Zvogëlim të tërheqjes së elektroneve", "Rritje të tërheqjes bërthamore mbi elektronet e valencës", "Rritje të vetive metalike"],
+                answer: 2
+            },
+            {
+                q: "Cili nga jometalet e mëposhtme është i lëngshëm në temperaturë dhome?",
+                options: ["Klori", "Bromi", "Jodi", "Squfuri"],
+                answer: 1
+            },
+            {
+                q: "Në përbërjen PCl5, sa elektrone rrethojnë atomin e Fosforit?",
+                options: ["8", "10", "12", "6"],
+                answer: 1
+            },
+            {
+                q: "Nëse një element X ka numër mase 80 dhe 45 neutrone, numri i tij atomik është:",
+                options: ["35", "45", "80", "125"],
+                answer: 0
+            },
+            {
+                q: "Energjia e parë e jonizimit me vlerën më të ulët në Periodën 3 i përket:",
+                options: ["Argonit (Ar)", "Klorit (Cl)", "Silicit (Si)", "Natriumit (Na)"],
+                answer: 3
+            }
+        ];
+
+        // State Variables
+        const QUESTION_TIME_MS = 90000;
+        let isRunning = false;
+        const groupTimers = { A: null, B: null };
+
+        let stateA = {
+            currentIndex: 0,
+            score: 0,
+            answeredCount: 0,
+            answers: [],
+            locked: false
+        };
+
+        let stateB = {
+            currentIndex: 0,
+            score: 0,
+            answeredCount: 0,
+            answers: [],
+            locked: false
+        };
+        let answerPositions = {
+            A: createAnswerPositions(questionsA.length),
+            B: createAnswerPositions(questionsB.length)
+        };
+
+        // DOM Elements
+        const startOverlay = document.getElementById('start-overlay');
+        const resultsModal = document.getElementById('results-modal');
+        const presentationButton = document.getElementById('btn-present');
+        const presentationStatus = document.getElementById('presentation-status');
+
+        function shuffle(items) {
+            for (let index = items.length - 1; index > 0; index -= 1) {
+                const randomIndex = Math.floor(Math.random() * (index + 1));
+                [items[index], items[randomIndex]] = [items[randomIndex], items[index]];
+            }
+            return items;
+        }
+
+        function createAnswerPositions(questionCount) {
+            const positions = [];
+            while (positions.length < questionCount) {
+                const round = shuffle([0, 1, 2, 3]);
+                if (round[0] === positions[positions.length - 1]) {
+                    const swapIndex = round.findIndex(position => position !== round[0]);
+                    [round[0], round[swapIndex]] = [round[swapIndex], round[0]];
+                }
+                positions.push(...round);
+            }
+            return positions.slice(0, questionCount);
+        }
+
+        // Initialize UI
+        function init() {
+            renderQuestion('A');
+            renderQuestion('B');
+            updateStatsUI();
+        }
+
+        // Start Quiz Engine
+        function startQuiz() {
+            if (isRunning) return;
+            
+            resetState();
+            isRunning = true;
+            startOverlay.classList.add('hidden');
+            resultsModal.classList.add('hidden');
+
+            renderQuestion('A');
+            renderQuestion('B');
+        }
+
+        function stopGroupTimer(group) {
+            window.clearInterval(groupTimers[group]);
+            groupTimers[group] = null;
+        }
+
+        function startGroupTimer(group) {
+            stopGroupTimer(group);
+            const display = document.getElementById(`timer-${group.toLowerCase()}`);
+            const startedAt = Date.now();
+            display.classList.remove('timer-warning');
+            display.textContent = '90.0 s';
+
+            groupTimers[group] = window.setInterval(() => {
+                const remainingMs = Math.max(0, QUESTION_TIME_MS - (Date.now() - startedAt));
+                const remainingSeconds = remainingMs / 1000;
+                display.textContent = `${remainingSeconds.toFixed(1)} s`;
+                display.classList.toggle('timer-warning', remainingSeconds <= 15);
+
+                if (remainingMs === 0) {
+                    stopGroupTimer(group);
+                    handleAnswer(group, null, true);
+                }
+            }, 100);
+        }
+
+        // Render Current Question for Group
+        function renderQuestion(group) {
+            stopGroupTimer(group);
+            const isA = group === 'A';
+            const questions = isA ? questionsA : questionsB;
+            const state = isA ? stateA : stateB;
+            
+            const qTextEl = document.getElementById(isA ? 'q-text-a' : 'q-text-b');
+            const optionsEl = document.getElementById(isA ? 'options-a' : 'options-b');
+            const progNumEl = document.getElementById(isA ? 'prog-num-a' : 'prog-num-b');
+            const progBarEl = document.getElementById(isA ? 'prog-bar-a' : 'prog-bar-b');
+
+            if (state.currentIndex >= questions.length) {
+                const timerDisplay = document.getElementById(`timer-${group.toLowerCase()}`);
+                timerDisplay.textContent = 'PËRFUNDUAR';
+                timerDisplay.classList.remove('timer-warning');
+                qTextEl.textContent = '✓ Grupi i përfundoi të gjitha pyetjet!';
+                qTextEl.classList.add('completion-message');
+                const waitingMessage = document.createElement('div');
+                waitingMessage.className = 'waiting-message';
+                waitingMessage.textContent = 'Pritet që grupi tjetër të përfundojë pyetjet.';
+                optionsEl.replaceChildren(waitingMessage);
+                progBarEl.style.width = '100%';
+                checkBothFinished();
+                return;
+            }
+
+            qTextEl.classList.remove('completion-message');
+            const currentQ = questions[state.currentIndex];
+            progNumEl.textContent = state.currentIndex + 1;
+            progBarEl.style.width = `${((state.currentIndex) / questions.length) * 100}%`;
+            qTextEl.textContent = `${state.currentIndex + 1}. ${currentQ.q}`;
+            const feedback = document.getElementById(`feedback-${group.toLowerCase()}`);
+            feedback.textContent = '';
+            feedback.className = 'answer-feedback';
+            const continueButton = document.getElementById(`continue-${group.toLowerCase()}`);
+            continueButton.classList.remove('visible');
+            continueButton.disabled = false;
+            continueButton.innerHTML = state.currentIndex === questions.length - 1
+                ? 'Përfundo grupin <span aria-hidden="true">→</span>'
+                : 'Vazhdo me pyetjen tjetër <span aria-hidden="true">→</span>';
+
+            optionsEl.innerHTML = '';
+
+            const correctOption = {
+                text: currentQ.options[currentQ.answer],
+                correct: true
+            };
+            const otherOptions = currentQ.options
+                .filter((_, index) => index !== currentQ.answer)
+                .map(text => ({ text, correct: false }));
+            shuffle(otherOptions);
+            const correctPosition = answerPositions[group][state.currentIndex];
+            const shuffledOptions = new Array(currentQ.options.length);
+            shuffledOptions[correctPosition] = correctOption;
+            let otherIndex = 0;
+            for (let index = 0; index < shuffledOptions.length; index += 1) {
+                if (index !== correctPosition) shuffledOptions[index] = otherOptions[otherIndex++];
+            }
+            currentQ.displayOptions = shuffledOptions;
+
+            shuffledOptions.forEach(({ text }, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'answer-option';
+                btn.disabled = !isRunning;
+                const letter = document.createElement('span');
+                letter.className = 'answer-letter';
+                letter.textContent = String.fromCharCode(65 + idx);
+                const label = document.createElement('span');
+                label.textContent = text;
+                btn.append(letter, label);
+                btn.onclick = () => handleAnswer(group, idx);
+                optionsEl.appendChild(btn);
+            });
+            state.locked = false;
+            if (isRunning) startGroupTimer(group);
+        }
+
+        // Handle Answer Click with visual feedback
+        function handleAnswer(group, optionIndex, timedOut = false) {
+            if (!isRunning) return;
+
+            const isA = group === 'A';
+            const questions = isA ? questionsA : questionsB;
+            const state = isA ? stateA : stateB;
+
+            if (state.locked || state.currentIndex >= questions.length) return;
+
+            state.locked = true;
+            stopGroupTimer(group);
+            const currentQ = questions[state.currentIndex];
+            const isCorrect = !timedOut && currentQ.displayOptions[optionIndex]?.correct === true;
+
+            if (!timedOut) state.answeredCount++;
+            if (isCorrect) {
+                state.score++;
+            }
+
+            const container = document.getElementById(isA ? 'options-a' : 'options-b');
+            const buttons = container.querySelectorAll('button');
+            buttons.forEach((button, index) => {
+                button.disabled = true;
+                if (currentQ.displayOptions[index].correct) button.classList.add('correct');
+                if (!timedOut && index === optionIndex && !isCorrect) button.classList.add('wrong');
+            });
+
+            updateStatsUI();
+
+            const feedback = document.getElementById(`feedback-${group.toLowerCase()}`);
+            const correctIndex = currentQ.displayOptions.findIndex(option => option.correct);
+            const correctLetter = String.fromCharCode(65 + correctIndex);
+            if (timedOut) {
+                feedback.textContent = `Koha mbaroi. Përgjigjja e saktë: ${correctLetter}) ${currentQ.displayOptions[correctIndex].text}`;
+                feedback.classList.add('wrong-feedback');
+            } else if (isCorrect) {
+                feedback.textContent = 'Përgjigje e saktë!';
+                feedback.classList.add('correct-feedback');
+            } else {
+                feedback.textContent = `Përgjigje e pasaktë. E saktë ishte ${correctLetter}) ${currentQ.displayOptions[correctIndex].text}`;
+                feedback.classList.add('wrong-feedback');
+            }
+            document.getElementById(`continue-${group.toLowerCase()}`).classList.add('visible');
+        }
+
+        function continueToNextQuestion(group) {
+            if (!isRunning) return;
+            const state = group === 'A' ? stateA : stateB;
+            const questions = group === 'A' ? questionsA : questionsB;
+            if (!state.locked || state.currentIndex >= questions.length) return;
+            state.currentIndex++;
+            renderQuestion(group);
+        }
+
+        // Update Stats Display
+        function updateStatsUI() {
+            document.getElementById('score-a').textContent = stateA.score;
+            document.getElementById('score-b').textContent = stateB.score;
+
+            document.getElementById('ans-count-a').textContent = `${stateA.answeredCount}/30`;
+            document.getElementById('ans-count-b').textContent = `${stateB.answeredCount}/30`;
+
+            const accA = stateA.answeredCount > 0 ? Math.round((stateA.score / stateA.answeredCount) * 100) : 0;
+            const accB = stateB.answeredCount > 0 ? Math.round((stateB.score / stateB.answeredCount) * 100) : 0;
+
+            document.getElementById('acc-a').textContent = `${accA}%`;
+            document.getElementById('acc-b').textContent = `${accB}%`;
+        }
+
+        // Check if both groups completed all 30 questions early
+        function checkBothFinished() {
+            if (stateA.currentIndex >= questionsA.length && stateB.currentIndex >= questionsB.length) {
+                finishQuiz();
+            }
+        }
+
+        // Finish Quiz and Display Winner
+        function finishQuiz() {
+            isRunning = false;
+            ['A', 'B'].forEach(group => {
+                stopGroupTimer(group);
+            });
+
+            const accA = stateA.answeredCount > 0 ? Math.round((stateA.score / stateA.answeredCount) * 100) : 0;
+            const accB = stateB.answeredCount > 0 ? Math.round((stateB.score / stateB.answeredCount) * 100) : 0;
+
+            document.getElementById('res-score-a').textContent = `${stateA.score}/30`;
+            document.getElementById('res-score-b').textContent = `${stateB.score}/30`;
+            document.getElementById('res-acc-a').textContent = `${accA}%`;
+            document.getElementById('res-acc-b').textContent = `${accB}%`;
+            document.getElementById('res-ans-a').textContent = `${stateA.answeredCount}/30`;
+            document.getElementById('res-ans-b').textContent = `${stateB.answeredCount}/30`;
+
+            const winnerBanner = document.getElementById('winner-banner');
+
+            if (stateA.score > stateB.score) {
+                winnerBanner.className = "py-3 px-6 rounded-2xl font-black text-xl md:text-2xl mb-6 shadow-lg uppercase tracking-wider bg-blue-600 text-white border border-blue-400";
+                winnerBanner.innerHTML = "🏆 GRUPI A FITOI KONKURSIN!";
+            } else if (stateB.score > stateA.score) {
+                winnerBanner.className = "py-3 px-6 rounded-2xl font-black text-xl md:text-2xl mb-6 shadow-lg uppercase tracking-wider bg-pink-600 text-white border border-pink-400";
+                winnerBanner.innerHTML = "🏆 GRUPI B FITOI KONKURSIN!";
+            } else {
+                if (accA > accB) {
+                    winnerBanner.className = "py-3 px-6 rounded-2xl font-black text-xl md:text-2xl mb-6 shadow-lg uppercase tracking-wider bg-blue-600 text-white border border-blue-400";
+                    winnerBanner.innerHTML = "🏆 GRUPI A FITOI NGA SAKTËSIA MË E LARTË!";
+                } else if (accB > accA) {
+                    winnerBanner.className = "py-3 px-6 rounded-2xl font-black text-xl md:text-2xl mb-6 shadow-lg uppercase tracking-wider bg-pink-600 text-white border border-pink-400";
+                    winnerBanner.innerHTML = "🏆 GRUPI B FITOI NGA SAKTËSIA MË E LARTË!";
+                } else {
+                    winnerBanner.className = "py-3 px-6 rounded-2xl font-black text-xl md:text-2xl mb-6 shadow-lg uppercase tracking-wider bg-amber-600 text-white border border-amber-400";
+                    winnerBanner.innerHTML = "🤝 BARAZIM I PLOTË I DY GRUPEVE!";
+                }
+            }
+
+            resultsModal.classList.remove('hidden');
+        }
+
+        // Reset All States
+        function resetState() {
+            ['A', 'B'].forEach(group => {
+                stopGroupTimer(group);
+                const display = document.getElementById(`timer-${group.toLowerCase()}`);
+                display.textContent = '90.0 s';
+                display.classList.remove('timer-warning');
+                const feedback = document.getElementById(`feedback-${group.toLowerCase()}`);
+                feedback.textContent = '';
+                feedback.className = 'answer-feedback';
+                document.getElementById(`continue-${group.toLowerCase()}`).classList.remove('visible');
+            });
+            isRunning = false;
+
+            stateA = { currentIndex: 0, score: 0, answeredCount: 0, answers: [], locked: false };
+            stateB = { currentIndex: 0, score: 0, answeredCount: 0, answers: [], locked: false };
+            answerPositions = {
+                A: createAnswerPositions(questionsA.length),
+                B: createAnswerPositions(questionsB.length)
+            };
+
+            updateStatsUI();
+        }
+
+        document.getElementById('continue-a').addEventListener('click', () => continueToNextQuestion('A'));
+        document.getElementById('continue-b').addEventListener('click', () => continueToNextQuestion('B'));
+
+        function resetQuiz() {
+            resetState();
+            resultsModal.classList.add('hidden');
+            startOverlay.classList.remove('hidden');
+            renderQuestion('A');
+            renderQuestion('B');
+        }
+
+        let enteredFullscreen = false;
+
+        async function togglePresentationMode() {
+            const entering = !document.body.classList.contains('presentation-mode');
+            presentationStatus.hidden = true;
+            if (!entering) {
+                document.body.classList.remove('presentation-mode');
+                presentationButton.setAttribute('aria-pressed', 'false');
+                presentationButton.textContent = '⛶ Pamja projektor';
+                if (document.fullscreenElement) {
+                    try {
+                        await document.exitFullscreen();
+                    } catch (error) {
+                        presentationStatus.textContent = 'Nuk u mbyll modaliteti ekran i plotë. Shtyp Esc për të dalë.';
+                        presentationStatus.hidden = false;
+                    }
+                }
+                return;
+            }
+
+            document.body.classList.add('presentation-mode');
+            presentationButton.setAttribute('aria-pressed', 'true');
+            presentationButton.textContent = 'Dil nga pamja projektor';
+            if (!document.documentElement.requestFullscreen) {
+                presentationStatus.textContent = 'Pamja projektor u aktivizua, por ky shfletues nuk mbështet ekranin e plotë.';
+                presentationStatus.hidden = false;
+                return;
+            }
+            try {
+                await document.documentElement.requestFullscreen();
+            } catch (error) {
+                presentationStatus.textContent = 'Pamja projektor u aktivizua, por shfletuesi nuk lejoi ekranin e plotë.';
+                presentationStatus.hidden = false;
+            }
+        }
+
+        presentationButton.addEventListener('click', togglePresentationMode);
+        document.addEventListener('fullscreenchange', () => {
+            if (document.fullscreenElement) {
+                enteredFullscreen = true;
+                return;
+            }
+            if (!enteredFullscreen) return;
+            enteredFullscreen = false;
+            document.body.classList.remove('presentation-mode');
+            presentationButton.setAttribute('aria-pressed', 'false');
+            presentationButton.textContent = '⛶ Pamja projektor';
+            presentationStatus.hidden = true;
+        });
+
+        // Initialize on Load
+        window.onload = init;
+    </script>
+</body>
+</html>
