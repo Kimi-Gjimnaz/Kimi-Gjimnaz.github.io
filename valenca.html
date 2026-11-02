@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Temë mësimore për valencën në kimi, me shembuj të zgjidhur, figura dhe ushtrime për klasën e 12-të.">
+  <title>Valenca në kimi | Kimia 12</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17243b;
+      --muted: #56657a;
+      --paper: #ffffff;
+      --background: #f3f6fb;
+      --blue: #2156a5;
+      --blue-soft: #eaf1ff;
+      --teal: #087f75;
+      --teal-soft: #e6f7f3;
+      --gold: #a45b08;
+      --gold-soft: #fff3dc;
+      --line: #dce4ef;
+      --shadow: 0 16px 44px rgb(22 43 75 / 8%);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: var(--background);
+      color: var(--ink);
+      font: 16px/1.65 "Segoe UI", Arial, sans-serif;
+    }
+
+    a { color: var(--blue); }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 62px 24px 58px;
+      background:
+        radial-gradient(circle at 84% 20%, rgb(101 188 208 / 22%), transparent 25%),
+        linear-gradient(125deg, #10274d, #174d7c 65%, #087f75);
+      color: white;
+    }
+
+    .hero::after {
+      position: absolute;
+      right: 7%;
+      bottom: -96px;
+      width: 250px;
+      height: 250px;
+      border: 1px solid rgb(255 255 255 / 20%);
+      border-radius: 50%;
+      content: "";
+      box-shadow: 0 0 0 32px rgb(255 255 255 / 5%), 0 0 0 68px rgb(255 255 255 / 4%);
+    }
+
+    .hero-inner, main, footer {
+      width: min(1050px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: #b8e4ed;
+      font-size: .8rem;
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 720px;
+      margin: 0;
+      font-size: clamp(2.4rem, 6vw, 4.5rem);
+      letter-spacing: -.045em;
+      line-height: 1.05;
+    }
+
+    .hero-intro {
+      max-width: 680px;
+      margin: 20px 0 0;
+      color: #e1edf8;
+      font-size: 1.12rem;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 26px;
+    }
+
+    .hero-meta span {
+      padding: 6px 12px;
+      border: 1px solid rgb(255 255 255 / 26%);
+      border-radius: 999px;
+      color: #f1f8ff;
+      font-size: .88rem;
+    }
+
+    main { padding: 30px 0 56px; }
+
+    .quick-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .quick-nav a {
+      padding: 7px 12px;
+      border-radius: 9px;
+      color: var(--ink);
+      font-size: .9rem;
+      font-weight: 650;
+      text-decoration: none;
+    }
+
+    .quick-nav a:hover, .quick-nav a:focus-visible {
+      background: var(--blue-soft);
+      outline: none;
+    }
+
+    section {
+      margin-top: 24px;
+      padding: clamp(22px, 4vw, 38px);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+      scroll-margin-top: 18px;
+    }
+
+    h2 {
+      margin: 0 0 15px;
+      font-size: clamp(1.45rem, 3vw, 2rem);
+      letter-spacing: -.025em;
+      line-height: 1.2;
+    }
+
+    h3 {
+      margin: 22px 0 8px;
+      font-size: 1.12rem;
+      line-height: 1.3;
+    }
+
+    p { margin: 9px 0; }
+    .lead { color: var(--muted); font-size: 1.04rem; }
+    .muted { color: var(--muted); }
+
+    .callout {
+      margin-top: 18px;
+      padding: 16px 18px;
+      border-left: 4px solid var(--teal);
+      border-radius: 0 12px 12px 0;
+      background: var(--teal-soft);
+    }
+
+    .callout strong { color: #075f59; }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .mini-card {
+      padding: 17px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fbfcff;
+    }
+
+    .mini-card h3 { margin: 0 0 5px; }
+    .mini-card p { color: var(--muted); font-size: .94rem; }
+    .formula { color: var(--blue); font-weight: 800; white-space: nowrap; }
+
+    .table-wrap {
+      overflow-x: auto;
+      margin-top: 18px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th, td { padding: 12px 15px; border-bottom: 1px solid var(--line); }
+    th { background: #f1f5fb; font-size: .92rem; }
+    tr:last-child td { border-bottom: 0; }
+    td:first-child { font-weight: 750; }
+
+    .figure-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    figure {
+      margin: 0;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: #fbfcff;
+    }
+
+    figure svg { display: block; width: 100%; height: auto; }
+    figcaption { margin-top: 8px; color: var(--muted); font-size: .9rem; text-align: center; }
+
+    .atom-o { fill: #dff3ef; stroke: #087f75; stroke-width: 3; }
+    .atom-h { fill: #eaf1ff; stroke: #2156a5; stroke-width: 3; }
+    .atom-c { fill: #fff0d6; stroke: #a45b08; stroke-width: 3; }
+    .atom-n { fill: #f0eaff; stroke: #6740a2; stroke-width: 3; }
+    .atom-label { fill: var(--ink); font: 700 20px "Segoe UI", Arial, sans-serif; text-anchor: middle; dominant-baseline: middle; }
+    .bond { stroke: #65748b; stroke-width: 4; stroke-linecap: round; }
+    .lone-pair { fill: #087f75; }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin: 20px 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .steps li {
+      padding: 15px;
+      border-radius: 13px;
+      background: var(--blue-soft);
+      font-size: .94rem;
+    }
+
+    .step-number {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--blue);
+      font-size: .78rem;
+      font-weight: 850;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .worked-example {
+      margin-top: 14px;
+      padding: 17px 19px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+
+    .worked-example h3 { margin: 0 0 8px; }
+    .math-line { font-weight: 750; }
+
+    .formula-board {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      margin: 20px 0;
+      padding: 20px;
+      border-radius: 16px;
+      background: var(--blue-soft);
+      font-size: clamp(1.4rem, 4vw, 2.2rem);
+      font-weight: 800;
+    }
+
+    .crossed { text-decoration: line-through; text-decoration-color: #d14b4b; text-decoration-thickness: 2px; }
+    .arrow { color: var(--teal); }
+
+    .exercise-list { padding-left: 22px; }
+    .exercise-list li { padding: 7px 0; }
+
+    details {
+      margin-top: 18px;
+      padding: 14px 17px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fbfcff;
+    }
+
+    summary { color: var(--blue); cursor: pointer; font-weight: 750; }
+    details p { margin-bottom: 0; }
+
+    .checklist {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .checklist li {
+      padding: 12px 14px;
+      border-radius: 11px;
+      background: var(--teal-soft);
+    }
+
+    .checklist li::before { margin-right: 8px; color: var(--teal); content: "✓"; font-weight: 900; }
+
+    .orbital-controls {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin: 20px 0;
+    }
+
+    .orbital-controls label { display: grid; gap: 6px; font-weight: 700; }
+
+    .orbital-controls select {
+      width: 100%;
+      min-height: 46px;
+      padding: 9px 12px;
+      border: 1px solid #b9c8da;
+      border-radius: 10px;
+      background: white;
+      color: var(--ink);
+      font: inherit;
+    }
+
+    .orbital-controls select:focus-visible {
+      outline: 3px solid rgb(33 86 165 / 25%);
+      border-color: var(--blue);
+    }
+
+    .element-summary {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 18px 0;
+      padding: 15px;
+      border-radius: 14px;
+      background: var(--blue-soft);
+    }
+
+    .element-symbol {
+      display: grid;
+      width: 58px;
+      height: 58px;
+      flex: 0 0 58px;
+      place-items: center;
+      border: 2px solid #9bb9e7;
+      border-radius: 12px;
+      background: white;
+      color: var(--blue);
+      font-size: 1.65rem;
+      font-weight: 850;
+    }
+
+    .element-summary p { margin: 2px 0; }
+
+    .orbital-configuration {
+      overflow-wrap: anywhere;
+      font-family: "Segoe UI", Arial, sans-serif;
+      font-weight: 750;
+    }
+
+    .orbital-diagram {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 12px;
+      margin: 16px 0;
+    }
+
+    .orbital-group {
+      min-width: 0;
+      padding: 12px 9px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fbfcff;
+    }
+
+    .orbital-label {
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: .83rem;
+      font-weight: 750;
+      text-align: center;
+    }
+
+    .orbital-boxes { display: flex; justify-content: center; gap: 4px; }
+
+    .orbital-box {
+      display: grid;
+      width: 29px;
+      height: 34px;
+      flex: 0 0 29px;
+      place-items: center;
+      border: 1.5px solid #8394aa;
+      border-radius: 5px;
+      background: white;
+      color: var(--blue);
+      font-size: .96rem;
+      font-weight: 850;
+      letter-spacing: -3px;
+      padding-right: 3px;
+    }
+
+    .valence-result {
+      margin-top: 18px;
+      padding: 15px 17px;
+      border: 1px solid #b9e2d9;
+      border-radius: 13px;
+      background: var(--teal-soft);
+    }
+
+    .valence-result strong { color: #075f59; }
+    .orbital-note { font-size: .93rem; }
+
+    footer {
+      padding: 0 0 36px;
+      color: var(--muted);
+      font-size: .9rem;
+      text-align: center;
+    }
+
+    @media (max-width: 720px) {
+      .hero { padding: 46px 20px; }
+      .hero-inner, main, footer { width: min(100% - 28px, 1050px); }
+      .cards, .figure-grid { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .checklist { grid-template-columns: 1fr; }
+      section { padding: 22px 18px; }
+      .orbital-controls { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 420px) {
+      .steps { grid-template-columns: 1fr; }
+      .formula-board { gap: 9px; padding: 15px 8px; }
+    }
+
+    @media print {
+      body { background: white; }
+      .hero { padding: 28px; print-color-adjust: exact; }
+      .quick-nav { display: none; }
+      section { break-inside: avoid; box-shadow: none; }
+      .hero, section, figure, .callout { print-color-adjust: exact; }
+      details > *:not(summary) { display: block; }
+      footer { padding-bottom: 0; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">Kimia · Klasa XII · Temë mësimore</p>
+      <h1>Valenca</h1>
+      <p class="hero-intro">Si e kuptojmë sa lidhje formon një atom dhe si e përdorim valencën për të shkruar formulat kimike?</p>
+      <div class="hero-meta" aria-label="Informacion mbi temën">
+        <span>Kohë e sugjeruar: 45 minuta</span>
+        <span>Koncept · Figura · Ushtrime</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <nav class="quick-nav" aria-label="Përmbajtja e mësimit">
+      <a href="#kuptimi">Kuptimi</a>
+      <a href="#valencat">Valencat e zakonshme</a>
+      <a href="#orbitalet">Orbitalet interaktive</a>
+      <a href="#figurat">Valenca në molekula</a>
+      <a href="#formulat">Shkrimi i formulave</a>
+      <a href="#ushtrime">Ushtrime</a>
+      <a href="#permbledhje">Përmbledhje</a>
+    </nav>
+
+    <section id="kuptimi">
+      <h2>1. Çfarë është valenca?</h2>
+      <p class="lead"><strong>Valenca</strong> tregon aftësinë lidhëse të një atomi: sa lidhje kimike mund të formojë ai me atome të tjera në një përbërje të caktuar.</p>
+      <p>Si njësi krahasimi përdoret hidrogjeni, të cilit i caktohet valenca <strong>I</strong>. Në formulat kimike, valenca zakonisht shënohet me numra romakë: I, II, III, IV, V, VI ose VII.</p>
+      <div class="callout">
+        <strong>Mbaj mend:</strong> Valenca është numër pa shenjë plus ose minus. Ajo nuk është e njëjtë me numrin e oksidimit, i cili mund të ketë shenjë dhe përdoret në analizën e transferimit të elektroneve.
+      </div>
+      <div class="cards">
+        <article class="mini-card">
+          <h3>Valencë e pandryshueshme</h3>
+          <p>Disa elemente shfaqin zakonisht të njëjtën valencë në përbërjet e tyre.</p>
+          <p class="formula">Na(I), Mg(II), Al(III)</p>
+        </article>
+        <article class="mini-card">
+          <h3>Valencë e ndryshueshme</h3>
+          <p>Disa elemente mund të kenë më shumë se një valencë, në varësi të përbërjes.</p>
+          <p class="formula">Fe(II) ose Fe(III)</p>
+        </article>
+        <article class="mini-card">
+          <h3>Valenca varet nga përbërja</h3>
+          <p>Vlera përcaktohet duke parë lidhjet dhe formulën e përbërjes konkrete.</p>
+          <p class="formula">S(IV) në SO₂; S(VI) në SO₃</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="valencat">
+      <h2>2. Valencat e zakonshme</h2>
+      <p class="lead">Këto vlera janë pikënisje e dobishme për të shkruar dhe lexuar shumë formula të përbërjeve inorganike.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Elementi</th><th>Simboli</th><th>Valenca tipike</th><th>Shembull</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Hidrogjeni</td><td>H</td><td>I</td><td>H₂O</td></tr>
+            <tr><td>Oksigjeni</td><td>O</td><td>II</td><td>MgO</td></tr>
+            <tr><td>Natriumi</td><td>Na</td><td>I</td><td>NaCl</td></tr>
+            <tr><td>Magnezi</td><td>Mg</td><td>II</td><td>MgCl₂</td></tr>
+            <tr><td>Alumini</td><td>Al</td><td>III</td><td>Al₂O₃</td></tr>
+            <tr><td>Karboni</td><td>C</td><td>IV</td><td>CH₄</td></tr>
+            <tr><td>Azoti</td><td>N</td><td>III, V</td><td>NH₃, N₂O₅</td></tr>
+            <tr><td>Squfuri</td><td>S</td><td>II, IV, VI</td><td>H₂S, SO₂, SO₃</td></tr>
+            <tr><td>Klori</td><td>Cl</td><td>I, III, V, VII</td><td>HCl, HClO₃</td></tr>
+            <tr><td>Hekuri</td><td>Fe</td><td>II, III</td><td>FeO, Fe₂O₃</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="muted">Tabela parambledh valencat më të përdorura në shembujt shkollorë; nuk përfshin çdo përbërje të mundshme.</p>
+    </section>
+
+    <section id="orbitalet">
+      <h2>3. Plotëso orbitalet dhe gjej valencën</h2>
+      <p class="lead">Zgjidh një element për të parë konfigurimin elektronik dhe shpërndarjen e elektroneve në orbitalet. Pastaj krahaso gjendjen normale me gjendjet e ngacmuara të modelit shkollor.</p>
+      <div class="orbital-controls">
+        <label for="element-select">Zgjidh elementin
+          <select id="element-select"></select>
+        </label>
+        <label for="state-select">Zgjidh gjendjen
+          <select id="state-select"></select>
+        </label>
+      </div>
+      <div id="orbital-output" aria-live="polite">
+        <p>Aktivizo JavaScript-in në shfletues për të përdorur plotësuesin e orbitaleve.</p>
+      </div>
+      <div class="callout orbital-note">
+        <strong>Modeli shkollor:</strong> Shigjetat tregojnë elektronet; në një orbital vendosen maksimumi dy me spine të kundërta. Për elementet e grupeve 1 dhe 2, valenca lidhet me numrin e elektroneve në orbitalin s të jashtëm (p.sh. Mg: 3s² → II). Në bllokun p, elektronet e paçiftuara ndihmojnë për të parashikuar valencën. Për disa elemente, sidomos squfurin dhe klorin, modeli i valencave të larta përdor orbitale d të periudhës së tretë. Ky është model i thjeshtuar; lidhjet reale shpjegohen më plotësisht me teorinë moderne të lidhjes kimike.
+      </div>
+    </section>
+
+    <section id="figurat">
+      <h2>4. Si duket valenca në molekula?</h2>
+      <p class="lead">Në këto skema, çdo vijë përfaqëson një lidhje të vetme kovalente. Çifti i elektroneve të përbashkëta krijon lidhjen.</p>
+      <div class="figure-grid">
+        <figure>
+          <svg viewBox="0 0 300 190" role="img" aria-labelledby="water-title water-desc">
+            <title id="water-title">Skema e molekulës së ujit</title>
+            <desc id="water-desc">Oksigjeni formon dy lidhje, nga një me secilin atom hidrogjeni, prandaj ka valencë dy.</desc>
+            <line class="bond" x1="125" y1="100" x2="72" y2="62"></line>
+            <line class="bond" x1="175" y1="100" x2="228" y2="62"></line>
+            <circle class="atom-h" cx="60" cy="52" r="25"></circle>
+            <circle class="atom-o" cx="150" cy="115" r="31"></circle>
+            <circle class="atom-h" cx="240" cy="52" r="25"></circle>
+            <text class="atom-label" x="60" y="52">H</text>
+            <text class="atom-label" x="150" y="115">O</text>
+            <text class="atom-label" x="240" y="52">H</text>
+            <circle class="lone-pair" cx="140" cy="65" r="3.5"></circle><circle class="lone-pair" cx="151" cy="65" r="3.5"></circle>
+            <circle class="lone-pair" cx="140" cy="165" r="3.5"></circle><circle class="lone-pair" cx="151" cy="165" r="3.5"></circle>
+          </svg>
+          <figcaption><strong>H₂O:</strong> O ka valencë II; çdo H ka valencë I.</figcaption>
+        </figure>
+
+        <figure>
+          <svg viewBox="0 0 300 190" role="img" aria-labelledby="ammonia-title ammonia-desc">
+            <title id="ammonia-title">Skema e molekulës së amoniakut</title>
+            <desc id="ammonia-desc">Azoti formon tri lidhje me tri atome hidrogjeni, prandaj ka valencë tre.</desc>
+            <line class="bond" x1="150" y1="80" x2="150" y2="38"></line>
+            <line class="bond" x1="131" y1="112" x2="91" y2="142"></line>
+            <line class="bond" x1="169" y1="112" x2="209" y2="142"></line>
+            <circle class="atom-n" cx="150" cy="95" r="29"></circle>
+            <circle class="atom-h" cx="150" cy="28" r="22"></circle>
+            <circle class="atom-h" cx="77" cy="152" r="22"></circle>
+            <circle class="atom-h" cx="223" cy="152" r="22"></circle>
+            <text class="atom-label" x="150" y="95">N</text>
+            <text class="atom-label" x="150" y="28">H</text>
+            <text class="atom-label" x="77" y="152">H</text>
+            <text class="atom-label" x="223" y="152">H</text>
+            <circle class="lone-pair" cx="145" cy="135" r="3.5"></circle><circle class="lone-pair" cx="156" cy="135" r="3.5"></circle>
+          </svg>
+          <figcaption><strong>NH₃:</strong> N ka valencë III; çdo H ka valencë I.</figcaption>
+        </figure>
+
+        <figure>
+          <svg viewBox="0 0 300 190" role="img" aria-labelledby="methane-title methane-desc">
+            <title id="methane-title">Skema e molekulës së metanit</title>
+            <desc id="methane-desc">Karboni formon katër lidhje me katër atome hidrogjeni, prandaj ka valencë katër.</desc>
+            <line class="bond" x1="150" y1="72" x2="150" y2="32"></line>
+            <line class="bond" x1="125" y1="95" x2="82" y2="95"></line>
+            <line class="bond" x1="175" y1="95" x2="218" y2="95"></line>
+            <line class="bond" x1="150" y1="118" x2="150" y2="158"></line>
+            <circle class="atom-c" cx="150" cy="95" r="28"></circle>
+            <circle class="atom-h" cx="150" cy="22" r="21"></circle>
+            <circle class="atom-h" cx="70" cy="95" r="21"></circle>
+            <circle class="atom-h" cx="230" cy="95" r="21"></circle>
+            <circle class="atom-h" cx="150" cy="168" r="21"></circle>
+            <text class="atom-label" x="150" y="95">C</text>
+            <text class="atom-label" x="150" y="22">H</text>
+            <text class="atom-label" x="70" y="95">H</text>
+            <text class="atom-label" x="230" y="95">H</text>
+            <text class="atom-label" x="150" y="168">H</text>
+          </svg>
+          <figcaption><strong>CH₄:</strong> C ka valencë IV; çdo H ka valencë I.</figcaption>
+        </figure>
+      </div>
+      <div class="callout">
+        <strong>Leximi i figurave:</strong> Numëro lidhjet e atomit në qendër. Oksigjeni ka dy, azoti tri dhe karboni katër lidhje në këta shembuj, pra valencat përkatëse janë II, III dhe IV.
+      </div>
+    </section>
+
+    <section id="formulat">
+      <h2>5. Si shkruhet formula nga valencat?</h2>
+      <p>Për një përbërje të formuar nga dy elemente, mund të përdorim metodën e kryqëzimit. Numri i valencës së një elementi bëhet indeks për elementin tjetër.</p>
+      <ol class="steps">
+        <li><span class="step-number">Hapi 1</span>Shkruaj simbolet e elementeve pranë njëri-tjetrit.</li>
+        <li><span class="step-number">Hapi 2</span>Vendos valencën e secilit element sipër simbolit.</li>
+        <li><span class="step-number">Hapi 3</span>Kryqëzo valencat për t'i kthyer në indekse.</li>
+        <li><span class="step-number">Hapi 4</span>Thjeshto indekset në raportin më të vogël të plotë.</li>
+      </ol>
+
+      <div class="worked-example">
+        <h3>Shembulli 1: oksidi i aluminit</h3>
+        <p>Al ka valencë III dhe O ka valencë II. Kryqëzimi jep formulën <strong>Al₂O₃</strong>.</p>
+        <div class="formula-board" aria-label="Al me valencë tre dhe O me valencë dy japin Al dy O tre">
+          <span>Al<sup>III</sup> O<sup>II</sup></span><span class="arrow" aria-hidden="true">→</span><span>Al₂O₃</span>
+        </div>
+        <p>Kontrolli: 2 × III = 6 dhe 3 × II = 6. Valencat e përgjithshme përputhen.</p>
+      </div>
+
+      <div class="worked-example">
+        <h3>Shembulli 2: kloruri i kalciumit</h3>
+        <p>Ca ka valencë II dhe Cl ka valencë I. Pas kryqëzimit, formula është <strong>CaCl₂</strong>.</p>
+        <p class="math-line">Ca<sup>II</sup> + Cl<sup>I</sup> → CaCl₂</p>
+        <p>Një atom Ca lidhet me dy atome Cl: 1 × II = 2 × I.</p>
+      </div>
+
+      <div class="worked-example">
+        <h3>Shembulli 3: raporti thjeshtohet</h3>
+        <p>Për karbonin me valencë IV dhe oksigjenin me valencë II, kryqëzimi fillestar jep C₂O₄. Indekset 2 dhe 4 pjesëtohen me 2, prandaj formula empirike më e thjeshtë është <strong>CO₂</strong>.</p>
+        <div class="formula-board" aria-label="C dy O katër thjeshtohet në C O dy">
+          <span>C₂O₄</span><span class="arrow" aria-hidden="true">→</span><span class="crossed">C₂O₄</span><span class="arrow" aria-hidden="true">→</span><span>CO₂</span>
+        </div>
+        <p class="muted">Indeksi 1 nuk shkruhet. Formula empirike tregon raportin më të thjeshtë të atomeve.</p>
+      </div>
+
+      <div class="callout">
+        <strong>Kujdes:</strong> Metoda e kryqëzimit është ndihmë për të gjetur raportin e atomeve në formula të thjeshta binare. Për jone poliatomike, grupe si SO₄ përdoren me kllapa kur indeksi vlen për të gjithë grupin, p.sh. Al₂(SO₄)₃.
+      </div>
+    </section>
+
+    <section id="ushtrime">
+      <h2>6. Ushtrime për të provuar veten</h2>
+      <p>Shkruaj formulat duke përdorur valencat e dhëna. Mos harro të kontrollosh nëse indekset mund të thjeshtohen.</p>
+      <ol class="exercise-list">
+        <li>Kaliumi K(I) dhe oksigjeni O(II).</li>
+        <li>Magnezi Mg(II) dhe klori Cl(I).</li>
+        <li>Alumini Al(III) dhe squfuri S(II).</li>
+        <li>Karboni C(IV) dhe hidrogjeni H(I).</li>
+        <li>Azoti N(V) dhe oksigjeni O(II).</li>
+      </ol>
+      <details>
+        <summary>Shfaq përgjigjet dhe kontrollin</summary>
+        <p><strong>1.</strong> K₂O: 2 × I = II. <strong>2.</strong> MgCl₂: II = 2 × I. <strong>3.</strong> Al₂S₃: 2 × III = 3 × II. <strong>4.</strong> CH₄: IV = 4 × I. <strong>5.</strong> N₂O₅: 2 × V = 5 × II.</p>
+      </details>
+    </section>
+
+    <section id="permbledhje">
+      <h2>7. Përmbledhje e mësimit</h2>
+      <ul class="checklist">
+        <li>Valenca tregon aftësinë lidhëse të atomit.</li>
+        <li>Shënohet zakonisht me numra romakë dhe pa shenjë.</li>
+        <li>Një element mund të ketë valencë të pandryshueshme ose të ndryshueshme.</li>
+        <li>Valencat mund të kryqëzohen për të gjetur indekset.</li>
+        <li>Indekset thjeshtohen kur kanë faktor të përbashkët.</li>
+        <li>Formula kontrollohet duke krahasuar valencat e përgjithshme.</li>
+      </ul>
+      <div class="callout">
+        <strong>Pyetja kryesore:</strong> Në formulën Fe₂O₃, nëse oksigjeni ka valencë II, çfarë valence ka hekuri? <strong>Përgjigjja:</strong> III, sepse 2 × III = 3 × II.
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Temë mësimore për përsëritje dhe punë në klasë · Kimia, klasa XII
+  </footer>
+  <script>
+    (function () {
+      "use strict";
+
+      const elements = [
+        ["Hidrogjeni", "H"], ["Heliumi", "He"], ["Litiumi", "Li"], ["Beriliumi", "Be"],
+        ["Bori", "B"], ["Karboni", "C"], ["Azoti", "N"], ["Oksigjeni", "O"],
+        ["Fluori", "F"], ["Neoni", "Ne"], ["Natriumi", "Na"], ["Magnezi", "Mg"],
+        ["Alumini", "Al"], ["Silici", "Si"], ["Fosfori", "P"], ["Squfuri", "S"],
+        ["Klori", "Cl"], ["Argoni", "Ar"], ["Kaliumi", "K"], ["Kalciumi", "Ca"],
+        ["Skandiumi", "Sc"], ["Titani", "Ti"], ["Vanadiumi", "V"], ["Kromi", "Cr"],
+        ["Mangani", "Mn"], ["Hekuri", "Fe"], ["Kobalti", "Co"], ["Nikeli", "Ni"],
+        ["Bakri", "Cu"], ["Zinku", "Zn"], ["Galliumi", "Ga"], ["Germaniumi", "Ge"],
+        ["Arseniku", "As"], ["Seleni", "Se"], ["Bromi", "Br"], ["Kriptoni", "Kr"]
+      ];
+      const orbitals = [
+        ["1s", 2], ["2s", 2], ["2p", 6], ["3s", 2], ["3p", 6],
+        ["4s", 2], ["3d", 10], ["4p", 6]
+      ];
+      const symbolToAtomicNumber = Object.create(null);
+      const excitedStates = {
+        B: [{ label: "Ngacmuar: 2s → 2p (valenca III)", valence: 3, changes: { "2s": 1, "2p": 2 } }],
+        C: [{ label: "Ngacmuar: 2s → 2p (valenca IV)", valence: 4, changes: { "2s": 1, "2p": 3 } }],
+        Al: [{ label: "Ngacmuar: 3s → 3p (valenca III)", valence: 3, changes: { "3s": 1, "3p": 2 } }],
+        Si: [{ label: "Ngacmuar: 3s → 3p (valenca IV)", valence: 4, changes: { "3s": 1, "3p": 3 } }],
+        P: [{ label: "Ngacmuar: 3s → 3d (valenca V)", valence: 5, changes: { "3s": 1, "3p": 3, "3d": 1 } }],
+        S: [
+          { label: "Ngacmuar I: valenca IV", valence: 4, changes: { "3p": 3, "3d": 1 } },
+          { label: "Ngacmuar II: valenca VI", valence: 6, changes: { "3s": 1, "3p": 3, "3d": 2 } }
+        ],
+        Cl: [
+          { label: "Ngacmuar I: valenca III", valence: 3, changes: { "3p": 4, "3d": 1 } },
+          { label: "Ngacmuar II: valenca V", valence: 5, changes: { "3p": 3, "3d": 2 } },
+          { label: "Ngacmuar III: valenca VII", valence: 7, changes: { "3s": 1, "3p": 3, "3d": 3 } }
+        ],
+        Ga: [{ label: "Ngacmuar: 4s → 4p (valenca III)", valence: 3, changes: { "4s": 1, "4p": 2 } }],
+        Ge: [{ label: "Ngacmuar: 4s → 4p (valenca IV)", valence: 4, changes: { "4s": 1, "4p": 3 } }],
+        As: [{ label: "Ngacmuar: 4s → 4d (valenca V)", valence: 5, changes: { "4s": 1, "4p": 3, "4d": 1 } }],
+        Se: [
+          { label: "Ngacmuar I: valenca IV", valence: 4, changes: { "4p": 3, "4d": 1 } },
+          { label: "Ngacmuar II: valenca VI", valence: 6, changes: { "4s": 1, "4p": 3, "4d": 2 } }
+        ],
+        Br: [
+          { label: "Ngacmuar I: valenca III", valence: 3, changes: { "4p": 4, "4d": 1 } },
+          { label: "Ngacmuar II: valenca V", valence: 5, changes: { "4p": 3, "4d": 2 } },
+          { label: "Ngacmuar III: valenca VII", valence: 7, changes: { "4s": 1, "4p": 3, "4d": 3 } }
+        ]
+      };
+
+      const elementSelect = document.getElementById("element-select");
+      const stateSelect = document.getElementById("state-select");
+      const output = document.getElementById("orbital-output");
+      if (!elementSelect || !stateSelect || !output) return;
+
+      elements.forEach(function (element, index) {
+        const atomicNumber = index + 1;
+        const option = document.createElement("option");
+        option.value = element[1];
+        option.textContent = atomicNumber + " · " + element[0] + " (" + element[1] + ")";
+        elementSelect.appendChild(option);
+        symbolToAtomicNumber[element[1]] = atomicNumber;
+      });
+      elementSelect.value = "C";
+
+      function groundConfiguration(atomicNumber) {
+        const configuration = Object.create(null);
+        let remaining = atomicNumber;
+        orbitals.forEach(function (orbital) {
+          const electrons = Math.min(remaining, orbital[1]);
+          configuration[orbital[0]] = electrons;
+          remaining -= electrons;
+        });
+        if (atomicNumber === 24) {
+          configuration["4s"] = 1;
+          configuration["3d"] = 5;
+        } else if (atomicNumber === 29) {
+          configuration["4s"] = 1;
+          configuration["3d"] = 10;
+        }
+        return configuration;
+      }
+
+      function shellNumber(orbital) {
+        return Number(orbital.charAt(0));
+      }
+
+      function unpairedCount(electrons, capacity) {
+        const orbitalsInSubshell = capacity === 2 ? 1 : capacity === 6 ? 3 : 5;
+        return Math.min(electrons, 2 * orbitalsInSubshell - electrons);
+      }
+
+      function formatConfiguration(configuration) {
+        return orbitals.concat([["3d", 10], ["4d", 10]])
+          .filter(function (orbital, index, list) {
+            return configuration[orbital[0]] > 0 &&
+              list.findIndex(function (candidate) { return candidate[0] === orbital[0]; }) === index;
+          })
+          .map(function (orbital) { return orbital[0] + "<sup>" + configuration[orbital[0]] + "</sup>"; })
+          .join(" ");
+      }
+
+      function orbitalDiagram(configuration) {
+        const displayedOrbitals = orbitals.concat([["4d", 10]]);
+        return displayedOrbitals.filter(function (orbital) {
+          return configuration[orbital[0]] !== undefined;
+        }).map(function (orbital) {
+          const name = orbital[0];
+          const capacity = orbital[1];
+          const electrons = configuration[name];
+          const boxCount = capacity === 2 ? 1 : capacity === 6 ? 3 : 5;
+          const boxes = [];
+          for (let box = 0; box < boxCount; box += 1) {
+            let arrow = "";
+            if (electrons > box) arrow = "↑";
+            if (electrons > boxCount + box) arrow = "↑↓";
+            boxes.push('<span class="orbital-box" aria-label="orbital ' + name + '">' + (arrow || "&nbsp;") + "</span>");
+          }
+          return '<div class="orbital-group"><div class="orbital-label">' + name +
+            ' (' + electrons + 'e⁻)</div><div class="orbital-boxes">' + boxes.join("") + "</div></div>";
+        }).join("");
+      }
+
+      function normalValence(atomicNumber, configuration) {
+        if (atomicNumber >= 21 && atomicNumber <= 29) return null;
+        if (atomicNumber === 30) return 2;
+        if ([2, 10, 18, 36].indexOf(atomicNumber) !== -1) return 0;
+        if ([1, 3, 11, 19].indexOf(atomicNumber) !== -1) return 1;
+        if ([4, 12, 20].indexOf(atomicNumber) !== -1) return 2;
+        const valenceShell = Math.max.apply(null, Object.keys(configuration).map(shellNumber));
+        return orbitals.reduce(function (total, orbital) {
+          return shellNumber(orbital[0]) === valenceShell &&
+            (orbital[0].endsWith("s") || orbital[0].endsWith("p"))
+            ? total + unpairedCount(configuration[orbital[0]] || 0, orbital[1])
+            : total;
+        }, 0);
+      }
+
+      function populateStates() {
+        const symbol = elementSelect.value;
+        const states = excitedStates[symbol] || [];
+        stateSelect.innerHTML = "";
+        const normalOption = document.createElement("option");
+        normalOption.value = "normal";
+        normalOption.textContent = "Gjendja normale";
+        stateSelect.appendChild(normalOption);
+        states.forEach(function (state, index) {
+          const option = document.createElement("option");
+          option.value = String(index);
+          option.textContent = state.label;
+          stateSelect.appendChild(option);
+        });
+      }
+
+      function render() {
+        const symbol = elementSelect.value;
+        const atomicNumber = symbolToAtomicNumber[symbol];
+        const configuration = groundConfiguration(atomicNumber);
+        const states = excitedStates[symbol] || [];
+        let selectedState = null;
+        if (stateSelect.value !== "normal" && states[Number(stateSelect.value)]) {
+          selectedState = states[Number(stateSelect.value)];
+          Object.keys(selectedState.changes).forEach(function (orbital) {
+            configuration[orbital] = selectedState.changes[orbital];
+          });
+        }
+
+        const element = elements[atomicNumber - 1];
+        const valence = selectedState
+          ? selectedState.valence
+          : normalValence(atomicNumber, configuration);
+        const valenceLabel = valence === 0
+          ? "0 (shtresë e plotë)"
+          : valence + " (numri romak " + ["", "I", "II", "III", "IV", "V", "VI", "VII"][valence] + ")";
+        const unpaired = Object.keys(configuration).reduce(function (total, orbital) {
+          const capacity = orbital.endsWith("s") ? 2 : orbital.endsWith("p") ? 6 : 10;
+          return total + unpairedCount(configuration[orbital], capacity);
+        }, 0);
+        const isTransitionMetal = atomicNumber >= 21 && atomicNumber <= 30;
+        const valenceText = isTransitionMetal
+          ? "Nuk përcaktohet me një numër të vetëm nga diagrami; metalet kalimtare mund të kenë disa valenca."
+          : "Valenca në modelin shkollor: " + valenceLabel;
+        const transitionNote = isTransitionMetal
+          ? "<p class=\"muted\">Për këtë element, diagrami paraqet konfigurimin elektronik; valencat varen nga përbërja. Shembull: Fe shfaq zakonisht valencat II dhe III.</p>"
+          : "";
+        const stateNote = !selectedState && states.length
+          ? "<p class=\"muted\">Në gjendjen normale numërohen elektronet e paçiftuara sipas modelit shkollor; zgjidh një gjendje të ngacmuar për të parë valencat e tjera.</p>"
+          : "";
+        const noExcitedStateNote = !selectedState && !states.length && !isTransitionMetal
+          ? "<p class=\"muted\">Për këtë element paraqitet gjendja normale; mjeti nuk paracakton gjendje të ngacmuar.</p>"
+          : "";
+
+        output.innerHTML =
+          '<div class="element-summary"><div class="element-symbol">' + symbol +
+          '</div><div><p><strong>' + element[0] + "</strong> · Numri atomik: " + atomicNumber +
+          '</p><p class="orbital-configuration">Konfigurimi: ' + formatConfiguration(configuration) +
+          "</p></div></div>" +
+          '<div class="orbital-diagram" aria-label="Diagrami i orbitaleve">' + orbitalDiagram(configuration) + "</div>" +
+          '<div class="valence-result"><strong>' + valenceText + "</strong><br>" +
+          "Elektrone të paçiftuara në diagram: " + unpaired + ".</div>" + transitionNote + stateNote;
+        if (noExcitedStateNote) output.insertAdjacentHTML("beforeend", noExcitedStateNote);
+      }
+
+      elementSelect.addEventListener("change", function () {
+        populateStates();
+        render();
+      });
+      stateSelect.addEventListener("change", render);
+      populateStates();
+      render();
+    }());
+  </script>
+</body>
+</html>
