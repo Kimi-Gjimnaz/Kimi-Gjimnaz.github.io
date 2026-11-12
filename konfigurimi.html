@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f7fa">
+    <title>Laboratori i konfiguracionit elektronik | Gjimnazi Milot</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --ink: #192638;
+            --muted: #758196;
+            --line: #e3e7ed;
+            --paper: #fff;
+            --canvas: #f5f7fa;
+            --navy: #192b43;
+            --blue: #3584d5;
+            --red: #d95450;
+            --orange: #e59723;
+            --green: #368c5a;
+            --purple: #8660bc;
+        }
+        * { box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background: var(--canvas);
+            color: var(--ink);
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            line-height: 1.5;
+        }
+        button, select { font: inherit; }
+        button:focus-visible, select:focus-visible {
+            outline: 3px solid #8dc5fa;
+            outline-offset: 3px;
+        }
+        .shell { width: min(1050px, calc(100% - 36px)); margin-inline: auto; }
+        .topbar { background: var(--navy); color: #fff; }
+        .topbar-inner { min-height: 66px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+        .brand { display: flex; align-items: center; gap: 11px; font-size: 12px; font-weight: 800; letter-spacing: .055em; }
+        .brand-mark { width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid #b3e7df70; border-radius: 10px; color: #bcf1e3; background: #ffffff0c; font-family: Georgia, serif; font-size: 20px; }
+        .course-tag { color: #c4cede; font-size: 12px; }
+        main { padding-block: 23px 42px; }
+        .intro { display: flex; justify-content: space-between; align-items: end; gap: 18px; margin-bottom: 18px; }
+        .eyebrow { margin: 0 0 5px; color: #54836d; font-size: 10px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+        h1 { margin: 0; font-size: clamp(25px, 4vw, 33px); letter-spacing: -.045em; line-height: 1.2; }
+        .intro-copy { max-width: 360px; margin: 0; color: var(--muted); font-size: 12px; }
+        .overview { display: grid; grid-template-columns: minmax(220px, .85fr) minmax(0, 1.5fr); gap: 12px; margin-bottom: 14px; }
+        .card { min-width: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 13px; background: var(--paper); box-shadow: 0 5px 16px #26344a09; }
+        .card-inner { padding: 15px 17px; }
+        .card-title { margin: 0 0 9px; font-size: 12px; font-weight: 800; }
+        .capacity-grid { display: grid; grid-template-columns: 35px 1fr 44px; gap: 3px 6px; align-items: center; font-size: 11px; }
+        .capacity-label { color: #35445a; font-weight: 800; }
+        .capacity-desc { color: var(--muted); }
+        .capacity-total { color: #43536a; text-align: right; font-weight: 700; }
+        .capacity-note { margin: 10px 0 0; padding-top: 9px; border-top: 1px solid var(--line); color: var(--muted); font-size: 10px; }
+        .element-card { display: grid; grid-template-columns: 84px 1fr; align-items: center; gap: 14px; }
+        .element-tile { min-height: 84px; display: grid; align-content: center; justify-items: center; border: 2px solid #4791df; border-radius: 11px; color: #235c9a; background: #f2f8ff; }
+        .element-z { justify-self: start; padding-left: 9px; color: #3979b7; font-size: 10px; font-weight: 800; }
+        .element-symbol { font-size: 32px; font-weight: 800; line-height: 1.05; }
+        .element-name { margin-top: 3px; font-size: 10px; font-weight: 750; }
+        .element-details { min-width: 0; }
+        .picker-label { display: block; margin-bottom: 5px; color: var(--muted); font-size: 10px; font-weight: 650; }
+        .element-select { width: 100%; min-height: 36px; padding: 6px 9px; border: 1px solid #dce2e9; border-radius: 8px; color: var(--ink); background: #fff; font-size: 11px; }
+        .progress-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; color: #455369; font-size: 11px; font-weight: 750; }
+        .progress-track { height: 6px; overflow: hidden; margin-top: 5px; border-radius: 99px; background: #e9edf2; }
+        .progress-fill { width: 0; height: 100%; border-radius: inherit; background: #3584d5; transition: width .2s ease; }
+        .workspace { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) minmax(190px, .7fr); gap: 14px; align-items: start; }
+        .panel-heading { min-height: 46px; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+        .panel-heading h2 { margin: 0; font-size: 12px; font-weight: 800; }
+        .panel-kicker { color: var(--muted); font-size: 10px; }
+        .atom-stage { display: grid; min-height: 380px; place-items: center; padding: 7px 12px; background-image: linear-gradient(#26344a06 1px, transparent 1px), linear-gradient(90deg, #26344a06 1px, transparent 1px); background-size: 25px 25px; }
+        .atom { display: block; width: min(100%, 360px); height: auto; overflow: visible; }
+        .shell-ring { fill: none; stroke: #cfd4da; stroke-width: 1.5; }
+        .shell-label { fill: #9aa4b2; font-size: 10px; }
+        .nucleus { fill: #fff4db; stroke: #e6b74a; stroke-width: 2; }
+        .nucleus-text { fill: #314157; font-size: 13px; font-weight: 800; text-anchor: middle; dominant-baseline: central; }
+        .electron { stroke: #fff; stroke-width: 1; filter: drop-shadow(0 1px 2px #19263899); }
+        .electron.s { fill: #e11d48; }
+        .electron.p { fill: #16a34a; }
+        .electron.d { fill: #1675e8; }
+        .electron.f { fill: #8738d0; }
+        .electron-legend { display: flex; flex-wrap: wrap; gap: 7px 12px; padding: 9px 14px; border-top: 1px solid var(--line); }
+        .electron-legend-item { display: inline-flex; align-items: center; gap: 5px; color: #687487; font-size: 9px; font-weight: 700; }
+        .electron-legend-dot { width: 9px; height: 9px; flex: 0 0 9px; border: 1px solid #fff; border-radius: 50%; box-shadow: 0 0 0 1px #19263820; }
+        .electron-legend-dot.s { background: #e11d48; }
+        .electron-legend-dot.p { background: #16a34a; }
+        .electron-legend-dot.d { background: #1675e8; }
+        .electron-legend-dot.f { background: #8738d0; }
+        .shell-legend { display: flex; flex-wrap: wrap; gap: 6px; padding: 11px 14px; border-top: 1px solid var(--line); }
+        .shell-chip { padding: 4px 7px; border: 1px solid #e4e8ee; border-radius: 6px; color: #526075; background: #f8fafc; font-size: 10px; font-weight: 700; }
+        .written { min-height: 57px; padding: 11px 15px 13px; border-top: 1px solid var(--line); }
+        .written-label { display: block; margin-bottom: 5px; color: var(--muted); font-size: 9px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
+        .written-value { display: flex; flex-wrap: wrap; gap: 5px; }
+        .notation { padding: 3px 6px; border-radius: 5px; font: 700 12px Georgia, "Times New Roman", serif; }
+        .orbital-list { display: grid; gap: 0; padding: 1px 14px 6px; }
+        .orbital-row { display: grid; grid-template-columns: 34px minmax(0, 1fr) 45px; align-items: center; gap: 7px; min-height: 49px; border-bottom: 1px solid #edf0f3; }
+        .orbital-row:last-child { border-bottom: 0; }
+        .orbital-row.active { border-radius: 7px; background: var(--row-bg, #f4f8fd); }
+        .orbital-name { color: #8791a0; font-size: 14px; font-weight: 850; text-align: center; }
+        .orbital-row.active .orbital-name { color: var(--orbital-color); }
+        .orbital-boxes { display: flex; flex-wrap: wrap; gap: 5px; }
+        .orbital-box { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; gap: 1px; padding: 0; border: 1.5px solid #cbd1da; border-radius: 5px; color: var(--orbital-color, #40536c); background: #fff; cursor: pointer; font-size: 24px; font-weight: 750; line-height: 1; transition: background .14s, border-color .14s, transform .14s; }
+        .orbital-box:hover { transform: translateY(-1px); border-color: var(--orbital-color); background: var(--row-bg); }
+        .orbital-box:disabled { cursor: default; opacity: .4; }
+        .orbital-electron { display: inline-block; flex: 0 0 auto; }
+        .orbital-electron.s { color: #e11d48; }
+        .orbital-electron.p { color: #16a34a; }
+        .orbital-electron.d { color: #1675e8; }
+        .orbital-electron.f { color: #8738d0; }
+        .orbital-count { color: #a4adba; font-size: 10px; font-weight: 750; text-align: right; white-space: nowrap; }
+        .rules-card { grid-column: auto; }
+        .rule-list { display: grid; gap: 9px; padding: 11px; }
+        .rule-card { --rule-color: #3584d5; --rule-bg: #f0f7ff; padding: 10px; border: 1px solid #e6eaf0; border-left: 3px solid var(--rule-color); border-radius: 8px; background: #fff; opacity: .58; transition: background .16s, opacity .16s, box-shadow .16s; }
+        .rule-card.active { background: var(--rule-bg); opacity: 1; box-shadow: 0 0 0 1px var(--rule-color); }
+        .rule-card.hund { --rule-color: #368c5a; --rule-bg: #eff8f1; }
+        .rule-card.pauli { --rule-color: #8660bc; --rule-bg: #f5f0fb; }
+        .rule-title { display: flex; align-items: center; gap: 6px; margin: 0; color: var(--rule-color); font-size: 10px; font-weight: 850; }
+        .rule-dot { width: 8px; height: 8px; flex: 0 0 8px; border-radius: 50%; background: var(--rule-color); }
+        .rule-description { margin: 5px 0 0; color: #667388; font-size: 9px; line-height: 1.45; }
+        .rule-status { display: block; min-height: 13px; margin-top: 5px; color: var(--rule-color); font-size: 8px; font-weight: 800; }
+        .rule-note { margin: 0; padding: 0 11px 11px; color: var(--muted); font-size: 9px; }
+        .hint { min-height: 62px; display: flex; align-items: center; gap: 10px; margin-top: 12px; padding: 11px 14px; border: 1px solid #e2e8f0; border-radius: 10px; color: #526075; background: #fff; font-size: 11px; }
+        .hint-icon { flex: 0 0 24px; width: 24px; height: 24px; display: grid; place-items: center; border-radius: 50%; color: #526a87; background: #edf2f8; font-size: 13px; font-weight: 800; }
+        .hint.complete { border-color: #cce8d6; color: #286a43; background: #f1fbf4; }
+        .hint.complete .hint-icon { color: #286a43; background: #dff3e6; }
+        .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 11px; }
+        .button { min-height: 37px; padding: 8px 11px; border: 1px solid #e0e5eb; border-radius: 8px; color: #46556a; background: #fff; cursor: pointer; font-size: 10px; font-weight: 800; transition: filter .15s, transform .15s; }
+        .button:hover { filter: brightness(.97); transform: translateY(-1px); }
+        .button-primary { flex: 1; border-color: #3584d5; color: #fff; background: #3584d5; }
+        .button-primary:hover { background: #286eb8; }
+        .button:disabled { cursor: default; opacity: .56; transform: none; }
+        footer { padding: 0 0 24px; color: #8993a2; font-size: 10px; text-align: center; }
+        .s { --orbital-color: #d95450; --row-bg: #fff0ef; }
+        .p { --orbital-color: #368c5a; --row-bg: #eff8f1; }
+        .d { --orbital-color: #397dc3; --row-bg: #eef5fd; }
+        .f { --orbital-color: #8660bc; --row-bg: #f5f0fb; }
+        .s.notation { color: #b9403d; background: #fff0ef; }
+        .p.notation { color: #287344; background: #eff8f1; }
+        .d.notation { color: #286aa9; background: #eef5fd; }
+        .f.notation { color: #704ba2; background: #f5f0fb; }
+        @media (max-width: 670px) {
+            .shell { width: min(100% - 24px, 490px); }
+            main { padding-top: 17px; }
+            .intro { align-items: start; flex-direction: column; gap: 5px; margin-bottom: 13px; }
+            .overview { grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: 8px; }
+            .card-inner { padding: 11px; }
+            .element-card { grid-template-columns: 62px 1fr; gap: 9px; }
+            .element-tile { min-height: 68px; }
+            .element-symbol { font-size: 27px; }
+            .course-tag { font-size: 10px; }
+            .topbar-inner { min-height: 56px; }
+            .workspace { grid-template-columns: 1fr; gap: 11px; }
+            .rules-card { grid-column: auto; }
+            .atom-stage { min-height: 350px; }
+            .atom { width: min(100%, 340px); }
+            .orbital-row { min-height: 46px; }
+            .orbital-box { width: 32px; height: 32px; }
+        }
+        @media (min-width: 671px) and (max-width: 1050px) {
+            .workspace { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+            .rules-card { grid-column: 1 / -1; }
+            .rule-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        }
+        @media (max-width: 370px) {
+            .shell { width: calc(100% - 18px); }
+            .overview { grid-template-columns: 1fr; }
+            .capacity-grid { grid-template-columns: 40px 1fr 50px; }
+            .orbital-list { padding-inline: 8px; }
+            .orbital-row { grid-template-columns: 30px minmax(0, 1fr) 40px; gap: 4px; }
+            .orbital-boxes { gap: 4px; }
+            .orbital-box { width: 29px; height: 30px; font-size: 21px; }
+        }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <div class="shell topbar-inner">
+            <div class="brand"><span class="brand-mark" aria-hidden="true">K</span><span>LABORATORI I KIMISË</span></div>
+            <span class="course-tag">Kimi · Klasa 10</span>
+        </div>
+    </header>
+    <main class="shell">
+        <section class="intro">
+            <div><p class="eyebrow">Mësim interaktiv · Atomi</p><h1>Konfiguracioni elektronik</h1></div>
+            <p class="intro-copy">Vendos elektronet në orbitale dhe zbulo si ndërtohet atomi, një elektron pas tjetrit.</p>
+        </section>
+
+        <section class="overview" aria-label="Informacioni i elementit dhe kapaciteti i orbitaleve">
+            <article class="card">
+                <div class="card-inner">
+                    <h2 class="card-title">Kapaciteti i nënniveleve</h2>
+                    <div class="capacity-grid" aria-label="Kapacitetet maksimale të orbitaleve">
+                        <span class="capacity-label">s</span><span class="capacity-desc">1 kuti orbitale</span><span class="capacity-total">2 e⁻</span>
+                        <span class="capacity-label">p</span><span class="capacity-desc">3 kuti orbitale</span><span class="capacity-total">6 e⁻</span>
+                        <span class="capacity-label">d</span><span class="capacity-desc">5 kuti orbitale</span><span class="capacity-total">10 e⁻</span>
+                        <span class="capacity-label">f</span><span class="capacity-desc">7 kuti orbitale</span><span class="capacity-total">14 e⁻</span>
+                    </div>
+                    <p class="capacity-note">Shtresat: K = 2 · L = 8 · M = 18 · N = 32 e⁻</p>
+                </div>
+            </article>
+            <article class="card card-inner element-card" aria-label="Elementi i zgjedhur">
+                <div class="element-tile">
+                    <span class="element-z" id="elementZ">21</span>
+                    <span class="element-symbol" id="elementSymbol">Sc</span>
+                    <span class="element-name" id="elementName">Skandium</span>
+                </div>
+                <div class="element-details">
+                    <label class="picker-label" for="elementSelect">Numri atomik · Zgjidh elementin</label>
+                    <select class="element-select" id="elementSelect" aria-label="Zgjidh elementin"></select>
+                    <div class="progress-row"><span id="electronCount">0 / 21 elektrone</span><span id="progressPercent">0%</span></div>
+                    <div class="progress-track" role="progressbar" id="progressBar" aria-label="Përparimi i vendosjes së elektroneve" aria-valuemin="0" aria-valuemax="21" aria-valuenow="0"><div class="progress-fill" id="progressFill"></div></div>
+                </div>
+            </article>
+        </section>
+
+        <section class="workspace" aria-label="Laboratori i konfiguracionit elektronik">
+            <article class="card">
+                <div class="panel-heading"><h2>Modeli i atomit</h2><span class="panel-kicker">Shtresat elektronike · Bohri</span></div>
+                <div class="atom-stage">
+                    <svg class="atom" id="atomDiagram" viewBox="0 0 380 380" role="img" aria-labelledby="atomTitle atomDescription">
+                        <title id="atomTitle">Modeli i Bohrit për elementin e zgjedhur</title>
+                        <desc id="atomDescription">Shtresat elektronike dhe numri i elektroneve të vendosura.</desc>
+                    </svg>
+                </div>
+                <div class="electron-legend" aria-label="Ngjyrat e elektroneve sipas nënnivelit">
+                    <span class="electron-legend-item"><span class="electron-legend-dot s" aria-hidden="true"></span>s</span>
+                    <span class="electron-legend-item"><span class="electron-legend-dot p" aria-hidden="true"></span>p</span>
+                    <span class="electron-legend-item"><span class="electron-legend-dot d" aria-hidden="true"></span>d</span>
+                    <span class="electron-legend-item"><span class="electron-legend-dot f" aria-hidden="true"></span>f</span>
+                </div>
+                <div class="shell-legend" id="shellLegend" aria-label="Numri i elektroneve në secilën shtresë"></div>
+                <div class="written"><span class="written-label">Konfiguracioni elektronik · shënimi i plotë</span><div class="written-value" id="writtenConfiguration" aria-live="polite"></div></div>
+            </article>
+
+            <article class="card">
+                <div class="panel-heading"><h2>Diagrami i orbitaleve</h2><span class="panel-kicker">Mbushja sipas energjisë</span></div>
+                <div class="orbital-list" id="orbitalList" aria-label="Kutitë e orbitaleve"></div>
+            </article>
+
+            <article class="card rules-card" aria-label="Rregullat e mbushjes së orbitaleve">
+                <div class="panel-heading"><h2>Rregullat e mbushjes</h2><span class="panel-kicker">Ngjyra tregon rregullin aktiv</span></div>
+                <div class="rule-list" aria-live="polite">
+                    <section class="rule-card aufbau" id="aufbauRule">
+                        <h3 class="rule-title"><span class="rule-dot" aria-hidden="true"></span>Parimi Aufbau</h3>
+                        <p class="rule-description">Elektronet mbushin fillimisht orbitalet me energji më të ulët, sipas rendit të paraqitur.</p>
+                        <span class="rule-status" id="aufbauStatus"></span>
+                    </section>
+                    <section class="rule-card hund" id="hundRule">
+                        <h3 class="rule-title"><span class="rule-dot" aria-hidden="true"></span>Rregulla e Hundit</h3>
+                        <p class="rule-description">Orbitalet me energji të njëjtë marrin nga një elektron me spin lart (↑) para çiftimit.</p>
+                        <span class="rule-status" id="hundStatus"></span>
+                    </section>
+                    <section class="rule-card pauli" id="pauliRule">
+                        <h3 class="rule-title"><span class="rule-dot" aria-hidden="true"></span>Parimi i përjashtimit të Paulit</h3>
+                        <p class="rule-description">Një orbital mban deri në dy elektrone; i dyti vendoset me spin të kundërt (↓).</p>
+                        <span class="rule-status" id="pauliStatus"></span>
+                    </section>
+                </div>
+                <p class="rule-note">Shigjetat në kuti tregojnë spin-in; ngjyra tregon nëse elektroni i përket nënnivelit s, p, d apo f.</p>
+            </article>
+        </section>
+
+        <section class="hint" id="hint" aria-live="polite">
+            <span class="hint-icon" aria-hidden="true">i</span>
+            <span id="hintText">Ndiq rendin e mbushjes së orbitaleve dhe vendos elektronet një nga një.</span>
+        </section>
+        <div class="actions" aria-label="Kontrollet e simulimit">
+            <button class="button button-primary" id="nextButton" type="button">Vendos elektronin e radhës</button>
+            <button class="button" id="resetButton" type="button">↶ Rivendos</button>
+            <button class="button" id="completeButton" type="button">Plotëso automatikisht</button>
+        </div>
+    </main>
+    <footer class="shell">Çdo kuti përfaqëson një orbital. Vendos fillimisht nga një elektron në orbitalet me energji të njëjtë (rregulli i Hundit).</footer>
+
+    <script>
+        const elements = [
+            ["H", "Hidrogjen"], ["He", "Helium"], ["Li", "Litium"], ["Be", "Berilium"], ["B", "Bor"],
+            ["C", "Karbon"], ["N", "Azot"], ["O", "Oksigjen"], ["F", "Fluor"], ["Ne", "Neon"],
+            ["Na", "Natrium"], ["Mg", "Magnez"], ["Al", "Alumin"], ["Si", "Silic"], ["P", "Fosfor"],
+            ["S", "Squfur"], ["Cl", "Klor"], ["Ar", "Argon"], ["K", "Kalium"], ["Ca", "Kalcium"],
+            ["Sc", "Skandium"], ["Ti", "Titan"], ["V", "Vanad"], ["Cr", "Krom"], ["Mn", "Mangan"],
+            ["Fe", "Hekur"], ["Co", "Kobalt"], ["Ni", "Nikel"], ["Cu", "Bakër"], ["Zn", "Zink"],
+            ["Ga", "Galium"], ["Ge", "Germanium"], ["As", "Arsen"], ["Se", "Selen"], ["Br", "Brom"],
+            ["Kr", "Kripton"], ["Rb", "Rubidium"], ["Sr", "Stroncium"], ["Y", "Itrium"], ["Zr", "Zirkonium"],
+            ["Nb", "Niob"], ["Mo", "Molibden"], ["Tc", "Teknetium"], ["Ru", "Rutenium"], ["Rh", "Rodium"],
+            ["Pd", "Paladium"], ["Ag", "Argjend"], ["Cd", "Kadmium"], ["In", "Indium"], ["Sn", "Kallaj"],
+            ["Sb", "Antimon"], ["Te", "Tellur"], ["I", "Jod"], ["Xe", "Ksenon"], ["Cs", "Cezium"],
+            ["Ba", "Barium"], ["La", "Lantan"], ["Ce", "Cer"], ["Pr", "Praseodim"], ["Nd", "Neodim"],
+            ["Pm", "Prometium"], ["Sm", "Samarium"], ["Eu", "Europium"], ["Gd", "Gadolinium"], ["Tb", "Terbium"],
+            ["Dy", "Disprozium"], ["Ho", "Holmium"], ["Er", "Erbium"], ["Tm", "Tulium"], ["Yb", "Iterbium"],
+            ["Lu", "Lutecium"], ["Hf", "Hafnium"], ["Ta", "Tantal"], ["W", "Volfram"], ["Re", "Renium"],
+            ["Os", "Osmium"], ["Ir", "Iridium"], ["Pt", "Platin"], ["Au", "Ari"], ["Hg", "Merkur"],
+            ["Tl", "Talium"], ["Pb", "Plumb"], ["Bi", "Bismut"], ["Po", "Polonium"], ["At", "Astatin"],
+            ["Rn", "Radon"], ["Fr", "Francium"], ["Ra", "Radium"], ["Ac", "Aktinium"], ["Th", "Torium"],
+            ["Pa", "Protaktinium"], ["U", "Uran"], ["Np", "Neptunium"], ["Pu", "Plutonium"], ["Am", "Americium"],
+            ["Cm", "Kurium"], ["Bk", "Berkelium"], ["Cf", "Kalifornium"], ["Es", "Einsteinium"], ["Fm", "Fermium"],
+            ["Md", "Mendelevium"], ["No", "Nobelium"], ["Lr", "Lawrencium"], ["Rf", "Rutherfordium"], ["Db", "Dubnium"],
+            ["Sg", "Seaborgium"], ["Bh", "Bohrium"], ["Hs", "Hassium"], ["Mt", "Meitnerium"], ["Ds", "Darmstadtium"],
+            ["Rg", "Roentgenium"], ["Cn", "Kopernicium"], ["Nh", "Nihonium"], ["Fl", "Flerovium"], ["Mc", "Moscovium"],
+            ["Lv", "Livermorium"], ["Ts", "Tennessine"], ["Og", "Oganesson"]
+        ];
+        const subshells = [
+            { name: "1s", capacity: 2, shell: 1 },
+            { name: "2s", capacity: 2, shell: 2 },
+            { name: "2p", capacity: 6, shell: 2 },
+            { name: "3s", capacity: 2, shell: 3 },
+            { name: "3p", capacity: 6, shell: 3 },
+            { name: "4s", capacity: 2, shell: 4 },
+            { name: "3d", capacity: 10, shell: 3 },
+            { name: "4p", capacity: 6, shell: 4 },
+            { name: "5s", capacity: 2, shell: 5 },
+            { name: "4d", capacity: 10, shell: 4 },
+            { name: "5p", capacity: 6, shell: 5 },
+            { name: "6s", capacity: 2, shell: 6 },
+            { name: "4f", capacity: 14, shell: 4 },
+            { name: "5d", capacity: 10, shell: 5 },
+            { name: "6p", capacity: 6, shell: 6 },
+            { name: "7s", capacity: 2, shell: 7 },
+            { name: "5f", capacity: 14, shell: 5 },
+            { name: "6d", capacity: 10, shell: 6 },
+            { name: "7p", capacity: 6, shell: 7 }
+        ];
+        const shellLetters = ["", "K", "L", "M", "N", "O", "P", "Q"];
+        const spinArrows = ["↑", "↓"];
+        const superscripts = ["⁰", "¹", "²", "³", "⁴", "⁵", "⁶", "⁷", "⁸", "⁹", "¹⁰", "¹¹", "¹²", "¹³", "¹⁴"];
+        const groundStateAdjustments = {
+            24: { "4s": -1, "3d": 1 },
+            29: { "4s": -1, "3d": 1 },
+            41: { "5s": -1, "4d": 1 },
+            42: { "5s": -1, "4d": 1 },
+            44: { "5s": -1, "4d": 1 },
+            45: { "5s": -1, "4d": 1 },
+            46: { "5s": -2, "4d": 2 },
+            47: { "5s": -1, "4d": 1 },
+            78: { "6s": -1, "5d": 1 },
+            79: { "6s": -1, "5d": 1 }
+        };
+        const select = document.getElementById("elementSelect");
+        const orbitalList = document.getElementById("orbitalList");
+        const hint = document.getElementById("hint");
+        const hintText = document.getElementById("hintText");
+        const nextButton = document.getElementById("nextButton");
+        let atomicNumber = 21;
+        let targetCounts = [];
+        let placedCounts = [];
+        let electronHistory = [];
+        let lastAppliedRules = [];
+        let lastAppliedElectron = 0;
+
+        elements.forEach(([symbol, name], index) => {
+            const option = document.createElement("option");
+            option.value = String(index + 1);
+            option.textContent = `${index + 1}. ${name} (${symbol})`;
+            select.appendChild(option);
+        });
+
+        function getGroundState(number) {
+            let remaining = number;
+            const counts = subshells.map(subshell => {
+                const count = Math.min(remaining, subshell.capacity);
+                remaining -= count;
+                return count;
+            });
+            const adjustments = groundStateAdjustments[number];
+            if (adjustments) {
+                Object.entries(adjustments).forEach(([name, difference]) => {
+                    const index = subshells.findIndex(subshell => subshell.name === name);
+                    counts[index] += difference;
+                });
+            }
+            return counts;
+        }
+
+        function getNextSubshellIndex() {
+            return targetCounts.findIndex((target, index) => placedCounts[index] < target);
+        }
+
+        function getNextBoxIndex(subshellIndex) {
+            return getOrbitalIndex(subshellIndex, placedCounts[subshellIndex]);
+        }
+
+        function getOrbitalIndex(subshellIndex, electronOrdinal) {
+            const boxCount = subshells[subshellIndex].capacity / 2;
+            return electronOrdinal < boxCount ? electronOrdinal : electronOrdinal - boxCount;
+        }
+
+        function getRuleApplications(subshellIndex) {
+            const subshell = subshells[subshellIndex];
+            const boxCount = subshell.capacity / 2;
+            const electronsPlaced = placedCounts[subshellIndex];
+            const rules = ["aufbau"];
+            if (electronsPlaced < boxCount && boxCount > 1) {
+                rules.push("hund");
+            } else if (electronsPlaced >= boxCount) {
+                rules.push("pauli");
+            }
+            return rules;
+        }
+
+        function getElectronShells() {
+            const shells = Array(7).fill(0);
+            placedCounts.forEach((count, index) => {
+                shells[subshells[index].shell - 1] += count;
+            });
+            return shells;
+        }
+
+        function renderRules(next) {
+            const rules = lastAppliedElectron
+                ? lastAppliedRules
+                : next.complete ? [] : getRuleApplications(next.subshellIndex);
+            const stepNumber = lastAppliedElectron || (next.complete ? 0 : electronHistory.length + 1);
+            const statuses = {
+                aufbau: document.getElementById("aufbauStatus"),
+                hund: document.getElementById("hundStatus"),
+                pauli: document.getElementById("pauliStatus")
+            };
+            Object.entries(statuses).forEach(([rule, status]) => {
+                const isActive = rules.includes(rule);
+                document.getElementById(`${rule}Rule`).classList.toggle("active", isActive);
+                status.textContent = isActive
+                    ? `${lastAppliedElectron ? "U zbatua" : "Hapi i radhës"} · elektroni ${stepNumber}`
+                    : lastAppliedElectron ? "Nuk u zbatua në këtë hap" : "";
+            });
+        }
+
+        function describeNext() {
+            if (electronHistory.length === atomicNumber) {
+                return { message: `Konfiguracioni i ${elements[atomicNumber - 1][1]} është i plotë. Provo një element tjetër!`, complete: true };
+            }
+            const subshellIndex = getNextSubshellIndex();
+            const subshell = subshells[subshellIndex];
+            const nextElectron = electronHistory.length + 1;
+            const boxIndex = getNextBoxIndex(subshellIndex);
+            if (placedCounts[subshellIndex] < subshell.capacity / 2 && targetCounts[subshellIndex] > subshell.capacity / 2) {
+                return { message: `Elektroni ${nextElectron}/${atomicNumber}: vendose në orbitalin ${subshell.name}, kutia ${boxIndex + 1}. Plotëso fillimisht orbitalet e zbrazëta (rregulli i Hundit).`, complete: false, subshellIndex, boxIndex };
+            }
+            const spin = placedCounts[subshellIndex] < subshell.capacity / 2 ? "spin lart (↑)" : "spin të kundërt (↓)";
+            return { message: `Elektroni ${nextElectron}/${atomicNumber}: vendose në orbitalin ${subshell.name}, kutia ${boxIndex + 1} me ${spin}.`, complete: false, subshellIndex, boxIndex };
+        }
+
+        function drawAtom() {
+            const svg = document.getElementById("atomDiagram");
+            const ns = "http://www.w3.org/2000/svg";
+            const center = 190;
+            const radii = [32, 51, 70, 89, 108, 127, 146];
+            const shells = getElectronShells();
+            svg.replaceChildren();
+            const title = document.createElementNS(ns, "title");
+            title.id = "atomTitle";
+            title.textContent = `Modeli i Bohrit për ${elements[atomicNumber - 1][1]}`;
+            const desc = document.createElementNS(ns, "desc");
+            desc.id = "atomDescription";
+            desc.textContent = `${electronHistory.length} elektrone të vendosura në shtresat K deri Q.`;
+            svg.append(title, desc);
+
+            radii.forEach((radius, index) => {
+                const ring = document.createElementNS(ns, "circle");
+                ring.setAttribute("class", "shell-ring");
+                ring.setAttribute("cx", String(center));
+                ring.setAttribute("cy", String(center));
+                ring.setAttribute("r", String(radius));
+                svg.appendChild(ring);
+                if (shells[index]) {
+                    const label = document.createElementNS(ns, "text");
+                    label.setAttribute("class", "shell-label");
+                    label.setAttribute("x", String(center + 8));
+                    label.setAttribute("y", String(center - radius + 12));
+                    label.textContent = shellLetters[index + 1];
+                    svg.appendChild(label);
+                }
+            });
+
+            const nucleus = document.createElementNS(ns, "circle");
+            nucleus.setAttribute("class", "nucleus");
+            nucleus.setAttribute("cx", String(center));
+            nucleus.setAttribute("cy", String(center));
+            nucleus.setAttribute("r", "21");
+            const nucleusLabel = document.createElementNS(ns, "text");
+            nucleusLabel.setAttribute("class", "nucleus-text");
+            nucleusLabel.setAttribute("x", String(center));
+            nucleusLabel.setAttribute("y", String(center));
+            nucleusLabel.textContent = `+${atomicNumber}`;
+            svg.append(nucleus, nucleusLabel);
+
+            const targetShellCounts = Array(7).fill(0);
+            targetCounts.forEach((count, index) => {
+                targetShellCounts[subshells[index].shell - 1] += count;
+            });
+            const shellElectronIndices = Array.from({ length: 7 }, () => []);
+            electronHistory.forEach((subshellIndex, index) => {
+                shellElectronIndices[subshells[subshellIndex].shell - 1].push(index);
+            });
+            const latestElectronIndex = electronHistory.length - 1;
+
+            shells.forEach((count, shellIndex) => {
+                const radius = radii[shellIndex];
+                const targetCount = targetShellCounts[shellIndex];
+                for (let electronIndex = 0; electronIndex < count; electronIndex += 1) {
+                    const angle = -Math.PI / 2 + (2 * Math.PI * electronIndex) / targetCount;
+                    const x = center + radius * Math.cos(angle);
+                    const y = center + radius * Math.sin(angle);
+                    const historyIndex = shellElectronIndices[shellIndex][electronIndex];
+                    const subshellType = subshells[electronHistory[historyIndex]].name.slice(-1);
+                    const isLatestElectron = historyIndex === latestElectronIndex;
+                    const electron = document.createElementNS(ns, "circle");
+                    electron.setAttribute("class", `electron ${subshellType}`);
+                    electron.setAttribute("cx", String(isLatestElectron ? center : x));
+                    electron.setAttribute("cy", String(isLatestElectron ? center : y));
+                    electron.setAttribute("r", count > 20 ? "5.5" : "6");
+                    if (isLatestElectron && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+                        const animateCoordinate = (attributeName, destination) => {
+                            const animation = document.createElementNS(ns, "animate");
+                            animation.setAttribute("attributeName", attributeName);
+                            animation.setAttribute("from", String(center));
+                            animation.setAttribute("to", String(destination));
+                            animation.setAttribute("dur", "0.65s");
+                            animation.setAttribute("calcMode", "spline");
+                            animation.setAttribute("keyTimes", "0;1");
+                            animation.setAttribute("keySplines", "0.2 0.75 0.25 1");
+                            animation.setAttribute("fill", "freeze");
+                            animation.setAttribute("begin", "0s");
+                            electron.appendChild(animation);
+                        };
+                        animateCoordinate("cx", x);
+                        animateCoordinate("cy", y);
+                    }
+                    svg.appendChild(electron);
+                }
+            });
+        }
+
+        function renderOrbitals(activeIndex) {
+            orbitalList.replaceChildren();
+            const orbitalElectronIndices = subshells.map(subshell =>
+                Array.from({ length: subshell.capacity / 2 }, () => [])
+            );
+            const subshellElectronCounts = subshells.map(() => 0);
+            electronHistory.forEach((subshellIndex, electronIndex) => {
+                const orbitalIndex = getOrbitalIndex(subshellIndex, subshellElectronCounts[subshellIndex]);
+                orbitalElectronIndices[subshellIndex][orbitalIndex].push(electronIndex);
+                subshellElectronCounts[subshellIndex] += 1;
+            });
+            let lastFilledIndex = -1;
+            for (let index = targetCounts.length - 1; index >= 0; index -= 1) {
+                if (targetCounts[index] > 0) {
+                    lastFilledIndex = index;
+                    break;
+                }
+            }
+            const visibleIndices = subshells.map((_, index) => index).filter(index => index <= lastFilledIndex).reverse();
+
+            visibleIndices.forEach(index => {
+                const subshell = subshells[index];
+                const type = subshell.name.slice(-1);
+                const count = placedCounts[index];
+                const boxCount = subshell.capacity / 2;
+                const row = document.createElement("div");
+                row.className = `orbital-row ${type}${activeIndex === index ? " active" : ""}`;
+                if (activeIndex === index) row.setAttribute("aria-current", "step");
+
+                const name = document.createElement("span");
+                name.className = "orbital-name";
+                name.textContent = subshell.name;
+                const boxes = document.createElement("div");
+                boxes.className = "orbital-boxes";
+                for (let boxIndex = 0; boxIndex < boxCount; boxIndex += 1) {
+                    const electronIndices = orbitalElectronIndices[index][boxIndex];
+                    const electronsInBox = electronIndices.length;
+                    const button = document.createElement("button");
+                    button.className = "orbital-box";
+                    button.type = "button";
+                    const spinDescription = electronsInBox === 2 ? ", spina lart dhe poshtë" : electronsInBox === 1 ? ", spin lart" : "";
+                    button.setAttribute("aria-label", `${subshell.name}, orbital ${boxIndex + 1}${electronsInBox ? `, ${electronsInBox} elektrone${spinDescription}` : ", bosh"}`);
+                    button.setAttribute("aria-pressed", String(electronsInBox > 0));
+                    for (let electronPosition = 0; electronPosition < electronsInBox; electronPosition += 1) {
+                        const arrow = document.createElement("span");
+                        arrow.className = `orbital-electron ${type}`;
+                        arrow.textContent = spinArrows[electronPosition];
+                        button.appendChild(arrow);
+                    }
+                    button.addEventListener("click", () => placeElectron(index, boxIndex));
+                    boxes.appendChild(button);
+                }
+                const counter = document.createElement("span");
+                counter.className = "orbital-count";
+                counter.textContent = `${count} / ${subshell.capacity}`;
+                row.append(name, boxes, counter);
+                orbitalList.appendChild(row);
+            });
+        }
+
+        function updateView() {
+            const [symbol, name] = elements[atomicNumber - 1];
+            const placed = electronHistory.length;
+            const percent = Math.round((placed / atomicNumber) * 100);
+            const next = describeNext();
+            document.getElementById("elementZ").textContent = String(atomicNumber);
+            document.getElementById("elementSymbol").textContent = symbol;
+            document.getElementById("elementName").textContent = name;
+            document.getElementById("electronCount").textContent = `${placed} / ${atomicNumber} elektrone`;
+            document.getElementById("progressPercent").textContent = `${percent}%`;
+            document.getElementById("progressFill").style.width = `${percent}%`;
+            const progressBar = document.getElementById("progressBar");
+            progressBar.setAttribute("aria-valuemax", String(atomicNumber));
+            progressBar.setAttribute("aria-valuenow", String(placed));
+
+            const shells = getElectronShells();
+            const shellLegend = document.getElementById("shellLegend");
+            shellLegend.replaceChildren();
+            shells.forEach((count, index) => {
+                if (!count) return;
+                const chip = document.createElement("span");
+                chip.className = "shell-chip";
+                chip.textContent = `${shellLetters[index + 1]} = ${count}`;
+                shellLegend.appendChild(chip);
+            });
+
+            const written = document.getElementById("writtenConfiguration");
+            written.replaceChildren();
+            subshells.forEach((subshell, index) => {
+                const count = placedCounts[index];
+                if (!count) return;
+                const part = document.createElement("span");
+                part.className = `notation ${subshell.name.slice(-1)}`;
+                part.textContent = `${subshell.name}${superscripts[count]}`;
+                written.appendChild(part);
+            });
+
+            renderOrbitals(next.subshellIndex);
+            drawAtom();
+            renderRules(next);
+            hint.classList.toggle("complete", next.complete);
+            hint.querySelector(".hint-icon").textContent = next.complete ? "✓" : "i";
+            hintText.textContent = next.message;
+            nextButton.disabled = next.complete;
+            nextButton.textContent = next.complete ? "Konfiguracioni u plotësua" : `Vendos elektronin ${placed + 1}/${atomicNumber}`;
+        }
+
+        function placeElectron(subshellIndex, boxIndex) {
+            const next = describeNext();
+            if (next.complete) return;
+            if (subshellIndex !== next.subshellIndex || boxIndex !== next.boxIndex) {
+                hint.classList.remove("complete");
+                hintText.textContent = `Vazhdo sipas rendit të mbushjes: elektroni i radhës vendoset te ${subshells[next.subshellIndex].name}, kutia ${next.boxIndex + 1}.`;
+                return;
+            }
+            lastAppliedRules = getRuleApplications(subshellIndex);
+            lastAppliedElectron = electronHistory.length + 1;
+            placedCounts[subshellIndex] += 1;
+            electronHistory.push(subshellIndex);
+            updateView();
+        }
+
+        function chooseElement(number, startFilled) {
+            atomicNumber = number;
+            targetCounts = getGroundState(number);
+            placedCounts = subshells.map(() => 0);
+            electronHistory = [];
+            lastAppliedRules = [];
+            lastAppliedElectron = 0;
+            select.value = String(number);
+            updateView();
+            if (startFilled) fillConfiguration();
+        }
+
+        function fillConfiguration() {
+            while (electronHistory.length < atomicNumber) {
+                const index = getNextSubshellIndex();
+                lastAppliedRules = getRuleApplications(index);
+                lastAppliedElectron = electronHistory.length + 1;
+                placedCounts[index] += 1;
+                electronHistory.push(index);
+            }
+            updateView();
+        }
+
+        select.addEventListener("change", () => chooseElement(Number(select.value), false));
+        nextButton.addEventListener("click", () => {
+            const next = describeNext();
+            if (!next.complete) placeElectron(next.subshellIndex, next.boxIndex);
+        });
+        document.getElementById("resetButton").addEventListener("click", () => chooseElement(atomicNumber, false));
+        document.getElementById("completeButton").addEventListener("click", fillConfiguration);
+        chooseElement(21, false);
+    </script>
+</body>
+</html>
